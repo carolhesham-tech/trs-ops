@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRS Operations</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#1a1a1a;background:#f5f5f3}
+.app{display:flex;flex-direction:column;min-height:100vh}
+
+/* ── Topbar ── */
+.topbar{display:flex;align-items:center;gap:12px;padding:11px 16px;background:#fff;border-bottom:1px solid #e5e5e3;position:sticky;top:0;z-index:50;flex-wrap:wrap}
+.logo-badge{width:34px;height:34px;border-radius:8px;background:#1D9E75;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-badge span{color:#fff;font-weight:700;font-size:12px;letter-spacing:.5px}
+.topbar-title{font-weight:600;font-size:15px}
+.topbar-subtitle{font-size:10px;color:#888;margin-top:1px}
+.sync-status{margin-left:auto;font-size:11px;color:#888;display:flex;align-items:center;gap:5px;flex-shrink:0}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#1D9E75;flex-shrink:0}
+.sync-dot.offline{background:#E24B4A}
+
+/* ── Bottom nav (mobile-first) ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5e3;display:flex;z-index:50}
+.bnav-btn{flex:1;border:none;background:none;padding:10px 4px 8px;font-size:10px;color:#888;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .15s;font-weight:500}
+.bnav-btn .icon{font-size:18px;line-height:1}
+.bnav-btn.active{color:#1D9E75}
+.bnav-btn .ar{font-size:9px;color:inherit;opacity:.8}
+
+.main{flex:1;padding:16px;padding-bottom:80px;max-width:900px;margin:0 auto;width:100%}
+.page{display:none}
+.page.active{display:block}
+
+/* ── Stats ── */
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
+.stat-card{background:#fff;border-radius:12px;padding:14px;border:1px solid #e5e5e3}
+.stat-label{font-size:11px;color:#888;margin-bottom:6px}
+.stat-label .ar{display:block;font-size:10px;color:#bbb}
+.stat-value{font-size:24px;font-weight:700}
+.stat-value.green{color:#1D9E75}
+.stat-value.amber{color:#BA7517}
+.stat-value.blue{color:#185FA5}
+
+/* ── Buttons ── */
+.btn-primary{background:#1D9E75;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:500;cursor:pointer;display:inline-flex;flex-direction:column;align-items:center;transition:background .15s;line-height:1.3}
+.btn-primary:hover{background:#0F6E56}
+.btn-primary:disabled{background:#9FE1CB;cursor:not-allowed}
+.btn-primary .ar{font-size:10px;opacity:.85}
+.btn-secondary{background:#fff;border:1px solid #d5d5d3;border-radius:8px;padding:9px 14px;font-size:13px;color:#1a1a1a;cursor:pointer;display:inline-flex;flex-direction:column;align-items:center;line-height:1.3}
+.btn-secondary:hover{background:#f5f5f3}
+.btn-secondary .ar{font-size:10px;opacity:.7}
+.btn-danger{background:#E24B4A;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;flex-direction:column;align-items:center;line-height:1.3}
+.btn-danger:hover{background:#C73B3A}
+.btn-danger .ar{font-size:10px;opacity:.85}
+
+/* ── Section headers ── */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-title{font-size:15px;font-weight:600}
+.section-title .ar{display:block;font-size:11px;font-weight:400;color:#888;margin-top:1px}
+
+/* ── Tables ── */
+.table-wrap{background:#fff;border:1px solid #e5e5e3;border-radius:12px;overflow:hidden;overflow-x:auto;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;min-width:480px}
+th{text-align:left;padding:10px 12px;font-size:11px;font-weight:600;color:#888;border-bottom:1px solid #e5e5e3;background:#fafaf8;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+th .ar{display:block;font-size:9px;color:#bbb;font-weight:500;text-transform:none;letter-spacing:0}
+td{padding:11px 12px;font-size:13px;border-bottom:1px solid #f0f0ee;color:#1a1a1a;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafaf8}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.badge.open{background:#E6F1FB;color:#185FA5}
+.badge.progress{background:#FAEEDA;color:#854F0B}
+.badge.closed{background:#f0f0ee;color:#5F5E5A}
+.badge.available{background:#E1F5EE;color:#0F6E56}
+.badge.on-site{background:#FAEEDA;color:#854F0B}
+.badge.maintenance{background:#FCEBEB;color:#A32D2D}
+.dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* ── Modals ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:flex-end;justify-content:center;padding:0}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:580px;max-height:92vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(0,0,0,0.15)}
+.modal-handle{width:36px;height:4px;border-radius:2px;background:#e5e5e3;margin:0 auto 18px}
+.modal-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
+.modal-title{font-size:16px;font-weight:600}
+.modal-title .ar{display:block;font-size:12px;font-weight:400;color:#888;margin-top:2px}
+.modal-close{background:none;border:none;cursor:pointer;color:#888;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:16px;flex-shrink:0}
+.modal-close:hover{background:#f5f5f3}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:600;color:#444}
+.field label .ar{display:block;font-size:11px;font-weight:400;color:#999;margin-top:1px}
+.field .req{color:#E24B4A}
+.field input,.field select,.field textarea{border:1px solid #d5d5d3;border-radius:9px;padding:10px 12px;font-size:14px;background:#fff;color:#1a1a1a;font-family:inherit;outline:none;transition:border .15s;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#1D9E75;box-shadow:0 0 0 3px rgba(29,158,117,0.1)}
+.field textarea{resize:vertical;min-height:70px}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;padding-top:16px;border-top:1px solid #e5e5e3;flex-wrap:wrap}
+
+/* ── Search ── */
+.search-row{display:flex;gap:8px;margin-bottom:12px}
+.search-row input{flex:1;border:1px solid #d5d5d3;border-radius:8px;padding:9px 12px;font-size:14px;background:#fff;outline:none}
+.search-row input:focus{border-color:#1D9E75}
+.search-row select{min-width:130px;border:1px solid #d5d5d3;border-radius:8px;padding:9px 10px;font-size:13px;background:#fff;outline:none}
+
+/* ── Equipment chips ── */
+.equip-grid{display:flex;flex-wrap:wrap;gap:7px;padding:10px;border:1px solid #d5d5d3;border-radius:9px;min-height:48px}
+.equip-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:20px;font-size:12px;cursor:pointer;border:1.5px solid #e5e5e3;background:#fafaf8;color:#1a1a1a;transition:all .15s;user-select:none}
+.equip-chip:hover{border-color:#1D9E75;background:#E1F5EE}
+.equip-chip.selected{background:#E1F5EE;border-color:#1D9E75;color:#0F6E56;font-weight:500}
+.equip-chip.conflict{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D;cursor:not-allowed}
+.conflict-banner{background:#FCEBEB;border:1px solid #F09595;border-radius:10px;padding:11px 14px;margin-bottom:12px;display:none;gap:10px}
+.conflict-banner.show{display:flex;align-items:flex-start}
+.conflict-banner-title{font-size:12px;font-weight:600;color:#A32D2D;margin-bottom:2px}
+.conflict-banner-body{font-size:12px;color:#791F1F}
+
+/* ── Action btns ── */
+.action-btn{background:#fff;border:1px solid #e5e5e3;border-radius:7px;padding:5px 10px;font-size:11px;color:#444;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s}
+.action-btn:hover{background:#f5f5f3}
+.action-btn.del{color:#A32D2D;border-color:#F0D5D5}
+.action-btn.del:hover{background:#FCEBEB}
+.ticket-id{font-family:monospace;font-size:11px;color:#888;background:#f5f5f3;padding:2px 6px;border-radius:4px}
+.equip-id{font-family:monospace;font-size:11px;color:#888}
+
+/* ── Job report form ── */
+.form-section-label{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.5px;margin:20px 0 10px}
+.form-section-label .ar{display:block;font-size:10px;text-transform:none;letter-spacing:0;color:#bbb;margin-top:2px}
+.form-divider{height:1px;background:#e5e5e3;margin:16px 0}
+.operators-list{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+.operator-row{display:flex;gap:8px}
+.operator-row input{flex:1;border:1px solid #d5d5d3;border-radius:9px;padding:10px 12px;font-size:14px;background:#fff;color:#1a1a1a;font-family:inherit;outline:none}
+.operator-row input:focus{border-color:#1D9E75}
+.btn-remove-op{background:#FCEBEB;color:#A32D2D;border:none;border-radius:8px;width:38px;flex-shrink:0;font-size:16px;cursor:pointer}
+.btn-add-op{background:none;border:1.5px dashed #d5d5d3;border-radius:9px;padding:9px;font-size:12px;color:#666;cursor:pointer;font-weight:500;width:100%;text-align:center}
+.btn-add-op:hover{border-color:#1D9E75;color:#1D9E75;background:#F4FBF8}
+.btn-add-op .ar{display:block;font-size:10px;opacity:.7}
+.photo-upload{border:1.5px dashed #d5d5d3;border-radius:12px;padding:14px;text-align:center;cursor:pointer;transition:all .15s;position:relative;margin-top:4px}
+.photo-upload:hover{border-color:#1D9E75;background:#F4FBF8}
+.photo-upload input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.photo-upload-icon{font-size:22px;color:#bbb;margin-bottom:4px}
+.photo-upload-text{font-size:12px;color:#888}
+.photo-upload-text .ar{display:block;font-size:10px;color:#bbb;margin-top:2px}
+.photo-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:7px;margin-top:8px}
+.photo-thumb{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#f0f0ee;border:1px solid #e5e5e3}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.remove-photo{position:absolute;top:3px;right:3px;width:20px;height:20px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.upload-bar{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.3)}
+.upload-bar-fill{height:100%;background:#1D9E75;width:0%;transition:width .2s}
+.btn-submit{width:100%;background:#1D9E75;color:#fff;border:none;border-radius:10px;padding:15px;font-size:15px;font-weight:600;cursor:pointer;margin-top:12px;transition:background .15s;line-height:1.3}
+.btn-submit:hover{background:#0F6E56}
+.btn-submit:disabled{background:#9FE1CB;cursor:not-allowed}
+.btn-submit .ar{font-size:11px;opacity:.85;display:block}
+.success-screen{display:none;text-align:center;padding:50px 20px}
+.success-screen.show{display:block}
+.success-icon{width:60px;height:60px;border-radius:50%;background:#E1F5EE;color:#1D9E75;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.success-title{font-size:17px;font-weight:600;margin-bottom:6px}
+.success-title .ar{display:block;font-size:12px;font-weight:400;color:#888}
+.success-sub{font-size:13px;color:#888;margin-bottom:20px}
+.success-sub .ar{display:block;font-size:11px;color:#bbb}
+.btn-new{background:#1a1a1a;color:#fff;border:none;border-radius:9px;padding:11px 22px;font-size:13px;font-weight:500;cursor:pointer;line-height:1.3}
+.btn-new .ar{display:block;font-size:10px;opacity:.7}
+
+/* ── Reports list ── */
+.report-card{background:#fff;border:1px solid #e5e5e3;border-radius:12px;padding:13px 14px;margin-bottom:10px}
+.report-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.report-card-title{font-size:13px;font-weight:600}
+.report-card-sub{font-size:11px;color:#888;margin-top:2px}
+.report-card-meta{font-size:11px;color:#888;line-height:1.6}
+.btn-icon-del{background:#FCEBEB;color:#A32D2D;border:none;border-radius:7px;width:28px;height:28px;font-size:13px;cursor:pointer;flex-shrink:0}
+.btn-icon-del:hover{background:#F5D5D5}
+
+/* ── Confirm modal ── */
+.confirm-icon{width:44px;height:44px;border-radius:50%;background:#FCEBEB;color:#A32D2D;font-size:18px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.confirm-title{font-size:15px;font-weight:600;margin-bottom:6px}
+.confirm-title .ar{display:block;font-size:11px;font-weight:400;color:#888}
+.confirm-body{font-size:13px;color:#666;line-height:1.5}
+.confirm-body .ar{display:block;font-size:11px;color:#999;margin-top:3px}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);border-radius:10px;padding:11px 18px;font-size:13px;font-weight:500;z-index:200;display:none;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,0.15);max-width:90vw;text-align:center}
+.toast.show{display:flex}
+.toast.success{background:#1D9E75;color:#fff}
+.toast.error{background:#E24B4A;color:#fff}
+
+.empty-state{text-align:center;padding:36px 16px;color:#888;font-size:13px}
+.intro{font-size:12px;color:#888;margin-bottom:16px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo-badge"><span>TRS</span></div>
+  <div>
+    <div class="topbar-title">TRS Operations</div>
+    <div class="topbar-subtitle">نظام العمليات الميدانية · Field management</div>
+  </div>
+  <div class="sync-status"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Connecting…</span></div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Open tickets<span class="ar">التذاكر المفتوحة</span></div><div class="stat-value blue" id="stat-open">—</div></div>
+      <div class="stat-card"><div class="stat-label">In progress<span class="ar">قيد التنفيذ</span></div><div class="stat-value amber" id="stat-progress">—</div></div>
+      <div class="stat-card"><div class="stat-label">Closed today<span class="ar">أُغلقت اليوم</span></div><div class="stat-value green" id="stat-closed">—</div></div>
+      <div class="stat-card"><div class="stat-label">On site<span class="ar">معدات في الموقع</span></div><div class="stat-value amber" id="stat-onsite">—</div></div>
+    </div>
+    <div class="section-header"><span class="section-title">Recent tickets<span class="ar">أحدث التذاكر</span></span></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>ID<span class="ar">المعرف</span></th><th>Site<span class="ar">الموقع</span></th><th>Operator<span class="ar">المشغل</span></th><th>Status<span class="ar">الحالة</span></th></tr></thead>
+      <tbody id="dash-tickets"></tbody>
+    </table></div>
+    <div class="section-header"><span class="section-title">Equipment on site<span class="ar">المعدات في الموقع</span></span></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Equipment<span class="ar">المعدة</span></th><th>ID<span class="ar">المعرف</span></th><th>Status<span class="ar">الحالة</span></th></tr></thead>
+      <tbody id="dash-equip"></tbody>
+    </table></div>
+  </div>
+
+  <!-- JOB REPORT FORM -->
+  <div class="page" id="page-report">
+    <div class="form-view" id="form-view">
+      <p class="intro">Fill in the job details and upload photos.<br>يرجى ملء تفاصيل العمل ورفع الصور.</p>
+      <div class="form-grid" style="margin-bottom:0">
+        <div class="field">
+          <label>Date <span class="req">*</span><span class="ar">التاريخ</span></label>
+          <input type="date" id="f-date">
+        </div>
+        <div class="field">
+          <label>Job control number <span class="req">*</span><span class="ar">رقم ضبط العمل</span></label>
+          <input type="text" id="f-jobnum" placeholder="e.g. JC-2026-0451">
+        </div>
+        <div class="field">
+          <label>Service ticket number <span class="req">*</span><span class="ar">رقم تذكرة الخدمة</span></label>
+          <input type="text" id="f-ticketnum" placeholder="e.g. ST-1023">
+        </div>
+        <div class="field">
+          <label>Location <span class="req">*</span><span class="ar">الموقع</span></label>
+          <input type="text" id="f-location" placeholder="e.g. Site A – North">
+        </div>
+      </div>
+
+      <div class="form-divider"></div>
+      <div class="form-section-label">Operators<span class="ar">المشغلون</span></div>
+      <div class="operators-list" id="operators-list"></div>
+      <button type="button" class="btn-add-op" onclick="addOperatorField()">+ Add another operator<span class="ar">إضافة مشغل آخر</span></button>
+
+      <div class="form-divider"></div>
+      <div class="form-section-label">Photos<span class="ar">الصور</span></div>
+
+      <div class="field">
+        <label>Feedback photo<span class="ar">صورة الملاحظات</span></label>
+        <div class="photo-upload"><input type="file" accept="image/*" capture="environment" onchange="handleFiles(this,'feedback')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Tap to take or upload<span class="ar">اضغط للالتقاط أو الرفع</span></div></div>
+        <div class="photo-preview" id="preview-feedback"></div>
+      </div>
+      <div class="field">
+        <label>Fault report photo<span class="ar">صورة تقرير الأعطال</span></label>
+        <div class="photo-upload"><input type="file" accept="image/*" capture="environment" onchange="handleFiles(this,'faultreport')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Tap to take or upload<span class="ar">اضغط للالتقاط أو الرفع</span></div></div>
+        <div class="photo-preview" id="preview-faultreport"></div>
+      </div>
+      <div class="field">
+        <label>Equipment — before job<span class="ar">المعدات — قبل العمل</span></label>
+        <div class="photo-upload"><input type="file" accept="image/*" capture="environment" multiple onchange="handleFiles(this,'before')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Multiple photos allowed<span class="ar">يمكن إضافة عدة صور</span></div></div>
+        <div class="photo-preview" id="preview-before"></div>
+      </div>
+      <div class="field">
+        <label>Equipment — after job<span class="ar">المعدات — بعد العمل</span></label>
+        <div class="photo-upload"><input type="file" accept="image/*" capture="environment" multiple onchange="handleFiles(this,'after')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Multiple photos allowed<span class="ar">يمكن إضافة عدة صور</span></div></div>
+        <div class="photo-preview" id="preview-after"></div>
+      </div>
+
+      <button class="btn-submit" id="submit-btn" onclick="submitReport()">Submit job report<span class="ar">إرسال تقرير العمل</span></button>
+    </div>
+    <div class="success-screen" id="success-screen">
+      <div class="success-icon">✓</div>
+      <div class="success-title">Report submitted<span class="ar">تم إرسال التقرير</span></div>
+      <div class="success-sub">Saved successfully.<span class="ar">تم الحفظ بنجاح.</span></div>
+      <button class="btn-new" onclick="resetForm()">Submit another<span class="ar">إرسال تقرير آخر</span></button>
+    </div>
+  </div>
+
+  <!-- REPORTS LIST -->
+  <div class="page" id="page-reports">
+    <div class="section-header">
+      <span class="section-title">Job reports<span class="ar">تقارير العمل</span></span>
+    </div>
+    <p class="intro">All submitted reports. Tap ✕ to delete one entered by mistake.<br>جميع التقارير المُرسلة. اضغط ✕ لحذف تقرير أُدخل بالخطأ.</p>
+    <div id="reports-list"></div>
+  </div>
+
+  <!-- TICKETS -->
+  <div class="page" id="page-tickets">
+    <div class="section-header">
+      <span class="section-title">Job tickets<span class="ar">تذاكر العمل</span></span>
+      <button class="btn-primary" onclick="openNewTicket()">+ New<span class="ar">جديد</span></button>
+    </div>
+    <div class="search-row">
+      <input type="text" placeholder="Search site or operator / بحث" id="ticket-search" oninput="renderTickets()">
+      <select id="ticket-filter" onchange="renderTickets()">
+        <option value="">All / الكل</option>
+        <option value="open">Open / مفتوحة</option>
+        <option value="in-progress">In progress / قيد التنفيذ</option>
+        <option value="closed">Closed / مغلقة</option>
+      </select>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>ID<span class="ar">الرقم</span></th>
+        <th>Site<span class="ar">الموقع</span></th>
+        <th>Operator<span class="ar">المشغل</span></th>
+        <th>Date<span class="ar">التاريخ</span></th>
+        <th>Status<span class="ar">الحالة</span></th>
+        <th></th>
+      </tr></thead>
+      <tbody id="tickets-body"></tbody>
+    </table></div>
+  </div>
+
+  <!-- EQUIPMENT -->
+  <div class="page" id="page-equipment">
+    <div class="section-header">
+      <span class="section-title">Equipment registry<span class="ar">سجل المعدات</span></span>
+      <button class="btn-primary" onclick="openNewEquip()">+ Add<span class="ar">إضافة</span></button>
+    </div>
+    <div class="search-row">
+      <input type="text" placeholder="Search name or ID / بحث" id="equip-search" oninput="renderEquipment()">
+      <select id="equip-filter" onchange="renderEquipment()">
+        <option value="">All / الكل</option>
+        <option value="available">Available / متاحة</option>
+        <option value="on-site">On site / في الموقع</option>
+        <option value="maintenance">Maintenance / صيانة</option>
+      </select>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>ID<span class="ar">المعرف</span></th>
+        <th>Name<span class="ar">الاسم</span></th>
+        <th>Category<span class="ar">الفئة</span></th>
+        <th>Location<span class="ar">الموقع</span></th>
+        <th>Status<span class="ar">الحالة</span></th>
+        <th></th>
+      </tr></thead>
+      <tbody id="equip-body"></tbody>
+    </table></div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bnav-btn active" onclick="showPage('dashboard')" id="nav-dashboard"><span class="icon">⊞</span>Dashboard<span class="ar">لوحة التحكم</span></button>
+  <button class="bnav-btn" onclick="showPage('report')" id="nav-report"><span class="icon">✎</span>Report<span class="ar">تقرير</span></button>
+  <button class="bnav-btn" onclick="showPage('reports')" id="nav-reports"><span class="icon">☰</span>Reports<span class="ar">التقارير</span></button>
+  <button class="bnav-btn" onclick="showPage('tickets')" id="nav-tickets"><span class="icon">🎫</span>Tickets<span class="ar">التذاكر</span></button>
+  <button class="bnav-btn" onclick="showPage('equipment')" id="nav-equipment"><span class="icon">⚙</span>Equipment<span class="ar">المعدات</span></button>
+</nav>
+
+<!-- TICKET MODAL -->
+<div class="modal-bg" id="ticket-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="ticket-modal-title">New job ticket<span class="ar">تذكرة عمل جديدة</span></div>
+      <button class="modal-close" onclick="closeModal('ticket-modal')">✕</button>
+    </div>
+    <div class="conflict-banner" id="conflict-banner">
+      <div style="font-size:18px;flex-shrink:0;margin-top:1px">⚠</div>
+      <div style="margin-left:10px">
+        <div class="conflict-banner-title">Equipment conflict / تعارض في المعدات</div>
+        <div class="conflict-banner-body" id="conflict-text"></div>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Job site<span class="ar">موقع العمل</span></label>
+        <input type="text" id="t-site" placeholder="e.g. Site A – North">
+      </div>
+      <div class="field">
+        <label>Operator<span class="ar">المشغل</span></label>
+        <input type="text" id="t-operator" placeholder="Full name">
+      </div>
+      <div class="field">
+        <label>Date & time<span class="ar">التاريخ والوقت</span></label>
+        <input type="datetime-local" id="t-datetime">
+      </div>
+      <div class="field">
+        <label>Status<span class="ar">الحالة</span></label>
+        <select id="t-status">
+          <option value="open">Open / مفتوحة</option>
+          <option value="in-progress">In progress / قيد التنفيذ</option>
+          <option value="closed">Closed / مغلقة</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>Equipment used <span style="font-weight:400;color:#999;font-size:11px">(red = conflict)</span><span class="ar">المعدات المستخدمة</span></label>
+        <div class="equip-grid" id="t-equip-grid"></div>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>Notes<span class="ar">ملاحظات</span></label>
+        <textarea id="t-notes" placeholder="Job details…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="delete-ticket-btn" style="display:none;color:#A32D2D;border-color:#F0D5D5" onclick="confirmDeleteTicket()">Delete<span class="ar">حذف</span></button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" onclick="closeModal('ticket-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-primary" onclick="saveTicket()" id="save-ticket-btn">Save<span class="ar">حفظ</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- EQUIPMENT MODAL -->
+<div class="modal-bg" id="equip-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="equip-modal-title">Add equipment<span class="ar">إضافة معدة</span></div>
+      <button class="modal-close" onclick="closeModal('equip-modal')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Equipment name<span class="ar">اسم المعدة</span></label>
+        <input type="text" id="e-name" placeholder="e.g. Hydraulic Pump #3">
+      </div>
+      <div class="field">
+        <label>Category<span class="ar">الفئة</span></label>
+        <input type="text" id="e-category" placeholder="e.g. Pump, Generator">
+      </div>
+      <div class="field">
+        <label>Status<span class="ar">الحالة</span></label>
+        <select id="e-status">
+          <option value="available">Available / متاحة</option>
+          <option value="on-site">On site / في الموقع</option>
+          <option value="maintenance">Maintenance / صيانة</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Location<span class="ar">الموقع</span></label>
+        <input type="text" id="e-location" placeholder="e.g. Site B – East">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="delete-equip-btn" style="display:none;color:#A32D2D;border-color:#F0D5D5" onclick="confirmDeleteEquip()">Delete<span class="ar">حذف</span></button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" onclick="closeModal('equip-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-primary" onclick="saveEquip()">Save<span class="ar">حفظ</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE MODAL -->
+<div class="modal-bg" id="confirm-modal">
+  <div class="modal" style="border-radius:20px 20px 0 0">
+    <div class="modal-handle"></div>
+    <div class="confirm-icon">!</div>
+    <div class="confirm-title" id="confirm-title">Delete this?<span class="ar">حذف هذا العنصر؟</span></div>
+    <div class="confirm-body" id="confirm-body">This cannot be undone.<span class="ar">لا يمكن التراجع عن هذا الإجراء.</span></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('confirm-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-danger" id="confirm-delete-btn">Delete<span class="ar">حذف</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toast-msg"></span></div>
+
+</div><!-- /app -->
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAUBmDgdu2llO4KhlYUaPxaCnckauvc9uI",
+  authDomain: "trs-ops.firebaseapp.com",
+  projectId: "trs-ops",
+  storageBucket: "trs-ops.firebasestorage.app",
+  messagingSenderId: "350342131796",
+  appId: "1:350342131796:web:7747ab514d9bec8e58bdc1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+const storage = getStorage(app);
+
+// ── State ──────────────────────────────────────────────────
+let tickets = [], equipment = [], reports = [];
+let editTicketId = null, editEquipId = null;
+let ticketCounter = 1, equipCounter = 1;
+
+// ── Sync ───────────────────────────────────────────────────
+function setSync(ok) {
+  document.getElementById('sync-dot').className = 'sync-dot' + (ok ? '' : ' offline');
+  document.getElementById('sync-label').textContent = ok ? 'Live / متصل' : 'Offline / غير متصل';
+}
+
+onSnapshot(query(collection(db,'tickets'), orderBy('createdAt','desc')), snap => {
+  tickets = snap.docs.map(d => ({id:d.id,...d.data()}));
+  setSync(true);
+  ticketCounter = tickets.reduce((m,t)=>{ const n=parseInt((t.ticketId||'TKT-000').split('-')[1]||0); return n>m?n:m; },0)+1;
+  renderTickets(); renderDashboard();
+}, ()=>setSync(false));
+
+onSnapshot(query(collection(db,'equipment'), orderBy('createdAt','desc')), snap => {
+  equipment = snap.docs.map(d => ({id:d.id,...d.data()}));
+  setSync(true);
+  equipCounter = equipment.reduce((m,e)=>{ const n=parseInt((e.equipId||'EQ-000').split('-')[1]||0); return n>m?n:m; },0)+1;
+  renderEquipment(); renderDashboard();
+}, ()=>setSync(false));
+
+onSnapshot(query(collection(db,'jobReports'), orderBy('createdAt','desc')), snap => {
+  reports = snap.docs.map(d => ({id:d.id,...d.data()}));
+  setSync(true);
+  renderReports();
+}, ()=>setSync(false));
+
+// ── Helpers ────────────────────────────────────────────────
+const pad = n => String(n).padStart(3,'0');
+const todayStr = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+const nowDT = () => { const d=new Date(); return `${todayStr()}T${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
+const fmtDate = s => { if(!s) return '—'; const d=new Date(s); return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}); };
+const equipName = id => { const e=equipment.find(x=>x.id===id); return e?e.name:id; };
+const equipById = id => equipment.find(x=>x.id===id);
+
+function badgeHTML(status){
+  const cls={open:'open','in-progress':'progress',closed:'closed',available:'available','on-site':'on-site',maintenance:'maintenance'};
+  const lbl={open:'Open / مفتوحة','in-progress':'In progress / قيد التنفيذ',closed:'Closed / مغلقة',available:'Available / متاحة','on-site':'On site / في الموقع',maintenance:'Maintenance / صيانة'};
+  return `<span class="badge ${cls[status]||''}"><span class="dot"></span>${lbl[status]||status}</span>`;
+}
+
+// ── Pages ──────────────────────────────────────────────────
+window.showPage = function(p) {
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.getElementById('nav-'+p).classList.add('active');
+  if(p==='dashboard') renderDashboard();
+  if(p==='tickets') renderTickets();
+  if(p==='equipment') renderEquipment();
+  if(p==='reports') renderReports();
+}
+
+// ── Dashboard ──────────────────────────────────────────────
+function renderDashboard(){
+  document.getElementById('stat-open').textContent = tickets.filter(t=>t.status==='open').length;
+  document.getElementById('stat-progress').textContent = tickets.filter(t=>t.status==='in-progress').length;
+  const today = new Date().toDateString();
+  document.getElementById('stat-closed').textContent = tickets.filter(t=>t.status==='closed'&&t.datetime&&new Date(t.datetime).toDateString()===today).length;
+  document.getElementById('stat-onsite').textContent = equipment.filter(e=>e.status==='on-site').length;
+
+  const tb = document.getElementById('dash-tickets');
+  tb.innerHTML = tickets.slice(0,5).map(t=>`<tr>
+    <td><span class="ticket-id">${t.ticketId||t.id.slice(0,6)}</span></td>
+    <td>${t.site||'—'}</td><td>${(t.operator||'').split(' ')[0]}</td>
+    <td>${badgeHTML(t.status)}</td></tr>`).join('') ||
+    `<tr><td colspan="4"><div class="empty-state">No tickets yet / لا توجد تذاكر</div></td></tr>`;
+
+  const eb = document.getElementById('dash-equip');
+  eb.innerHTML = equipment.filter(e=>e.status==='on-site').slice(0,5).map(e=>`<tr>
+    <td>${e.name}</td><td><span class="equip-id">${e.equipId||''}</span></td>
+    <td>${badgeHTML(e.status)}</td></tr>`).join('') ||
+    `<tr><td colspan="3"><div class="empty-state">No equipment on site / لا توجد معدات في الموقع</div></td></tr>`;
+}
+
+// ── Tickets ────────────────────────────────────────────────
+function renderTickets(){
+  const q=(document.getElementById('ticket-search').value||'').toLowerCase();
+  const f=document.getElementById('ticket-filter').value;
+  const list=tickets.filter(t=>(!q||((t.site||'')+(t.operator||'')).toLowerCase().includes(q))&&(!f||t.status===f));
+  document.getElementById('tickets-body').innerHTML = list.map(t=>`<tr>
+    <td><span class="ticket-id">${t.ticketId||t.id.slice(0,6)}</span></td>
+    <td>${t.site||'—'}</td><td>${t.operator||'—'}</td>
+    <td style="font-size:11px;color:#888">${fmtDate(t.datetime)}</td>
+    <td>${badgeHTML(t.status)}</td>
+    <td style="white-space:nowrap">
+      <button class="action-btn" onclick="editTicket('${t.id}')">✎</button>
+      <button class="action-btn del" onclick="quickDeleteTicket('${t.id}','${t.ticketId||''}')">✕</button>
+    </td></tr>`).join('') ||
+    `<tr><td colspan="6"><div class="empty-state">No tickets / لا توجد تذاكر</div></td></tr>`;
+}
+
+// ── Equipment ──────────────────────────────────────────────
+function renderEquipment(){
+  const q=(document.getElementById('equip-search').value||'').toLowerCase();
+  const f=document.getElementById('equip-filter').value;
+  const list=equipment.filter(e=>(!q||((e.name||'')+(e.equipId||'')).toLowerCase().includes(q))&&(!f||e.status===f));
+  document.getElementById('equip-body').innerHTML = list.map(e=>`<tr>
+    <td><span class="equip-id">${e.equipId||''}</span></td>
+    <td style="font-weight:500">${e.name}</td>
+    <td style="font-size:12px;color:#888">${e.category||'—'}</td>
+    <td style="font-size:12px;color:#888">${e.location||'—'}</td>
+    <td>${badgeHTML(e.status)}</td>
+    <td style="white-space:nowrap">
+      <button class="action-btn" onclick="editEquip('${e.id}')">✎</button>
+      <button class="action-btn del" onclick="quickDeleteEquip('${e.id}','${(e.name||'').replace(/'/g,"\\'")}')">✕</button>
+    </td></tr>`).join('') ||
+    `<tr><td colspan="6"><div class="empty-state">No equipment / لا توجد معدات</div></td></tr>`;
+}
+
+// ── Reports list ───────────────────────────────────────────
+function renderReports(){
+  const wrap = document.getElementById('reports-list');
+  if(!reports.length){ wrap.innerHTML=`<div class="empty-state">No reports yet / لا توجد تقارير</div>`; return; }
+  wrap.innerHTML = reports.map(r=>{
+    const pc=(r.feedbackPhotos?.length||0)+(r.faultReportPhotos?.length||0)+(r.beforePhotos?.length||0)+(r.afterPhotos?.length||0);
+    return `<div class="report-card">
+      <div class="report-card-top">
+        <div><div class="report-card-title">${r.jobNum||'—'} · ${r.ticketNum||'—'}</div>
+        <div class="report-card-sub">${r.location||'—'}</div></div>
+        <button class="btn-icon-del" onclick="deleteReport('${r.id}','${(r.jobNum||'').replace(/'/g,"\\'")}')">✕</button>
+      </div>
+      <div class="report-card-meta">${r.date||'—'} · ${(r.operators||[]).join(', ')||'No operators / لا يوجد مشغلون'} · ${pc} photo${pc===1?'':'s'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Conflict checker ───────────────────────────────────────
+function getConflicts(selectedIds, currentTicketId){
+  return selectedIds.reduce((acc,eid)=>{
+    const eq=equipById(eid); if(!eq) return acc;
+    const ct=tickets.find(t=>t.id!==currentTicketId&&(t.status==='open'||t.status==='in-progress')&&(t.equipment||[]).includes(eid));
+    if(ct) acc.push({equipment:eq,ticket:ct});
+    return acc;
+  },[]);
+}
+
+function buildEquipGrid(selectedIds=[], currentTicketId=null){
+  const grid=document.getElementById('t-equip-grid');
+  grid.innerHTML = equipment.map(eq=>{
+    const isSel=selectedIds.includes(eq.id);
+    const ct=tickets.find(t=>t.id!==currentTicketId&&(t.status==='open'||t.status==='in-progress')&&(t.equipment||[]).includes(eq.id));
+    const isConflict=ct&&isSel;
+    let cls='equip-chip'+(isSel&&!isConflict?' selected':'')+(isConflict?' conflict':'');
+    return `<div class="${cls}" title="${ct?`⚠ Used in ${ct.ticketId||''} at ${ct.site||'another site'}`:''}" onclick="toggleEquip('${eq.id}','${currentTicketId||''}')" data-id="${eq.id}">${ct?'⚠ ':''}${eq.name}${eq.status==='maintenance'?' (maint.)':''}</div>`;
+  }).join('');
+  checkConflictBanner(selectedIds, currentTicketId);
+}
+
+function checkConflictBanner(selectedIds, currentTicketId){
+  const conflicts=getConflicts(selectedIds, currentTicketId);
+  const banner=document.getElementById('conflict-banner');
+  const btn=document.getElementById('save-ticket-btn');
+  if(conflicts.length){
+    banner.classList.add('show');
+    document.getElementById('conflict-text').innerHTML=conflicts.map(c=>`<b>${c.equipment.name}</b> → ticket <b>${c.ticket.ticketId||''}</b> at <b>${c.ticket.site||'another site'}</b>`).join('<br>');
+    btn.disabled=true;
+  } else {
+    banner.classList.remove('show');
+    btn.disabled=false;
+  }
+}
+
+window.toggleEquip = function(equipId, currentTicketId){
+  const chip=document.querySelector(`.equip-chip[data-id="${equipId}"]`); if(!chip) return;
+  const was=chip.classList.contains('selected')||chip.classList.contains('conflict');
+  const all=[...document.querySelectorAll('.equip-chip.selected,.equip-chip.conflict')].map(c=>c.dataset.id);
+  buildEquipGrid(was?all.filter(id=>id!==equipId):[...all,equipId], currentTicketId||null);
+}
+
+const getSelEquip = () => [...document.querySelectorAll('.equip-chip.selected,.equip-chip.conflict')].map(c=>c.dataset.id);
+
+// ── Modals ─────────────────────────────────────────────────
+window.openModal = id => document.getElementById(id).classList.add('open');
+window.closeModal = id => document.getElementById(id).classList.remove('open');
+document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
+
+window.openNewTicket = function(){
+  editTicketId=null;
+  document.getElementById('ticket-modal-title').textContent='New job ticket / تذكرة جديدة';
+  ['t-site','t-operator','t-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('t-datetime').value=nowDT();
+  document.getElementById('t-status').value='open';
+  document.getElementById('conflict-banner').classList.remove('show');
+  document.getElementById('save-ticket-btn').disabled=false;
+  document.getElementById('delete-ticket-btn').style.display='none';
+  buildEquipGrid([],null);
+  openModal('ticket-modal');
+}
+
+window.editTicket = function(id){
+  const t=tickets.find(x=>x.id===id); if(!t) return;
+  editTicketId=id;
+  document.getElementById('ticket-modal-title').textContent='Edit / تعديل '+(t.ticketId||id.slice(0,6));
+  document.getElementById('t-site').value=t.site||'';
+  document.getElementById('t-operator').value=t.operator||'';
+  document.getElementById('t-datetime').value=t.datetime||nowDT();
+  document.getElementById('t-status').value=t.status||'open';
+  document.getElementById('t-notes').value=t.notes||'';
+  document.getElementById('delete-ticket-btn').style.display='inline-flex';
+  buildEquipGrid(t.equipment||[],id);
+  openModal('ticket-modal');
+}
+
+window.saveTicket = async function(){
+  const site=document.getElementById('t-site').value.trim();
+  const operator=document.getElementById('t-operator').value.trim();
+  if(!site||!operator){ showToast('Fill in site and operator / يرجى ملء الموقع والمشغل','error'); return; }
+  const selEquip=getSelEquip();
+  if(getConflicts(selEquip,editTicketId).length){ showToast('Remove conflicting equipment / أزل المعدات المتعارضة','error'); return; }
+  const obj={site,operator,datetime:document.getElementById('t-datetime').value,status:document.getElementById('t-status').value,equipment:selEquip,notes:document.getElementById('t-notes').value.trim(),updatedAt:serverTimestamp()};
+  try{
+    if(editTicketId){ await updateDoc(doc(db,'tickets',editTicketId),obj); showToast('Ticket updated / تم التحديث','success'); }
+    else{ await addDoc(collection(db,'tickets'),{...obj,ticketId:'TKT-'+pad(ticketCounter),createdAt:serverTimestamp()}); showToast('Ticket created / تم الإنشاء','success'); }
+    closeModal('ticket-modal');
+  }catch(e){ showToast('Error saving / خطأ في الحفظ','error'); console.error(e); }
+}
+
+window.openNewEquip = function(){
+  editEquipId=null;
+  document.getElementById('equip-modal-title').textContent='Add equipment / إضافة معدة';
+  ['e-name','e-category','e-location'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('e-status').value='available';
+  document.getElementById('delete-equip-btn').style.display='none';
+  openModal('equip-modal');
+}
+
+window.editEquip = function(id){
+  const e=equipment.find(x=>x.id===id); if(!e) return;
+  editEquipId=id;
+  document.getElementById('equip-modal-title').textContent='Edit / تعديل '+e.name;
+  document.getElementById('e-name').value=e.name||'';
+  document.getElementById('e-category').value=e.category||'';
+  document.getElementById('e-status').value=e.status||'available';
+  document.getElementById('e-location').value=e.location||'';
+  document.getElementById('delete-equip-btn').style.display='inline-flex';
+  openModal('equip-modal');
+}
+
+window.saveEquip = async function(){
+  const name=document.getElementById('e-name').value.trim();
+  if(!name){ showToast('Enter equipment name / يرجى إدخال الاسم','error'); return; }
+  const obj={name,category:document.getElementById('e-category').value.trim(),status:document.getElementById('e-status').value,location:document.getElementById('e-location').value.trim(),updatedAt:serverTimestamp()};
+  try{
+    if(editEquipId){ await updateDoc(doc(db,'equipment',editEquipId),obj); showToast('Equipment updated / تم التحديث','success'); }
+    else{ await addDoc(collection(db,'equipment'),{...obj,equipId:'EQ-'+pad(equipCounter),createdAt:serverTimestamp()}); showToast('Equipment added / تمت الإضافة','success'); }
+    closeModal('equip-modal');
+  }catch(e){ showToast('Error saving / خطأ في الحفظ','error'); console.error(e); }
+}
+
+// ── Delete ─────────────────────────────────────────────────
+function showConfirm(titleEn, titleAr, bodyEn, bodyAr, onConfirm){
+  document.getElementById('confirm-title').innerHTML=`${titleEn}<span class="ar">${titleAr}</span>`;
+  document.getElementById('confirm-body').innerHTML=`${bodyEn}<span class="ar">${bodyAr}</span>`;
+  const btn=document.getElementById('confirm-delete-btn');
+  const nb=btn.cloneNode(true); btn.parentNode.replaceChild(nb,btn);
+  nb.addEventListener('click', async()=>{
+    nb.disabled=true; nb.textContent='Deleting… / جارٍ الحذف';
+    try{ await onConfirm(); closeModal('confirm-modal'); }
+    catch(e){ showToast('Error deleting / خطأ في الحذف','error'); console.error(e); }
+    finally{ nb.disabled=false; nb.innerHTML='Delete<span class="ar">حذف</span>'; }
+  });
+  openModal('confirm-modal');
+}
+
+window.quickDeleteTicket = (id,label) => showConfirm(`Delete ticket ${label}?`,`حذف التذكرة ${label}؟`,'This will permanently remove this ticket.','سيتم حذف هذه التذكرة نهائياً.',async()=>{ await deleteDoc(doc(db,'tickets',id)); showToast('Ticket deleted / تم الحذف','success'); });
+window.confirmDeleteTicket = () => { const t=tickets.find(x=>x.id===editTicketId); if(!t)return; showConfirm(`Delete ${t.ticketId||''}?`,`حذف ${t.ticketId||''}؟`,'This will permanently remove this ticket.','سيتم حذف هذه التذكرة نهائياً.',async()=>{ await deleteDoc(doc(db,'tickets',editTicketId)); showToast('Ticket deleted / تم الحذف','success'); closeModal('ticket-modal'); }); };
+window.quickDeleteEquip = (id,label) => showConfirm(`Delete ${label}?`,`حذف ${label}؟`,'This will permanently remove this equipment.','سيتم حذف هذه المعدة نهائياً.',async()=>{ await deleteDoc(doc(db,'equipment',id)); showToast('Equipment deleted / تم الحذف','success'); });
+window.confirmDeleteEquip = () => { const e=equipment.find(x=>x.id===editEquipId); if(!e)return; showConfirm(`Delete ${e.name}?`,`حذف ${e.name}؟`,'This will permanently remove this equipment.','سيتم حذف هذه المعدة نهائياً.',async()=>{ await deleteDoc(doc(db,'equipment',editEquipId)); showToast('Equipment deleted / تم الحذف','success'); closeModal('equip-modal'); }); };
+window.deleteReport = (id,label) => showConfirm(`Delete report ${label}?`,`حذف التقرير ${label}؟`,'This will permanently remove this report.','سيتم حذف هذا التقرير نهائياً.',async()=>{ await deleteDoc(doc(db,'jobReports',id)); showToast('Report deleted / تم الحذف','success'); });
+
+// ── Job report form ────────────────────────────────────────
+const photos={feedback:[],faultreport:[],before:[],after:[]};
+let operatorCount=0;
+
+window.addOperatorField = function(val=''){
+  operatorCount++;
+  const list=document.getElementById('operators-list');
+  const row=document.createElement('div'); row.className='operator-row'; row.id='op-row-'+operatorCount;
+  row.innerHTML=`<input type="text" placeholder="Operator full name / اسم المشغل" value="${val}"><button type="button" class="btn-remove-op" onclick="removeOp(${operatorCount})">✕</button>`;
+  list.appendChild(row);
+}
+window.removeOp = id => { const r=document.getElementById('op-row-'+id); if(r&&document.querySelectorAll('.operator-row').length>1) r.remove(); else if(r) r.querySelector('input').value=''; };
+const getOperators = () => [...document.querySelectorAll('.operator-row input')].map(i=>i.value.trim()).filter(Boolean);
+
+document.getElementById('f-date').value=todayStr();
+addOperatorField();
+
+window.handleFiles = function(input, key){
+  [...input.files].forEach(file=>uploadPhoto(file,key));
+  input.value='';
+}
+
+function uploadPhoto(file,key){
+  const id='p'+Date.now()+Math.random().toString(36).slice(2,6);
+  const entry={id,file,url:null,uploading:true,progress:0,localUrl:URL.createObjectURL(file)};
+  photos[key].push(entry); renderPreview(key);
+  const task=uploadBytesResumable(ref(storage,`job-reports/${key}/${Date.now()}_${file.name}`),file);
+  task.on('state_changed',
+    snap=>{ entry.progress=Math.round(snap.bytesTransferred/snap.totalBytes*100); const b=document.querySelector(`.photo-thumb[data-id="${id}"] .upload-bar-fill`); if(b) b.style.width=entry.progress+'%'; },
+    ()=>{ entry.uploading=false; entry.failed=true; showToast('Upload failed / فشل الرفع','error'); renderPreview(key); },
+    async()=>{ entry.url=await getDownloadURL(task.snapshot.ref); entry.uploading=false; renderPreview(key); }
+  );
+}
+
+function renderPreview(key){
+  document.getElementById('preview-'+key).innerHTML=photos[key].map(p=>`
+    <div class="photo-thumb" data-id="${p.id}"><img src="${p.localUrl||p.url||''}" alt="">
+    ${p.uploading?`<div class="upload-bar"><div class="upload-bar-fill" style="width:${p.progress}%"></div></div>`:''}
+    <button type="button" class="remove-photo" onclick="removePhoto('${key}','${p.id}')">✕</button></div>`).join('');
+}
+window.removePhoto=(key,id)=>{ photos[key]=photos[key].filter(p=>p.id!==id); renderPreview(key); };
+
+window.submitReport = async function(){
+  const date=document.getElementById('f-date').value;
+  const jobNum=document.getElementById('f-jobnum').value.trim();
+  const ticketNum=document.getElementById('f-ticketnum').value.trim();
+  const location=document.getElementById('f-location').value.trim();
+  const operators=getOperators();
+  if(!date||!jobNum||!ticketNum||!location){ showToast('Fill in all required fields / يرجى ملء جميع الحقول','error'); return; }
+  if(!operators.length){ showToast('Add at least one operator / أضف مشغلاً واحداً','error'); return; }
+  if(Object.values(photos).some(a=>a.some(p=>p.uploading))){ showToast('Wait for photos to finish / انتظر اكتمال الصور','error'); return; }
+  if(Object.values(photos).some(a=>a.some(p=>p.failed))){ showToast('Some photos failed / فشل بعض الصور','error'); return; }
+  const btn=document.getElementById('submit-btn'); btn.disabled=true; btn.textContent='Submitting… / جارٍ الإرسال';
+  try{
+    await addDoc(collection(db,'jobReports'),{date,jobNum,ticketNum,location,operators,feedbackPhotos:photos.feedback.map(p=>p.url),faultReportPhotos:photos.faultreport.map(p=>p.url),beforePhotos:photos.before.map(p=>p.url),afterPhotos:photos.after.map(p=>p.url),createdAt:serverTimestamp()});
+    document.getElementById('form-view').style.display='none';
+    document.getElementById('success-screen').classList.add('show');
+  }catch(e){ showToast('Error submitting / خطأ في الإرسال','error'); console.error(e); }
+  finally{ btn.disabled=false; btn.innerHTML='Submit job report<span class="ar">إرسال تقرير العمل</span>'; }
+}
+
+window.resetForm = function(){
+  ['f-jobnum','f-ticketnum','f-location'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-date').value=todayStr();
+  document.getElementById('operators-list').innerHTML=''; operatorCount=0; addOperatorField();
+  Object.keys(photos).forEach(k=>{photos[k]=[]; renderPreview(k);});
+  document.getElementById('form-view').style.display='';
+  document.getElementById('success-screen').classList.remove('show');
+}
+
+// ── Toast ──────────────────────────────────────────────────
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.className=`toast show ${type}`;
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+window.addEventListener('offline',()=>setSync(false));
+window.addEventListener('online',()=>setSync(true));
+</script>
+</body>
+</html>

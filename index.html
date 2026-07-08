@@ -133,6 +133,20 @@ tr:hover td{background:#fafaf8}
 .btn-add-op{background:none;border:1.5px dashed #d5d5d3;border-radius:9px;padding:9px;font-size:12px;color:#666;cursor:pointer;font-weight:500;width:100%;text-align:center}
 .btn-add-op:hover{border-color:#1D9E75;color:#1D9E75;background:#F4FBF8}
 .btn-add-op .ar{display:block;font-size:10px;opacity:.7}
+
+/* ── Cost of each job ── */
+.cost-op-row{display:grid;grid-template-columns:1.6fr 1fr 1fr auto;gap:8px;align-items:center;background:#fafaf8;border:1px solid #e5e5e3;border-radius:9px;padding:8px}
+.cost-op-row select,.cost-op-row input{border:1px solid #d5d5d3;border-radius:8px;padding:8px 9px;font-size:13px;background:#fff;font-family:inherit;width:100%}
+.cost-op-row .op-cost-display{font-size:11px;color:#888;text-align:center;white-space:nowrap}
+.cost-subtotal{display:flex;justify-content:flex-end;font-size:13px;font-weight:600;color:#444;margin-top:8px}
+.cost-subtotal .ar{display:block;font-size:11px;font-weight:400;color:#999;text-align:right}
+.cost-total-box{background:#E1F5EE;border:1px solid #9FE1CB;border-radius:10px;padding:12px 14px;font-size:16px;font-weight:700;color:#0F6E56;text-align:right}
+.cost-total-box .ar{display:block;font-size:12px;font-weight:400;color:#1D9E75}
+.cost-figure{font-weight:600}
+
+/* ── Print report ── */
+.report-print-btn{background:#E6F1FB;color:#185FA5;border:none;border-radius:7px;width:28px;height:28px;font-size:13px;cursor:pointer;flex-shrink:0;margin-right:4px}
+.report-print-btn:hover{background:#D2E7F8}
 .photo-upload{border:1.5px dashed #d5d5d3;border-radius:12px;padding:14px;text-align:center;cursor:pointer;transition:all .15s;position:relative;margin-top:4px}
 .photo-upload:hover{border-color:#1D9E75;background:#F4FBF8}
 .photo-upload input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
@@ -257,7 +271,7 @@ tr:hover td{background:#fafaf8}
       <div class="form-section-label">Photos<span class="ar">الصور</span></div>
 
       <div class="field">
-        <label>Feedback photo<span class="ar">صورة الملاحظات</span></label>
+        <label>Job performance photo<span class="ar">صورة أداء العمل</span></label>
         <div class="photo-upload"><input type="file" accept="image/*" capture="environment" onchange="handleFiles(this,'feedback')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Tap to take or upload<span class="ar">اضغط للالتقاط أو الرفع</span></div></div>
         <div class="photo-preview" id="preview-feedback"></div>
       </div>
@@ -267,12 +281,17 @@ tr:hover td{background:#fafaf8}
         <div class="photo-preview" id="preview-faultreport"></div>
       </div>
       <div class="field">
-        <label>Equipment — before job<span class="ar">المعدات — قبل العمل</span></label>
+        <label>Delivery ticket photo<span class="ar">صورة تذكرة التسليم</span></label>
+        <div class="photo-upload"><input type="file" accept="image/*" capture="environment" onchange="handleFiles(this,'delivery')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Tap to take or upload<span class="ar">اضغط للالتقاط أو الرفع</span></div></div>
+        <div class="photo-preview" id="preview-delivery"></div>
+      </div>
+      <div class="field">
+        <label>Pre-job equipment<span class="ar">معدات ما قبل العمل</span></label>
         <div class="photo-upload"><input type="file" accept="image/*" capture="environment" multiple onchange="handleFiles(this,'before')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Multiple photos allowed<span class="ar">يمكن إضافة عدة صور</span></div></div>
         <div class="photo-preview" id="preview-before"></div>
       </div>
       <div class="field">
-        <label>Equipment — after job<span class="ar">المعدات — بعد العمل</span></label>
+        <label>After job equipment<span class="ar">معدات بعد العمل</span></label>
         <div class="photo-upload"><input type="file" accept="image/*" capture="environment" multiple onchange="handleFiles(this,'after')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Multiple photos allowed<span class="ar">يمكن إضافة عدة صور</span></div></div>
         <div class="photo-preview" id="preview-after"></div>
       </div>
@@ -320,37 +339,33 @@ tr:hover td{background:#fafaf8}
         <th>Operator<span class="ar">المشغل</span></th>
         <th>Date<span class="ar">التاريخ</span></th>
         <th>Status<span class="ar">الحالة</span></th>
+        <th>Cost<span class="ar">التكلفة</span></th>
         <th></th>
       </tr></thead>
       <tbody id="tickets-body"></tbody>
     </table></div>
   </div>
 
-  <!-- EQUIPMENT -->
-  <div class="page" id="page-equipment">
+  <!-- COST OF EACH JOB -->
+  <div class="page" id="page-costs">
     <div class="section-header">
-      <span class="section-title">Equipment registry<span class="ar">سجل المعدات</span></span>
-      <button class="btn-primary" onclick="openNewEquip()">+ Add<span class="ar">إضافة</span></button>
+      <span class="section-title">Cost of each job<span class="ar">تكلفة كل عمل</span></span>
+      <button class="btn-primary" onclick="openNewCost()">+ New<span class="ar">جديد</span></button>
     </div>
+    <p class="intro">Each cost sheet is linked to a service ticket. Personnel cost = bonus per day × days worked.<br>كل ورقة تكلفة مرتبطة بتذكرة خدمة. تكلفة الفرد = البدل اليومي × عدد الأيام.</p>
     <div class="search-row">
-      <input type="text" placeholder="Search name or ID / بحث" id="equip-search" oninput="renderEquipment()">
-      <select id="equip-filter" onchange="renderEquipment()">
-        <option value="">All / الكل</option>
-        <option value="available">Available / متاحة</option>
-        <option value="on-site">On site / في الموقع</option>
-        <option value="maintenance">Maintenance / صيانة</option>
-      </select>
+      <input type="text" placeholder="Search ticket, site or customer / بحث" id="cost-search" oninput="renderCosts()">
     </div>
     <div class="table-wrap"><table>
       <thead><tr>
-        <th>ID<span class="ar">المعرف</span></th>
-        <th>Name<span class="ar">الاسم</span></th>
-        <th>Category<span class="ar">الفئة</span></th>
-        <th>Location<span class="ar">الموقع</span></th>
-        <th>Status<span class="ar">الحالة</span></th>
+        <th>Ticket #<span class="ar">رقم التذكرة</span></th>
+        <th>Site / Customer<span class="ar">الموقع / العميل</span></th>
+        <th>Personnel<span class="ar">الأفراد</span></th>
+        <th>Transportation<span class="ar">النقل</span></th>
+        <th>Total<span class="ar">الإجمالي</span></th>
         <th></th>
       </tr></thead>
-      <tbody id="equip-body"></tbody>
+      <tbody id="costs-body"></tbody>
     </table></div>
   </div>
 
@@ -362,7 +377,7 @@ tr:hover td{background:#fafaf8}
   <button class="bnav-btn" onclick="showPage('report')" id="nav-report"><span class="icon">✎</span>Report<span class="ar">تقرير</span></button>
   <button class="bnav-btn" onclick="showPage('reports')" id="nav-reports"><span class="icon">☰</span>Reports<span class="ar">التقارير</span></button>
   <button class="bnav-btn" onclick="showPage('tickets')" id="nav-tickets"><span class="icon">🎫</span>Tickets<span class="ar">التذاكر</span></button>
-  <button class="bnav-btn" onclick="showPage('equipment')" id="nav-equipment"><span class="icon">⚙</span>Equipment<span class="ar">المعدات</span></button>
+  <button class="bnav-btn" onclick="showPage('costs')" id="nav-costs"><span class="icon">💰</span>Cost<span class="ar">التكلفة</span></button>
 </nav>
 
 <!-- TICKET MODAL -->
@@ -427,41 +442,61 @@ tr:hover td{background:#fafaf8}
   </div>
 </div>
 
-<!-- EQUIPMENT MODAL -->
-<div class="modal-bg" id="equip-modal">
-  <div class="modal">
+<!-- COST MODAL -->
+<div class="modal-bg" id="cost-modal">
+  <div class="modal" style="max-width:680px">
     <div class="modal-handle"></div>
     <div class="modal-header">
-      <div class="modal-title" id="equip-modal-title">Add equipment<span class="ar">إضافة معدة</span></div>
-      <button class="modal-close" onclick="closeModal('equip-modal')">✕</button>
+      <div class="modal-title" id="cost-modal-title">Job cost sheet<span class="ar">ورقة تكلفة العمل</span></div>
+      <button class="modal-close" onclick="closeModal('cost-modal')">✕</button>
     </div>
     <div class="form-grid">
-      <div class="field">
-        <label>Equipment name<span class="ar">اسم المعدة</span></label>
-        <input type="text" id="e-name" placeholder="e.g. Hydraulic Pump #3">
-      </div>
-      <div class="field">
-        <label>Category<span class="ar">الفئة</span></label>
-        <input type="text" id="e-category" placeholder="e.g. Pump, Generator">
-      </div>
-      <div class="field">
-        <label>Status<span class="ar">الحالة</span></label>
-        <select id="e-status">
-          <option value="available">Available / متاحة</option>
-          <option value="on-site">On site / في الموقع</option>
-          <option value="maintenance">Maintenance / صيانة</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Location<span class="ar">الموقع</span></label>
-        <input type="text" id="e-location" placeholder="e.g. Site B – East">
+      <div class="field" style="grid-column:1/-1">
+        <label>Linked service ticket <span class="req">*</span><span class="ar">تذكرة الخدمة المرتبطة</span></label>
+        <select id="c-ticket"></select>
       </div>
     </div>
+
+    <div class="form-divider"></div>
+    <div class="form-section-label">1. Personnel<span class="ar">الأفراد</span></div>
+    <div class="operators-list" id="cost-op-list"></div>
+    <button type="button" class="btn-add-op" onclick="addCostOpRow()">+ Add operator<span class="ar">إضافة مشغل</span></button>
+    <div class="cost-subtotal" id="personnel-subtotal">Personnel subtotal: 0<span class="ar">إجمالي الأفراد: 0</span></div>
+
+    <div class="form-divider"></div>
+    <div class="form-section-label">2. Transportation<span class="ar">النقل</span></div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Diesel / Gas<span class="ar">ديزل / بنزين</span></label>
+        <input type="number" min="0" step="0.01" id="c-diesel" placeholder="0" oninput="recalcCostTotals()">
+      </div>
+      <div class="field">
+        <label>Route fee<span class="ar">رسوم الطريق</span></label>
+        <input type="number" min="0" step="0.01" id="c-route" placeholder="0" oninput="recalcCostTotals()">
+      </div>
+      <div class="field">
+        <label>Military<span class="ar">جيش</span></label>
+        <input type="number" min="0" step="0.01" id="c-military" placeholder="0" oninput="recalcCostTotals()">
+      </div>
+      <div class="field">
+        <label>Other expenses<span class="ar">مصاريف أخرى</span></label>
+        <input type="number" min="0" step="0.01" id="c-other" placeholder="0" oninput="recalcCostTotals()">
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>Description<span class="ar">الوصف</span></label>
+        <textarea id="c-description" placeholder="Notes about transportation costs…"></textarea>
+      </div>
+    </div>
+    <div class="cost-subtotal" id="transport-subtotal">Transportation subtotal: 0<span class="ar">إجمالي النقل: 0</span></div>
+
+    <div class="form-divider"></div>
+    <div class="cost-total-box" id="cost-grand-total">Total job cost: 0<span class="ar">إجمالي تكلفة العمل: 0</span></div>
+
     <div class="modal-footer">
-      <button class="btn-secondary" id="delete-equip-btn" style="display:none;color:#A32D2D;border-color:#F0D5D5" onclick="confirmDeleteEquip()">Delete<span class="ar">حذف</span></button>
+      <button class="btn-secondary" id="delete-cost-btn" style="display:none;color:#A32D2D;border-color:#F0D5D5" onclick="confirmDeleteCost()">Delete<span class="ar">حذف</span></button>
       <div style="flex:1"></div>
-      <button class="btn-secondary" onclick="closeModal('equip-modal')">Cancel<span class="ar">إلغاء</span></button>
-      <button class="btn-primary" onclick="saveEquip()">Save<span class="ar">حفظ</span></button>
+      <button class="btn-secondary" onclick="closeModal('cost-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-primary" onclick="saveCost()">Save<span class="ar">حفظ</span></button>
     </div>
   </div>
 </div>
@@ -503,9 +538,46 @@ const db  = getFirestore(app);
 const storage = getStorage(app);
 
 // ── State ──────────────────────────────────────────────────
-let tickets = [], equipment = [], reports = [];
-let editTicketId = null, editEquipId = null;
-let ticketCounter = 1, equipCounter = 1;
+let tickets = [], equipment = [], reports = [], jobCosts = [];
+let editTicketId = null, editCostId = null;
+let ticketCounter = 1;
+
+// ── Operator directory (name + rig bonus per day) ───────────
+const OPERATOR_DB = [
+  {name:'رامي محمد صلاح', bonus:675},
+  {name:'محمود محمد سيد', bonus:500},
+  {name:'محمد حسين سعيد', bonus:500},
+  {name:'هانئ محمد سامى', bonus:675},
+  {name:'احمد سيد هاشم', bonus:675},
+  {name:'تامر عبد اللطيف الشاذلى', bonus:675},
+  {name:'رفعت السيد عبد الحافظ', bonus:700},
+  {name:'مصطفى محمد حفنى', bonus:0},
+  {name:'ياسر سمير عبد الحميد', bonus:625},
+  {name:'خالد محمد غريب', bonus:650},
+  {name:'ابراهيم يوسف إبراهيم', bonus:675},
+  {name:'صلاح دمرانى على', bonus:550},
+  {name:'محمد يوسف إبراهيم', bonus:550},
+  {name:'مصطفى محمد هاشم', bonus:650},
+  {name:'على عاشور عبد الكريم', bonus:650},
+  {name:'فاروق احمد عكاشة', bonus:675},
+  {name:'عادل فارس جرجس', bonus:750},
+  {name:'كمال الالفي محمد', bonus:675},
+  {name:'هاشم محمد هاشم', bonus:550},
+  {name:'رشيد فياض', bonus:750},
+  {name:'اندرو عجيب', bonus:550},
+  {name:'وليد إبراهيم عرابى', bonus:675},
+  {name:'احمد ثروت احمد', bonus:750},
+  {name:'خالد محمد السباعى', bonus:550},
+  {name:'مجدى عبد الغنى', bonus:675},
+  {name:'محمد عبد العاطى', bonus:550},
+  {name:'سامح احمد سيد سرور', bonus:415},
+  {name:'وليد بيومى', bonus:550},
+  {name:'محمد عبد النبى', bonus:550},
+  {name:'رمضان ثروت', bonus:500},
+  {name:'أيمن السيد عبد الفتاح', bonus:550},
+  {name:'محمد نصر هاشم', bonus:450},
+  {name:'محمد عبد الرازق', bonus:400}
+];
 
 // ── Sync ───────────────────────────────────────────────────
 function setSync(ok) {
@@ -523,14 +595,19 @@ onSnapshot(query(collection(db,'tickets'), orderBy('createdAt','desc')), snap =>
 onSnapshot(query(collection(db,'equipment'), orderBy('createdAt','desc')), snap => {
   equipment = snap.docs.map(d => ({id:d.id,...d.data()}));
   setSync(true);
-  equipCounter = equipment.reduce((m,e)=>{ const n=parseInt((e.equipId||'EQ-000').split('-')[1]||0); return n>m?n:m; },0)+1;
-  renderEquipment(); renderDashboard();
+  renderDashboard();
 }, ()=>setSync(false));
 
 onSnapshot(query(collection(db,'jobReports'), orderBy('createdAt','desc')), snap => {
   reports = snap.docs.map(d => ({id:d.id,...d.data()}));
   setSync(true);
   renderReports();
+}, ()=>setSync(false));
+
+onSnapshot(query(collection(db,'jobCosts'), orderBy('createdAt','desc')), snap => {
+  jobCosts = snap.docs.map(d => ({id:d.id,...d.data()}));
+  setSync(true);
+  renderCosts(); renderTickets();
 }, ()=>setSync(false));
 
 // ── Helpers ────────────────────────────────────────────────
@@ -555,7 +632,7 @@ window.showPage = function(p) {
   document.getElementById('nav-'+p).classList.add('active');
   if(p==='dashboard') renderDashboard();
   if(p==='tickets') renderTickets();
-  if(p==='equipment') renderEquipment();
+  if(p==='costs') renderCosts();
   if(p==='reports') renderReports();
 }
 
@@ -593,42 +670,56 @@ function renderTickets(){
     <td>${t.site||'—'}</td><td>${t.operator||'—'}</td>
     <td style="font-size:11px;color:#888">${fmtDate(t.datetime)}</td>
     <td>${badgeHTML(t.status)}</td>
+    <td class="cost-figure">${(()=>{const c=findCostForTicket(t.id); return c?fmtMoney(c.total):'<span style="color:#bbb;font-weight:400">—</span>';})()}</td>
     <td style="white-space:nowrap">
       <button class="action-btn" onclick="editTicket('${t.id}')">✎</button>
+      <button class="action-btn" title="Cost sheet / ورقة تكلفة" onclick="openCostForTicket('${t.id}')">💰</button>
       <button class="action-btn del" onclick="quickDeleteTicket('${t.id}','${t.ticketId||''}')">✕</button>
     </td></tr>`).join('') ||
-    `<tr><td colspan="8"><div class="empty-state">No tickets / لا توجد تذاكر</div></td></tr>`;
+    `<tr><td colspan="9"><div class="empty-state">No tickets / لا توجد تذاكر</div></td></tr>`;
 }
 
-// ── Equipment ──────────────────────────────────────────────
-function renderEquipment(){
-  const q=(document.getElementById('equip-search').value||'').toLowerCase();
-  const f=document.getElementById('equip-filter').value;
-  const list=equipment.filter(e=>(!q||((e.name||'')+(e.equipId||'')).toLowerCase().includes(q))&&(!f||e.status===f));
-  document.getElementById('equip-body').innerHTML = list.map(e=>`<tr>
-    <td><span class="equip-id">${e.equipId||''}</span></td>
-    <td style="font-weight:500">${e.name}</td>
-    <td style="font-size:12px;color:#888">${e.category||'—'}</td>
-    <td style="font-size:12px;color:#888">${e.location||'—'}</td>
-    <td>${badgeHTML(e.status)}</td>
+// ── Cost of each job ───────────────────────────────────────
+const findCostForTicket = ticketId => jobCosts.find(c=>c.ticketId===ticketId);
+
+function renderCosts(){
+  const q=(document.getElementById('cost-search').value||'').toLowerCase();
+  const list=jobCosts.filter(c=>{
+    const t=tickets.find(x=>x.id===c.ticketId);
+    const hay=((t?.ticketId||'')+(t?.site||'')+(t?.customer||'')).toLowerCase();
+    return !q||hay.includes(q);
+  });
+  document.getElementById('costs-body').innerHTML = list.map(c=>{
+    const t=tickets.find(x=>x.id===c.ticketId);
+    return `<tr>
+    <td><span class="ticket-id">${t?.ticketId||'—'}</span></td>
+    <td style="font-size:12px;color:#888">${t?(t.site||'—')+(t.customer?' · '+t.customer:''):'—'}</td>
+    <td class="cost-figure">${fmtMoney(c.personnelTotal)}</td>
+    <td class="cost-figure">${fmtMoney(c.transportTotal)}</td>
+    <td class="cost-figure" style="color:#0F6E56">${fmtMoney(c.total)}</td>
     <td style="white-space:nowrap">
-      <button class="action-btn" onclick="editEquip('${e.id}')">✎</button>
-      <button class="action-btn del" onclick="quickDeleteEquip('${e.id}','${(e.name||'').replace(/'/g,"\\'")}')">✕</button>
-    </td></tr>`).join('') ||
-    `<tr><td colspan="6"><div class="empty-state">No equipment / لا توجد معدات</div></td></tr>`;
+      <button class="action-btn" onclick="editCost('${c.id}')">✎</button>
+      <button class="action-btn del" onclick="quickDeleteCost('${c.id}')">✕</button>
+    </td></tr>`;
+  }).join('') ||
+    `<tr><td colspan="6"><div class="empty-state">No cost sheets yet / لا توجد أوراق تكلفة</div></td></tr>`;
 }
+const fmtMoney = n => (Number(n)||0).toLocaleString('en-US',{maximumFractionDigits:2});
 
 // ── Reports list ───────────────────────────────────────────
 function renderReports(){
   const wrap = document.getElementById('reports-list');
   if(!reports.length){ wrap.innerHTML=`<div class="empty-state">No reports yet / لا توجد تقارير</div>`; return; }
   wrap.innerHTML = reports.map(r=>{
-    const pc=(r.feedbackPhotos?.length||0)+(r.faultReportPhotos?.length||0)+(r.beforePhotos?.length||0)+(r.afterPhotos?.length||0);
+    const pc=(r.feedbackPhotos?.length||0)+(r.faultReportPhotos?.length||0)+(r.deliveryTicketPhotos?.length||0)+(r.beforePhotos?.length||0)+(r.afterPhotos?.length||0);
     return `<div class="report-card">
       <div class="report-card-top">
         <div><div class="report-card-title">${r.customer||'—'} · <span class="ticket-id">${r.ticketNum||'—'}</span></div>
         <div class="report-card-sub">${r.location||'—'}${r.rig?' · Rig '+r.rig:''}</div></div>
-        <button class="btn-icon-del" onclick="deleteReport('${r.id}','${(r.customer||'').replace(/'/g,"\\'")}')">✕</button>
+        <div style="display:flex;flex-shrink:0">
+          <button class="report-print-btn" title="Print / Export PDF" onclick="printReport('${r.id}')">🖶</button>
+          <button class="btn-icon-del" onclick="deleteReport('${r.id}','${(r.customer||'').replace(/'/g,"\\'")}')">✕</button>
+        </div>
       </div>
       <div class="report-card-meta">${r.date||'—'} · ${(r.operators||[]).join(', ')||'No operators / لا يوجد مشغلون'} · ${pc} photo${pc===1?'':'s'}</div>
     </div>`;
@@ -728,35 +819,142 @@ window.saveTicket = async function(){
   }catch(e){ showToast('Error saving / خطأ في الحفظ','error'); console.error(e); }
 }
 
-window.openNewEquip = function(){
-  editEquipId=null;
-  document.getElementById('equip-modal-title').textContent='Add equipment / إضافة معدة';
-  ['e-name','e-category','e-location'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('e-status').value='available';
-  document.getElementById('delete-equip-btn').style.display='none';
-  openModal('equip-modal');
+// ── Cost sheet form helpers ─────────────────────────────────
+let costOpCount=0;
+
+function operatorSelectOptions(selectedName){
+  let opts = '<option value="">— Select operator / اختر مشغل —</option>';
+  opts += OPERATOR_DB.map(o=>`<option value="${o.name}" data-bonus="${o.bonus}"${o.name===selectedName?' selected':''}>${o.name} (${o.bonus}/day)</option>`).join('');
+  opts += `<option value="__custom__"${selectedName&&!OPERATOR_DB.some(o=>o.name===selectedName)?' selected':''}>Other / آخر…</option>`;
+  return opts;
 }
 
-window.editEquip = function(id){
-  const e=equipment.find(x=>x.id===id); if(!e) return;
-  editEquipId=id;
-  document.getElementById('equip-modal-title').textContent='Edit / تعديل '+e.name;
-  document.getElementById('e-name').value=e.name||'';
-  document.getElementById('e-category').value=e.category||'';
-  document.getElementById('e-status').value=e.status||'available';
-  document.getElementById('e-location').value=e.location||'';
-  document.getElementById('delete-equip-btn').style.display='inline-flex';
-  openModal('equip-modal');
+window.addCostOpRow = function(op={}){
+  costOpCount++;
+  const list=document.getElementById('cost-op-list');
+  const row=document.createElement('div'); row.className='cost-op-row'; row.id='cop-row-'+costOpCount;
+  const known = op.name && OPERATOR_DB.some(o=>o.name===op.name);
+  row.innerHTML = `
+    <select class="cop-name" onchange="onCostOpSelect(${costOpCount})">${operatorSelectOptions(op.name)}</select>
+    <input type="text" class="cop-name-custom" placeholder="Name / الاسم" style="display:${op.name&&!known?'':'none'}" value="${op.name&&!known?op.name:''}" oninput="recalcCostTotals()">
+    <input type="number" class="cop-bonus" min="0" step="0.01" placeholder="Bonus/day" value="${op.bonus??''}" oninput="recalcCostTotals()">
+    <input type="number" class="cop-days" min="0" step="0.5" placeholder="Days" value="${op.days??''}" oninput="recalcCostTotals()">
+    <div class="op-cost-display" id="cop-cost-${costOpCount}">0</div>
+    <button type="button" class="btn-remove-op" onclick="removeCostOp(${costOpCount})">✕</button>`;
+  list.appendChild(row);
+  recalcCostTotals();
+}
+window.removeCostOp = id => { const r=document.getElementById('cop-row-'+id); if(r) r.remove(); recalcCostTotals(); };
+
+window.onCostOpSelect = function(rowNum){
+  const row=document.getElementById('cop-row-'+rowNum);
+  const sel=row.querySelector('.cop-name');
+  const customInput=row.querySelector('.cop-name-custom');
+  const bonusInput=row.querySelector('.cop-bonus');
+  if(sel.value==='__custom__'){ customInput.style.display=''; customInput.value=''; customInput.focus(); }
+  else{
+    customInput.style.display='none'; customInput.value='';
+    const opt=sel.selectedOptions[0];
+    bonusInput.value = opt && opt.dataset.bonus!==undefined ? opt.dataset.bonus : bonusInput.value;
+  }
+  recalcCostTotals();
 }
 
-window.saveEquip = async function(){
-  const name=document.getElementById('e-name').value.trim();
-  if(!name){ showToast('Enter equipment name / يرجى إدخال الاسم','error'); return; }
-  const obj={name,category:document.getElementById('e-category').value.trim(),status:document.getElementById('e-status').value,location:document.getElementById('e-location').value.trim(),updatedAt:serverTimestamp()};
+function getCostOperators(){
+  return [...document.querySelectorAll('.cost-op-row')].map(row=>{
+    const sel=row.querySelector('.cop-name');
+    const name = sel.value==='__custom__' ? row.querySelector('.cop-name-custom').value.trim() : sel.value;
+    const bonus = parseFloat(row.querySelector('.cop-bonus').value)||0;
+    const days = parseFloat(row.querySelector('.cop-days').value)||0;
+    const cost = bonus*days;
+    const disp=row.querySelector('.op-cost-display'); if(disp) disp.textContent=fmtMoney(cost);
+    return {name,bonus,days,cost};
+  }).filter(o=>o.name || o.days || o.bonus);
+}
+
+window.recalcCostTotals = function(){
+  const ops=getCostOperators();
+  const personnelTotal = ops.reduce((s,o)=>s+o.cost,0);
+  const diesel=parseFloat(document.getElementById('c-diesel').value)||0;
+  const route=parseFloat(document.getElementById('c-route').value)||0;
+  const military=parseFloat(document.getElementById('c-military').value)||0;
+  const other=parseFloat(document.getElementById('c-other').value)||0;
+  const transportTotal = diesel+route+military+other;
+  document.getElementById('personnel-subtotal').innerHTML = `Personnel subtotal: ${fmtMoney(personnelTotal)}<span class="ar">إجمالي الأفراد: ${fmtMoney(personnelTotal)}</span>`;
+  document.getElementById('transport-subtotal').innerHTML = `Transportation subtotal: ${fmtMoney(transportTotal)}<span class="ar">إجمالي النقل: ${fmtMoney(transportTotal)}</span>`;
+  document.getElementById('cost-grand-total').innerHTML = `Total job cost: ${fmtMoney(personnelTotal+transportTotal)}<span class="ar">إجمالي تكلفة العمل: ${fmtMoney(personnelTotal+transportTotal)}</span>`;
+  return {personnelTotal, transportTotal, total:personnelTotal+transportTotal};
+}
+
+function populateCostTicketSelect(selectedId){
+  const sel=document.getElementById('c-ticket');
+  sel.innerHTML = '<option value="">— Select ticket / اختر تذكرة —</option>' +
+    tickets.map(t=>`<option value="${t.id}"${t.id===selectedId?' selected':''}>${t.ticketId||t.id.slice(0,6)} — ${t.site||''}${t.customer?' · '+t.customer:''}</option>`).join('');
+}
+
+window.openNewCost = function(presetTicketId=null){
+  editCostId=null;
+  document.getElementById('cost-modal-title').textContent='New job cost sheet / ورقة تكلفة جديدة';
+  populateCostTicketSelect(presetTicketId);
+  document.getElementById('cost-op-list').innerHTML=''; costOpCount=0; addCostOpRow();
+  ['c-diesel','c-route','c-military','c-other','c-description'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('delete-cost-btn').style.display='none';
+  recalcCostTotals();
+  openModal('cost-modal');
+}
+
+window.openCostForTicket = function(ticketId){
+  const existing = findCostForTicket(ticketId);
+  if(existing) window.editCost(existing.id);
+  else window.openNewCost(ticketId);
+  showPage('costs');
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-costs').classList.add('active');
+  document.querySelectorAll('.bnav-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('nav-costs').classList.add('active');
+}
+
+window.editCost = function(id){
+  const c=jobCosts.find(x=>x.id===id); if(!c) return;
+  editCostId=id;
+  document.getElementById('cost-modal-title').textContent='Edit cost sheet / تعديل ورقة التكلفة';
+  populateCostTicketSelect(c.ticketId);
+  document.getElementById('cost-op-list').innerHTML=''; costOpCount=0;
+  (c.operators&&c.operators.length?c.operators:[{}]).forEach(op=>addCostOpRow(op));
+  document.getElementById('c-diesel').value=c.transport?.diesel??'';
+  document.getElementById('c-route').value=c.transport?.routeFee??'';
+  document.getElementById('c-military').value=c.transport?.military??'';
+  document.getElementById('c-other').value=c.transport?.other??'';
+  document.getElementById('c-description').value=c.transport?.description??'';
+  document.getElementById('delete-cost-btn').style.display='inline-flex';
+  recalcCostTotals();
+  openModal('cost-modal');
+}
+
+window.saveCost = async function(){
+  const ticketId=document.getElementById('c-ticket').value;
+  if(!ticketId){ showToast('Select the linked ticket / اختر التذكرة','error'); return; }
+  const operators=getCostOperators();
+  const totals=recalcCostTotals();
+  const obj={
+    ticketId,
+    operators,
+    personnelTotal:totals.personnelTotal,
+    transport:{
+      diesel:parseFloat(document.getElementById('c-diesel').value)||0,
+      routeFee:parseFloat(document.getElementById('c-route').value)||0,
+      military:parseFloat(document.getElementById('c-military').value)||0,
+      other:parseFloat(document.getElementById('c-other').value)||0,
+      description:document.getElementById('c-description').value.trim()
+    },
+    transportTotal:totals.transportTotal,
+    total:totals.total,
+    updatedAt:serverTimestamp()
+  };
   try{
-    if(editEquipId){ await updateDoc(doc(db,'equipment',editEquipId),obj); showToast('Equipment updated / تم التحديث','success'); }
-    else{ await addDoc(collection(db,'equipment'),{...obj,equipId:'EQ-'+pad(equipCounter),createdAt:serverTimestamp()}); showToast('Equipment added / تمت الإضافة','success'); }
-    closeModal('equip-modal');
+    if(editCostId){ await updateDoc(doc(db,'jobCosts',editCostId),obj); showToast('Cost sheet updated / تم التحديث','success'); }
+    else{ await addDoc(collection(db,'jobCosts'),{...obj,createdAt:serverTimestamp()}); showToast('Cost sheet saved / تم الحفظ','success'); }
+    closeModal('cost-modal');
   }catch(e){ showToast('Error saving / خطأ في الحفظ','error'); console.error(e); }
 }
 
@@ -777,12 +975,12 @@ function showConfirm(titleEn, titleAr, bodyEn, bodyAr, onConfirm){
 
 window.quickDeleteTicket = (id,label) => showConfirm(`Delete ticket ${label}?`,`حذف التذكرة ${label}؟`,'This will permanently remove this ticket.','سيتم حذف هذه التذكرة نهائياً.',async()=>{ await deleteDoc(doc(db,'tickets',id)); showToast('Ticket deleted / تم الحذف','success'); });
 window.confirmDeleteTicket = () => { const t=tickets.find(x=>x.id===editTicketId); if(!t)return; showConfirm(`Delete ${t.ticketId||''}?`,`حذف ${t.ticketId||''}؟`,'This will permanently remove this ticket.','سيتم حذف هذه التذكرة نهائياً.',async()=>{ await deleteDoc(doc(db,'tickets',editTicketId)); showToast('Ticket deleted / تم الحذف','success'); closeModal('ticket-modal'); }); };
-window.quickDeleteEquip = (id,label) => showConfirm(`Delete ${label}?`,`حذف ${label}؟`,'This will permanently remove this equipment.','سيتم حذف هذه المعدة نهائياً.',async()=>{ await deleteDoc(doc(db,'equipment',id)); showToast('Equipment deleted / تم الحذف','success'); });
-window.confirmDeleteEquip = () => { const e=equipment.find(x=>x.id===editEquipId); if(!e)return; showConfirm(`Delete ${e.name}?`,`حذف ${e.name}؟`,'This will permanently remove this equipment.','سيتم حذف هذه المعدة نهائياً.',async()=>{ await deleteDoc(doc(db,'equipment',editEquipId)); showToast('Equipment deleted / تم الحذف','success'); closeModal('equip-modal'); }); };
+window.quickDeleteCost = (id) => showConfirm(`Delete this cost sheet?`,`حذف ورقة التكلفة هذه؟`,'This will permanently remove this cost sheet.','سيتم حذف ورقة التكلفة هذه نهائياً.',async()=>{ await deleteDoc(doc(db,'jobCosts',id)); showToast('Cost sheet deleted / تم الحذف','success'); });
+window.confirmDeleteCost = () => { if(!editCostId)return; showConfirm(`Delete this cost sheet?`,`حذف ورقة التكلفة هذه؟`,'This will permanently remove this cost sheet.','سيتم حذف ورقة التكلفة هذه نهائياً.',async()=>{ await deleteDoc(doc(db,'jobCosts',editCostId)); showToast('Cost sheet deleted / تم الحذف','success'); closeModal('cost-modal'); }); };
 window.deleteReport = (id,label) => showConfirm(`Delete report ${label}?`,`حذف التقرير ${label}؟`,'This will permanently remove this report.','سيتم حذف هذا التقرير نهائياً.',async()=>{ await deleteDoc(doc(db,'jobReports',id)); showToast('Report deleted / تم الحذف','success'); });
 
 // ── Job report form ────────────────────────────────────────
-const photos={feedback:[],faultreport:[],before:[],after:[]};
+const photos={feedback:[],faultreport:[],delivery:[],before:[],after:[]};
 let operatorCount=0;
 
 window.addOperatorField = function(val=''){
@@ -856,7 +1054,7 @@ window.submitReport = async function(){
   if(Object.values(photos).some(a=>a.some(p=>p.failed))){ showToast('Some photos failed / فشل بعض الصور','error'); return; }
   const btn=document.getElementById('submit-btn'); btn.disabled=true; btn.textContent='Submitting… / جارٍ الإرسال';
   try{
-    const reportRef=await addDoc(collection(db,'jobReports'),{date,customer,ticketNum,rig,location,operators,feedbackPhotos:photos.feedback.map(p=>p.url),faultReportPhotos:photos.faultreport.map(p=>p.url),beforePhotos:photos.before.map(p=>p.url),afterPhotos:photos.after.map(p=>p.url),createdAt:serverTimestamp()});
+    const reportRef=await addDoc(collection(db,'jobReports'),{date,customer,ticketNum,rig,location,operators,feedbackPhotos:photos.feedback.map(p=>p.url),faultReportPhotos:photos.faultreport.map(p=>p.url),deliveryTicketPhotos:photos.delivery.map(p=>p.url),beforePhotos:photos.before.map(p=>p.url),afterPhotos:photos.after.map(p=>p.url),createdAt:serverTimestamp()});
     await upsertTicketFromReport({ticketNum,location,operators,customer,rig,reportId:reportRef.id});
     document.getElementById('form-view').style.display='none';
     document.getElementById('success-screen').classList.add('show');
@@ -871,6 +1069,65 @@ window.resetForm = function(){
   Object.keys(photos).forEach(k=>{photos[k]=[]; renderPreview(k);});
   document.getElementById('form-view').style.display='';
   document.getElementById('success-screen').classList.remove('show');
+}
+
+// ── Print / Export report as PDF ────────────────────────────
+window.printReport = function(id){
+  const r=reports.find(x=>x.id===id); if(!r) return;
+  const ticket = tickets.find(t=>(t.ticketId||'')===(r.ticketNum||'') || (t.lastReportId===r.id));
+  const cost = ticket ? findCostForTicket(ticket.id) : null;
+
+  const photoBlock = (title,titleAr,arr) => (arr&&arr.length) ? `
+    <div class="p-section"><div class="p-label">${title} <span class="p-ar">${titleAr}</span></div>
+    <div class="p-photos">${arr.map(u=>`<img src="${u}">`).join('')}</div></div>` : '';
+
+  const costBlock = cost ? `
+    <div class="p-section"><div class="p-label">Cost of this job <span class="p-ar">تكلفة هذا العمل</span></div>
+      <table class="p-table">
+        <tr><th>Item</th><th>Amount</th></tr>
+        ${(cost.operators||[]).map(o=>`<tr><td>${o.name||'Operator'} — ${o.days||0} day(s) × ${fmtMoney(o.bonus)}</td><td>${fmtMoney(o.cost)}</td></tr>`).join('')}
+        <tr><td>Diesel / Gas</td><td>${fmtMoney(cost.transport?.diesel)}</td></tr>
+        <tr><td>Route fee</td><td>${fmtMoney(cost.transport?.routeFee)}</td></tr>
+        <tr><td>Military</td><td>${fmtMoney(cost.transport?.military)}</td></tr>
+        <tr><td>Other expenses</td><td>${fmtMoney(cost.transport?.other)}</td></tr>
+        <tr class="p-total"><td>Total job cost</td><td>${fmtMoney(cost.total)}</td></tr>
+      </table>
+    </div>` : '';
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Job Report ${r.ticketNum||''}</title>
+  <style>
+    body{font-family:-apple-system,Arial,sans-serif;color:#1a1a1a;padding:30px;max-width:800px;margin:0 auto}
+    h1{font-size:20px;margin-bottom:2px} .sub{color:#888;font-size:12px;margin-bottom:20px}
+    .p-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin-bottom:18px;font-size:13px}
+    .p-grid div b{color:#555}
+    .p-section{margin-bottom:18px} .p-label{font-weight:700;font-size:13px;margin-bottom:8px;border-bottom:1px solid #ddd;padding-bottom:4px}
+    .p-ar{font-weight:400;color:#888;font-size:11px}
+    .p-photos{display:flex;flex-wrap:wrap;gap:8px} .p-photos img{width:150px;height:150px;object-fit:cover;border-radius:6px;border:1px solid #ddd}
+    .p-table{width:100%;border-collapse:collapse;font-size:13px} .p-table th,.p-table td{border:1px solid #ddd;padding:6px 8px;text-align:left}
+    .p-table th{background:#f5f5f3} .p-total td{font-weight:700;background:#E1F5EE}
+    @media print{ body{padding:10px} }
+  </style></head><body>
+    <h1>Job Report — ${r.ticketNum||''}</h1>
+    <div class="sub">TRS Operations · نظام العمليات الميدانية</div>
+    <div class="p-grid">
+      <div><b>Date:</b> ${r.date||'—'}</div>
+      <div><b>Customer:</b> ${r.customer||'—'}</div>
+      <div><b>Rig:</b> ${r.rig||'—'}</div>
+      <div><b>Location:</b> ${r.location||'—'}</div>
+      <div style="grid-column:1/-1"><b>Operators:</b> ${(r.operators||[]).join(', ')||'—'}</div>
+    </div>
+    ${photoBlock('Job performance photo','صورة أداء العمل',r.feedbackPhotos)}
+    ${photoBlock('Fault report photo','صورة تقرير الأعطال',r.faultReportPhotos)}
+    ${photoBlock('Delivery ticket photo','صورة تذكرة التسليم',r.deliveryTicketPhotos)}
+    ${photoBlock('Pre-job equipment','معدات ما قبل العمل',r.beforePhotos)}
+    ${photoBlock('After job equipment','معدات بعد العمل',r.afterPhotos)}
+    ${costBlock}
+    <script>window.onload=()=>setTimeout(()=>window.print(),400);<\/script>
+  </body></html>`;
+
+  const w=window.open('','_blank');
+  if(!w){ showToast('Please allow pop-ups to print / يرجى السماح بالنوافذ المنبثقة','error'); return; }
+  w.document.open(); w.document.write(html); w.document.close();
 }
 
 // ── Toast ──────────────────────────────────────────────────

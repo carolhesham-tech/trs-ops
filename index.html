@@ -231,12 +231,16 @@ tr:hover td{background:#fafaf8}
           <input type="date" id="f-date">
         </div>
         <div class="field">
-          <label>Job control number <span class="req">*</span><span class="ar">رقم ضبط العمل</span></label>
-          <input type="text" id="f-jobnum" placeholder="e.g. JC-2026-0451">
+          <label>Customer <span class="req">*</span><span class="ar">العميل</span></label>
+          <input type="text" id="f-customer" placeholder="e.g. Saudi Aramco">
         </div>
         <div class="field">
           <label>Service ticket number <span class="req">*</span><span class="ar">رقم تذكرة الخدمة</span></label>
           <input type="text" id="f-ticketnum" placeholder="e.g. ST-1023">
+        </div>
+        <div class="field">
+          <label>Rig number<span class="ar">رقم الحفارة</span></label>
+          <input type="text" id="f-rig" placeholder="e.g. Rig-12">
         </div>
         <div class="field">
           <label>Location <span class="req">*</span><span class="ar">الموقع</span></label>
@@ -309,7 +313,9 @@ tr:hover td{background:#fafaf8}
     </div>
     <div class="table-wrap"><table>
       <thead><tr>
-        <th>ID<span class="ar">الرقم</span></th>
+        <th>Ticket #<span class="ar">رقم التذكرة</span></th>
+        <th>Customer<span class="ar">العميل</span></th>
+        <th>Rig<span class="ar">الحفارة</span></th>
         <th>Site<span class="ar">الموقع</span></th>
         <th>Operator<span class="ar">المشغل</span></th>
         <th>Date<span class="ar">التاريخ</span></th>
@@ -382,6 +388,14 @@ tr:hover td{background:#fafaf8}
       <div class="field">
         <label>Operator<span class="ar">المشغل</span></label>
         <input type="text" id="t-operator" placeholder="Full name">
+      </div>
+      <div class="field">
+        <label>Customer<span class="ar">العميل</span></label>
+        <input type="text" id="t-customer" placeholder="e.g. Saudi Aramco">
+      </div>
+      <div class="field">
+        <label>Rig number<span class="ar">رقم الحفارة</span></label>
+        <input type="text" id="t-rig" placeholder="e.g. Rig-12">
       </div>
       <div class="field">
         <label>Date & time<span class="ar">التاريخ والوقت</span></label>
@@ -472,7 +486,7 @@ tr:hover td{background:#fafaf8}
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, onSnapshot, addDoc, setDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 
 const firebaseConfig = {
@@ -574,6 +588,8 @@ function renderTickets(){
   const list=tickets.filter(t=>(!q||((t.site||'')+(t.operator||'')).toLowerCase().includes(q))&&(!f||t.status===f));
   document.getElementById('tickets-body').innerHTML = list.map(t=>`<tr>
     <td><span class="ticket-id">${t.ticketId||t.id.slice(0,6)}</span></td>
+    <td>${t.customer||'—'}</td>
+    <td>${t.rig||'—'}</td>
     <td>${t.site||'—'}</td><td>${t.operator||'—'}</td>
     <td style="font-size:11px;color:#888">${fmtDate(t.datetime)}</td>
     <td>${badgeHTML(t.status)}</td>
@@ -581,7 +597,7 @@ function renderTickets(){
       <button class="action-btn" onclick="editTicket('${t.id}')">✎</button>
       <button class="action-btn del" onclick="quickDeleteTicket('${t.id}','${t.ticketId||''}')">✕</button>
     </td></tr>`).join('') ||
-    `<tr><td colspan="6"><div class="empty-state">No tickets / لا توجد تذاكر</div></td></tr>`;
+    `<tr><td colspan="8"><div class="empty-state">No tickets / لا توجد تذاكر</div></td></tr>`;
 }
 
 // ── Equipment ──────────────────────────────────────────────
@@ -610,9 +626,9 @@ function renderReports(){
     const pc=(r.feedbackPhotos?.length||0)+(r.faultReportPhotos?.length||0)+(r.beforePhotos?.length||0)+(r.afterPhotos?.length||0);
     return `<div class="report-card">
       <div class="report-card-top">
-        <div><div class="report-card-title">${r.jobNum||'—'} · ${r.ticketNum||'—'}</div>
-        <div class="report-card-sub">${r.location||'—'}</div></div>
-        <button class="btn-icon-del" onclick="deleteReport('${r.id}','${(r.jobNum||'').replace(/'/g,"\\'")}')">✕</button>
+        <div><div class="report-card-title">${r.customer||'—'} · <span class="ticket-id">${r.ticketNum||'—'}</span></div>
+        <div class="report-card-sub">${r.location||'—'}${r.rig?' · Rig '+r.rig:''}</div></div>
+        <button class="btn-icon-del" onclick="deleteReport('${r.id}','${(r.customer||'').replace(/'/g,"\\'")}')">✕</button>
       </div>
       <div class="report-card-meta">${r.date||'—'} · ${(r.operators||[]).join(', ')||'No operators / لا يوجد مشغلون'} · ${pc} photo${pc===1?'':'s'}</div>
     </div>`;
@@ -672,7 +688,7 @@ document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>
 window.openNewTicket = function(){
   editTicketId=null;
   document.getElementById('ticket-modal-title').textContent='New job ticket / تذكرة جديدة';
-  ['t-site','t-operator','t-notes'].forEach(id=>document.getElementById(id).value='');
+  ['t-site','t-operator','t-customer','t-rig','t-notes'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('t-datetime').value=nowDT();
   document.getElementById('t-status').value='open';
   document.getElementById('conflict-banner').classList.remove('show');
@@ -688,6 +704,8 @@ window.editTicket = function(id){
   document.getElementById('ticket-modal-title').textContent='Edit / تعديل '+(t.ticketId||id.slice(0,6));
   document.getElementById('t-site').value=t.site||'';
   document.getElementById('t-operator').value=t.operator||'';
+  document.getElementById('t-customer').value=t.customer||'';
+  document.getElementById('t-rig').value=t.rig||'';
   document.getElementById('t-datetime').value=t.datetime||nowDT();
   document.getElementById('t-status').value=t.status||'open';
   document.getElementById('t-notes').value=t.notes||'';
@@ -702,7 +720,7 @@ window.saveTicket = async function(){
   if(!site||!operator){ showToast('Fill in site and operator / يرجى ملء الموقع والمشغل','error'); return; }
   const selEquip=getSelEquip();
   if(getConflicts(selEquip,editTicketId).length){ showToast('Remove conflicting equipment / أزل المعدات المتعارضة','error'); return; }
-  const obj={site,operator,datetime:document.getElementById('t-datetime').value,status:document.getElementById('t-status').value,equipment:selEquip,notes:document.getElementById('t-notes').value.trim(),updatedAt:serverTimestamp()};
+  const obj={site,operator,customer:document.getElementById('t-customer').value.trim(),rig:document.getElementById('t-rig').value.trim(),datetime:document.getElementById('t-datetime').value,status:document.getElementById('t-status').value,equipment:selEquip,notes:document.getElementById('t-notes').value.trim(),updatedAt:serverTimestamp()};
   try{
     if(editTicketId){ await updateDoc(doc(db,'tickets',editTicketId),obj); showToast('Ticket updated / تم التحديث','success'); }
     else{ await addDoc(collection(db,'tickets'),{...obj,ticketId:'TKT-'+pad(ticketCounter),createdAt:serverTimestamp()}); showToast('Ticket created / تم الإنشاء','success'); }
@@ -805,19 +823,41 @@ function renderPreview(key){
 }
 window.removePhoto=(key,id)=>{ photos[key]=photos[key].filter(p=>p.id!==id); renderPreview(key); };
 
+// Turn a ticket number into a safe Firestore document ID so the same
+// ticket number always maps to the same ticket document.
+const ticketSlug = s => s.trim().replace(/[\/\s]+/g,'-');
+
+// Create the ticket the first time this ticket number is seen, or refresh
+// its site/operator/customer/rig from the latest report if it already exists.
+async function upsertTicketFromReport({ticketNum, location, operators, customer, rig, reportId}){
+  const ticketDocId = ticketSlug(ticketNum);
+  const existing = tickets.find(t=>t.id===ticketDocId);
+  const data = {
+    ticketId:ticketNum, site:location, operator:operators.join(', '),
+    customer, rig, lastReportId:reportId, updatedAt:serverTimestamp()
+  };
+  if(!existing){
+    data.datetime=nowDT(); data.status='open'; data.equipment=[]; data.notes='';
+    data.createdAt=serverTimestamp();
+  }
+  await setDoc(doc(db,'tickets',ticketDocId), data, {merge:true});
+}
+
 window.submitReport = async function(){
   const date=document.getElementById('f-date').value;
-  const jobNum=document.getElementById('f-jobnum').value.trim();
+  const customer=document.getElementById('f-customer').value.trim();
   const ticketNum=document.getElementById('f-ticketnum').value.trim();
+  const rig=document.getElementById('f-rig').value.trim();
   const location=document.getElementById('f-location').value.trim();
   const operators=getOperators();
-  if(!date||!jobNum||!ticketNum||!location){ showToast('Fill in all required fields / يرجى ملء جميع الحقول','error'); return; }
+  if(!date||!customer||!ticketNum||!location){ showToast('Fill in all required fields / يرجى ملء جميع الحقول','error'); return; }
   if(!operators.length){ showToast('Add at least one operator / أضف مشغلاً واحداً','error'); return; }
   if(Object.values(photos).some(a=>a.some(p=>p.uploading))){ showToast('Wait for photos to finish / انتظر اكتمال الصور','error'); return; }
   if(Object.values(photos).some(a=>a.some(p=>p.failed))){ showToast('Some photos failed / فشل بعض الصور','error'); return; }
   const btn=document.getElementById('submit-btn'); btn.disabled=true; btn.textContent='Submitting… / جارٍ الإرسال';
   try{
-    await addDoc(collection(db,'jobReports'),{date,jobNum,ticketNum,location,operators,feedbackPhotos:photos.feedback.map(p=>p.url),faultReportPhotos:photos.faultreport.map(p=>p.url),beforePhotos:photos.before.map(p=>p.url),afterPhotos:photos.after.map(p=>p.url),createdAt:serverTimestamp()});
+    const reportRef=await addDoc(collection(db,'jobReports'),{date,customer,ticketNum,rig,location,operators,feedbackPhotos:photos.feedback.map(p=>p.url),faultReportPhotos:photos.faultreport.map(p=>p.url),beforePhotos:photos.before.map(p=>p.url),afterPhotos:photos.after.map(p=>p.url),createdAt:serverTimestamp()});
+    await upsertTicketFromReport({ticketNum,location,operators,customer,rig,reportId:reportRef.id});
     document.getElementById('form-view').style.display='none';
     document.getElementById('success-screen').classList.add('show');
   }catch(e){ showToast('Error submitting / خطأ في الإرسال','error'); console.error(e); }
@@ -825,7 +865,7 @@ window.submitReport = async function(){
 }
 
 window.resetForm = function(){
-  ['f-jobnum','f-ticketnum','f-location'].forEach(id=>document.getElementById(id).value='');
+  ['f-customer','f-ticketnum','f-rig','f-location'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-date').value=todayStr();
   document.getElementById('operators-list').innerHTML=''; operatorCount=0; addOperatorField();
   Object.keys(photos).forEach(k=>{photos[k]=[]; renderPreview(k);});

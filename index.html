@@ -127,8 +127,9 @@ tr:hover td{background:#fafaf8}
 .form-divider{height:1px;background:#e5e5e3;margin:16px 0}
 .operators-list{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
 .operator-row{display:flex;gap:8px}
-.operator-row input{flex:1;border:1px solid #d5d5d3;border-radius:9px;padding:10px 12px;font-size:14px;background:#fff;color:#1a1a1a;font-family:inherit;outline:none}
-.operator-row input:focus{border-color:#1D9E75}
+.operator-row{flex-wrap:wrap}
+.operator-row input,.operator-row select{flex:1;border:1px solid #d5d5d3;border-radius:9px;padding:10px 12px;font-size:14px;background:#fff;color:#1a1a1a;font-family:inherit;outline:none;min-width:140px}
+.operator-row input:focus,.operator-row select:focus{border-color:#1D9E75}
 .btn-remove-op{background:#FCEBEB;color:#A32D2D;border:none;border-radius:8px;width:38px;flex-shrink:0;font-size:16px;cursor:pointer}
 .btn-add-op{background:none;border:1.5px dashed #d5d5d3;border-radius:9px;padding:9px;font-size:12px;color:#666;cursor:pointer;font-weight:500;width:100%;text-align:center}
 .btn-add-op:hover{border-color:#1D9E75;color:#1D9E75;background:#F4FBF8}
@@ -197,6 +198,35 @@ tr:hover td{background:#fafaf8}
 
 .empty-state{text-align:center;padding:36px 16px;color:#888;font-size:13px}
 .intro{font-size:12px;color:#888;margin-bottom:16px;line-height:1.6}
+
+/* ── Step tabs (Orders) ── */
+.step-tabs{display:flex;gap:8px;margin-bottom:16px;border-bottom:1px solid #e5e5e3}
+.step-tab{background:none;border:none;padding:10px 4px;margin-right:14px;font-size:13px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;line-height:1.3}
+.step-tab .ar{display:block;font-size:10px;font-weight:400;color:#bbb}
+.step-tab.active{color:#1D9E75;border-bottom-color:#1D9E75}
+.order-step{display:none}
+.order-step.active{display:block}
+
+/* ── Line-item tables (Orders / Delivery) ── */
+.items-table-wrap{border:1px solid #d5d5d3;border-radius:10px;overflow:hidden;overflow-x:auto;margin-bottom:8px}
+.items-table{width:100%;border-collapse:collapse;min-width:640px}
+.items-table th{background:#fafaf8;font-size:10px;text-transform:uppercase;letter-spacing:.3px;color:#888;padding:8px 8px;text-align:left;border-bottom:1px solid #e5e5e3;white-space:nowrap}
+.items-table td{padding:5px 6px;border-bottom:1px solid #f0f0ee;vertical-align:middle}
+.items-table input,.items-table select{width:100%;border:1px solid #d5d5d3;border-radius:6px;padding:6px 7px;font-size:12px;font-family:inherit;background:#fff}
+.items-table input:focus,.items-table select:focus{border-color:#1D9E75;outline:none}
+.items-table .col-narrow{width:56px}
+.items-table .col-mid{width:90px}
+.btn-add-row{background:none;border:1.5px dashed #d5d5d3;border-radius:8px;padding:7px;font-size:11px;color:#666;cursor:pointer;font-weight:500;width:100%;text-align:center;margin-bottom:8px}
+.btn-add-row:hover{border-color:#1D9E75;color:#1D9E75;background:#F4FBF8}
+.radio-row{display:flex;gap:18px;align-items:center;padding:10px 0}
+.radio-row label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;cursor:pointer}
+.radio-row input{width:auto}
+.linked-rig-display{background:#F4FBF8;border:1px solid #9FE1CB;border-radius:9px;padding:9px 12px;font-size:13px;color:#0F6E56;font-weight:600}
+.linked-rig-display .ar{display:block;font-size:10px;font-weight:400;color:#1D9E75}
+.order-card{background:#fff;border:1px solid #e5e5e3;border-radius:12px;padding:13px 14px;margin-bottom:10px}
+.order-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:8px}
+.order-card-title{font-size:13px;font-weight:600}
+.order-card-meta{font-size:11px;color:#888;line-height:1.6}
 </style>
 </head>
 <body>
@@ -250,7 +280,7 @@ tr:hover td{background:#fafaf8}
         </div>
         <div class="field">
           <label>Service ticket number <span class="req">*</span><span class="ar">رقم تذكرة الخدمة</span></label>
-          <input type="text" id="f-ticketnum" placeholder="e.g. ST-1023">
+          <input type="text" id="f-ticketnum" list="ticketnum-list" placeholder="Pick existing or type new / اختر أو أدخل رقماً جديداً">
         </div>
         <div class="field">
           <label>Rig number<span class="ar">رقم الحفارة</span></label>
@@ -369,12 +399,43 @@ tr:hover td{background:#fafaf8}
     </table></div>
   </div>
 
+  <!-- ORDERS: STEP 1 (Internal Service/Sales Order) + STEP 2 (Delivery Ticket) -->
+  <div class="page" id="page-orders">
+    <div class="step-tabs">
+      <button class="step-tab active" id="step-tab-1" onclick="showOrderStep(1)">Step 1 · Internal Service/Sales Order<span class="ar">الخطوة ١ · طلب خدمة/بيع داخلي</span></button>
+      <button class="step-tab" id="step-tab-2" onclick="showOrderStep(2)">Step 2 · Delivery Ticket<span class="ar">الخطوة ٢ · تذكرة تسليم</span></button>
+    </div>
+
+    <!-- STEP 1 LIST -->
+    <div class="order-step active" id="order-step-1">
+      <div class="section-header">
+        <span class="section-title">Internal Service/Sales Orders<span class="ar">طلبات الخدمة/البيع الداخلية</span></span>
+        <button class="btn-primary" onclick="openNewOrder()">+ New<span class="ar">جديد</span></button>
+      </div>
+      <p class="intro">Create the order first — its Rig number will carry over automatically to the delivery ticket in Step 2.<br>أنشئ الطلب أولاً — سيتم نقل رقم الحفارة تلقائياً إلى تذكرة التسليم في الخطوة ٢.</p>
+      <div class="search-row"><input type="text" placeholder="Search order no., customer or rig / بحث" id="order-search" oninput="renderOrders()"></div>
+      <div id="orders-list"></div>
+    </div>
+
+    <!-- STEP 2 LIST -->
+    <div class="order-step" id="order-step-2">
+      <div class="section-header">
+        <span class="section-title">Delivery Tickets<span class="ar">تذاكر التسليم</span></span>
+        <button class="btn-primary" onclick="openNewDelivery()">+ New<span class="ar">جديد</span></button>
+      </div>
+      <p class="intro">Each delivery ticket links to an internal order from Step 1.<br>كل تذكرة تسليم مرتبطة بطلب داخلي من الخطوة ١.</p>
+      <div class="search-row"><input type="text" placeholder="Search ticket no., rig or ship to / بحث" id="delivery-search" oninput="renderDeliveries()"></div>
+      <div id="deliveries-list"></div>
+    </div>
+  </div>
+
 </div><!-- /main -->
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <button class="bnav-btn active" onclick="showPage('dashboard')" id="nav-dashboard"><span class="icon">⊞</span>Dashboard<span class="ar">لوحة التحكم</span></button>
   <button class="bnav-btn" onclick="showPage('report')" id="nav-report"><span class="icon">✎</span>Report<span class="ar">تقرير</span></button>
+  <button class="bnav-btn" onclick="showPage('orders')" id="nav-orders">Orders<span class="ar">الطلبات</span></button>
   <button class="bnav-btn" onclick="showPage('reports')" id="nav-reports"><span class="icon">☰</span>Reports<span class="ar">التقارير</span></button>
   <button class="bnav-btn" onclick="showPage('tickets')" id="nav-tickets"><span class="icon">🎫</span>Tickets<span class="ar">التذاكر</span></button>
   <button class="bnav-btn" onclick="showPage('costs')" id="nav-costs"><span class="icon">💰</span>Cost<span class="ar">التكلفة</span></button>
@@ -402,7 +463,8 @@ tr:hover td{background:#fafaf8}
       </div>
       <div class="field">
         <label>Operator<span class="ar">المشغل</span></label>
-        <input type="text" id="t-operator" placeholder="Full name">
+        <select id="t-operator-select" onchange="onTicketOpSelect()"></select>
+        <input type="text" id="t-operator-custom" placeholder="Name / الاسم" style="display:none;margin-top:6px">
       </div>
       <div class="field">
         <label>Customer<span class="ar">العميل</span></label>
@@ -501,6 +563,149 @@ tr:hover td{background:#fafaf8}
   </div>
 </div>
 
+<!-- ORDER MODAL (Step 1: Internal Service/Sales Order) -->
+<div class="modal-bg" id="order-modal">
+  <div class="modal" style="max-width:760px">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="order-modal-title">Internal Service/Sales Order<span class="ar">طلب خدمة/بيع داخلي</span></div>
+      <button class="modal-close" onclick="closeModal('order-modal')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Order No. <span class="req">*</span><span class="ar">رقم الطلب</span></label>
+        <input type="text" id="o-orderno" placeholder="e.g. 47/2026">
+      </div>
+      <div class="field">
+        <label>Order Date<span class="ar">تاريخ الطلب</span></label>
+        <input type="date" id="o-orderdate">
+      </div>
+      <div class="field">
+        <label>Order From<span class="ar">مُرسل الطلب</span></label>
+        <input type="text" id="o-orderfrom" placeholder="Name">
+      </div>
+      <div class="field">
+        <label>Order To<span class="ar">إلى</span></label>
+        <input type="text" id="o-orderto" placeholder="e.g. ZM Base">
+      </div>
+      <div class="field">
+        <label>Customer<span class="ar">العميل</span></label>
+        <input type="text" id="o-customer" placeholder="e.g. Petro Silah">
+      </div>
+      <div class="field">
+        <label>Location / Rig<span class="ar">الموقع / الحفارة</span></label>
+        <input type="text" id="o-rig" placeholder="e.g. IPR#1">
+      </div>
+      <div class="field">
+        <label>Requested Date<span class="ar">تاريخ الطلب المطلوب</span></label>
+        <input type="date" id="o-reqdate">
+      </div>
+      <div class="field">
+        <label>Order Type<span class="ar">نوع الطلب</span></label>
+        <div class="radio-row">
+          <label><input type="radio" name="o-type" value="service" checked> Service<span class="ar">خدمة</span></label>
+          <label><input type="radio" name="o-type" value="sales"> Sales<span class="ar">بيع</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-divider"></div>
+    <div class="form-section-label">Items<span class="ar">الأصناف</span></div>
+    <div class="items-table-wrap">
+      <table class="items-table">
+        <thead><tr>
+          <th class="col-narrow">Item<span class="ar">صنف</span></th>
+          <th class="col-mid">Size<span class="ar">القياس</span></th>
+          <th>Description<span class="ar">الوصف</span></th>
+          <th class="col-narrow">Qty<span class="ar">الكمية</span></th>
+          <th class="col-mid">From<span class="ar">من</span></th>
+          <th class="col-mid">Asset No.<span class="ar">رقم الأصل</span></th>
+          <th class="col-mid">J.C.NO.<span class="ar">رقم أمر العمل</span></th>
+          <th></th>
+        </tr></thead>
+        <tbody id="order-items-body"></tbody>
+      </table>
+    </div>
+    <button type="button" class="btn-add-row" onclick="addOrderItemRow()">+ Add item row<span class="ar">إضافة صنف</span></button>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" id="delete-order-btn" style="display:none;color:#A32D2D;border-color:#F0D5D5" onclick="confirmDeleteOrder()">Delete<span class="ar">حذف</span></button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" onclick="closeModal('order-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-primary" onclick="saveOrder()">Save<span class="ar">حفظ</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- DELIVERY MODAL (Step 2: Delivery Ticket) -->
+<div class="modal-bg" id="delivery-modal">
+  <div class="modal" style="max-width:760px">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="delivery-modal-title">Delivery Ticket<span class="ar">تذكرة تسليم</span></div>
+      <button class="modal-close" onclick="closeModal('delivery-modal')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Delivery Ticket No. <span class="req">*</span><span class="ar">رقم تذكرة التسليم</span></label>
+        <input type="text" id="d-ticketno" placeholder="e.g. 47/2026">
+      </div>
+      <div class="field">
+        <label>Linked Internal Order <span class="req">*</span><span class="ar">الطلب الداخلي المرتبط</span></label>
+        <select id="d-orderid" onchange="onDeliveryOrderChange()"></select>
+      </div>
+      <div class="field">
+        <label>Ship From<span class="ar">الشحن من</span></label>
+        <input type="text" id="d-shipfrom" placeholder="e.g. IPG service free zone">
+      </div>
+      <div class="field">
+        <label>Ship To<span class="ar">الشحن إلى</span></label>
+        <input type="text" id="d-shipto" placeholder="e.g. Petro Silah">
+      </div>
+      <div class="field">
+        <label>Field<span class="ar">الحقل</span></label>
+        <input type="text" id="d-field">
+      </div>
+      <div class="field">
+        <label>Well<span class="ar">البئر</span></label>
+        <input type="text" id="d-well">
+      </div>
+      <div class="field">
+        <label>Rig <span class="ar">الحفارة</span></label>
+        <div class="linked-rig-display" id="d-rig-display">— select linked order —<span class="ar">اختر الطلب المرتبط أولاً</span></div>
+        <input type="hidden" id="d-rig">
+      </div>
+      <div class="field">
+        <label>Date<span class="ar">التاريخ</span></label>
+        <input type="date" id="d-date">
+      </div>
+    </div>
+
+    <div class="form-divider"></div>
+    <div class="form-section-label">Line Items<span class="ar">الأصناف</span></div>
+    <div class="items-table-wrap">
+      <table class="items-table">
+        <thead><tr>
+          <th class="col-narrow">Line No.<span class="ar">رقم البند</span></th>
+          <th class="col-narrow">Qty<span class="ar">الكمية</span></th>
+          <th>Description<span class="ar">الوصف</span></th>
+          <th class="col-mid">Serial No.<span class="ar">الرقم التسلسلي</span></th>
+          <th></th>
+        </tr></thead>
+        <tbody id="delivery-lines-body"></tbody>
+      </table>
+    </div>
+    <button type="button" class="btn-add-row" onclick="addDeliveryLineRow()">+ Add line<span class="ar">إضافة بند</span></button>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" id="delete-delivery-btn" style="display:none;color:#A32D2D;border-color:#F0D5D5" onclick="confirmDeleteDelivery()">Delete<span class="ar">حذف</span></button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" onclick="closeModal('delivery-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-primary" onclick="saveDelivery()">Save<span class="ar">حفظ</span></button>
+    </div>
+  </div>
+</div>
+
 <!-- CONFIRM DELETE MODAL -->
 <div class="modal-bg" id="confirm-modal">
   <div class="modal" style="border-radius:20px 20px 0 0">
@@ -516,6 +721,10 @@ tr:hover td{background:#fafaf8}
 </div>
 
 <div class="toast" id="toast"><span id="toast-msg"></span></div>
+
+<datalist id="equip-desc-list"></datalist>
+<datalist id="equip-serial-list"></datalist>
+<datalist id="ticketnum-list"></datalist>
 
 </div><!-- /app -->
 
@@ -538,9 +747,10 @@ const db  = getFirestore(app);
 const storage = getStorage(app);
 
 // ── State ──────────────────────────────────────────────────
-let tickets = [], equipment = [], reports = [], jobCosts = [];
-let editTicketId = null, editCostId = null;
+let tickets = [], equipment = [], reports = [], jobCosts = [], serviceOrders = [], deliveryTickets = [];
+let editTicketId = null, editCostId = null, editOrderId = null, editDeliveryId = null;
 let ticketCounter = 1;
+let orderItemCount = 0, deliveryLineCount = 0;
 
 // ── Operator directory (name + rig bonus per day) ───────────
 const OPERATOR_DB = [
@@ -579,6 +789,584 @@ const OPERATOR_DB = [
   {name:'محمد عبد الرازق', bonus:400}
 ];
 
+// ── Equipment catalog (from mechanic & handling equipment worksheets) ──
+// d = description, s = serial/asset number
+const EQUIPMENT_CATALOG = [
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100171'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100172'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100173'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100174'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100175'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100176'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100177'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100178'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100179'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100180'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100181'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100182'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100183'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100184'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100185'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100186'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100187'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100188'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100189'},
+{d:'Hydraulic Power unit 3 Cylinder',s:'IPG 100190'},
+{d:'Hydraulic Power unit 3 Cylinder',s:'IPG 100191'},
+{d:'Hydraulic Power unit 3 Cylinder',s:'IPG 100192'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100193'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100194'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100195'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100196'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100197'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100198'},
+{d:'Hydraulic Power unit 6 Cylinder',s:'IPG 100199'},
+{d:'Hydraulic Casing Tong 24"-50k ( Lamb)',s:'IPG 100100'},
+{d:'Hydraulic Casing Tong 24"-50k ( Lamb)',s:'IPG 100117'},
+{d:'Manual Casing Tong 20\'\' (Rig tong)',s:'IPG 100151'},
+{d:'Hydraulic Casing Tong 14"-50k (Clincher-Mccoy )',s:'IPG 100105'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb)',s:'IPG 100101'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb)',s:'IPG 100102'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb)',s:'IPG 100103'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb)',s:'IPG 100108'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb)',s:'IPG 100115'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb)',s:'IPG 100116'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb)',s:'IPG 100126'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb)',s:'IPG100128'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb)',s:'IPG 100129'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb) (HI Torque)',s:'IPG 100132'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb)',s:'IPG 100133'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb)',s:'IPG 100135'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb)',s:'IPG 100144'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb) (HI Torque)',s:'IPG 100145'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb) (HI Torque)',s:'IPG 100146'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb) (HI Torque)',s:'IPG 100147'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb) (HI Torque)',s:'IPG 100155'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb) (HI Torque)',s:'IPG 100156'},
+{d:'Hydraulic Casing Tong 16"-25K ( Lamb) (HI Torque)',s:'IPG 100157'},
+{d:'Hydraulic Casing Tong 13 3/8" (TEDA TQ 340-35A)',s:'IPG 100118'},
+{d:'Hydraulic Casing Tong 13 3/8" ( Eckel)',s:'IPG 100127'},
+{d:'Hydraulic Casing Tong 13 3/8" ( Eckel)',s:'IPG 100134'},
+{d:'Hydraulic Casing Tong 13 3/8" ( Weatherford)',s:'IPG 100158'},
+{d:'Hydraulic Tubing Tong 7 5/8"-30k (Clincher-Mccoy )',s:'IPG 100106'},
+{d:'Hydraulic Tubing Tong 7 5/8"-30k (Clincher-Mccoy )',s:'IPG 100107'},
+{d:'Hudraulic Tubing Tong 7 5/8" -30k (Weatherford)',s:'IPG 100112'},
+{d:'Hydraulic Tubing Tong 7 5/8"-30k ( Eckel)',s:'IPG 100130'},
+{d:'Hydraulic Tubing Tong 7 5/8"-30k ( Eckel)',s:'IPG 100139'},
+{d:'Hydraulic Tubing Tong 7 5/8"-30k ( FARA)',s:'IPG 100138'},
+{d:'Hydraulic Tubing Tong 7 5/8"-30k ( FARA)',s:'IPG 100137'},
+{d:'Hydraulic Tubing Tong 7 5/8"-30k ( Eckel)',s:'IPG 100136'},
+{d:'Hudraulic Tubing Tong 7 5/8" -30k (Weatherford)',s:'IPG 100150'},
+{d:'Hydraulic Tubing Tong (2 3/8" - 5 1/2") (KHT 5500)',s:'IPG 100119'},
+{d:'Hydraulic Tubing Tong (2 3/8" - 5 1/2") (KHT 5500)',s:'IPG 100120'},
+{d:'Hydraulic Tubing Tong (2 3/8" - 5 1/2") (KHT 5500)',s:'IPG 100122'},
+{d:'Hydraulic Tubing Tong (2 3/8" - 5 1/2") (KHT 5500)',s:'IPG 100123'},
+{d:'Hydraulic Tubing Tong (2 3/8" - 5 1/2") (KHT 5500)',s:'IPG 100124'},
+{d:'Hydraulic Tubing Tong (2 3/8" - 5 1/2" ) (sarah)',s:'IPG 100125'},
+{d:'Hydraulic Tubing Tong (2 3/8" - 5 1/2" ) (Weatherford)',s:'IPG 100131'},
+{d:'Hydraulic Tubing Tong (2 3/8" - 5 1/2" ) (Weatherford)',s:'IPG 100140'},
+{d:'Hydraulic Tubing Tong (2 3/8" - 5 1/2") (Weatherford)',s:'IPG 100141'},
+{d:'Hydraulic Tubing Tong (2 3/8" - 5 1/2") (Weatherford)',s:'IPG 100142'},
+{d:'Hydraulic Tubing Tong (2 3/8" - 5 1/2") (Weatherford)',s:'IPG 100143'},
+{d:'Hydraulic Tubing Tong (2 3/8" - 5 1/2") (Weatherford)',s:'IPG 100148'},
+{d:'Hydraulic Tubing Tong (2 7/8" - 4 1/2") (HI Tech)',s:'IPG 100110'},
+{d:'Hydraulic Tubing Tong (2 7/8" - 4 1/2") (HI Tech)',s:'IPG 100111'},
+{d:'Hydraulic Tubing Tong (2 7/8" - 4 1/2" ) (Eckel )',s:'IPG 100113'},
+{d:'Hydraulic Tubing Tong (2 7/8" - 3 1/2") (China)',s:'IPG 100109'},
+{d:'Hydraulic Tubing Tong (2 7/8" - 3 1/2") ( H.K)',s:'IPG 100114'},
+{d:'Hydraulic Tubing Tong (2 7/8" - 3 1/2") ( H.K)',s:'IPG 100152'},
+{d:'Hydraulic Tubing Tong (2 7/8" - 3 1/2") ( H.K)',s:'IPG 100153'},
+{d:'Hydraulic Tubing Tong (2 7/8" - 3 1/2") ( H.K)',s:'IPG 100154'},
+{d:'Hydraulic Tubing Tong (2 7/8" - 3 1/2") ( China)',s:'IPG 100121'},
+{d:'Spring Hanger',s:'IPG 100100/19'},
+{d:'Spring Hanger',s:'IPG 100101/10'},
+{d:'Spring Hanger',s:'IPG 100102/10'},
+{d:'Spring Hanger',s:'IPG 100103/10'},
+{d:'Spring Hanger',s:'IPG 100104/10'},
+{d:'Spring Hanger',s:'IPG 100105/9'},
+{d:'Spring Hanger',s:'IPG 100108/7'},
+{d:'Spring Hanger',s:'IPG 100115/7'},
+{d:'Spring Hanger',s:'IPG 100116/7'},
+{d:'Spring Hanger',s:'IPG 100117/19'},
+{d:'Spring Hanger',s:'IPG 100131/10'},
+{d:'Spring Hanger',s:'IPG 100135/10'},
+{d:'Lift Bucket',s:'IPG 100106/5'},
+{d:'Lift Bucket',s:'IPG 100107/5'},
+{d:'Lift Bucket',s:'IPG 100112/5'},
+{d:'Lift Bucket',s:'IPG 100114/19'},
+{d:'Lift cylinder for model KJT 5500',s:'IPG 100119/19'},
+{d:'Lift cylinder for model KJT 5500',s:'IPG 100120/19'},
+{d:'Lift cylinder for model KJT 5500',s:'IPG 100122/19'},
+{d:'Lift cylinder for model KJT 5500',s:'IPG 100123/19'},
+{d:'Lift cylinder for model KJT 5500',s:'IPG 100124/19'},
+{d:'Lift Bucket',s:'IPG 100125/10'},
+{d:'Lift Bucket',s:'IPG 100125/11'},
+{d:'Lift Bucket',s:'IPG 100134/10'},
+{d:'lifting cylinder (NEW Weatherford Tong 5500)',s:'Not Have Ass.'},
+{d:'lifting cylinder (NEW Weatherford Tong 5500)',s:'Not Have Ass.'},
+{d:'30000 FT LBS torque Gauge 36" for casing power tong - Tension',s:'IPG 100274'},
+{d:'40000 FT LBS torque Gauge 36" for casing power tong - Tension',s:'IPG 100275'},
+{d:'40000 FT LBS torque Gauge 36" for casing power tong - Tension',s:'IPG 100278'},
+{d:'40000 FT LBS torque Gauge 36" for casing power tong - Tension',s:'IPG 100282'},
+{d:'20000 FT LBS torque Gauge 36" for casing power tong - Tension',s:'IPG 100285'},
+{d:'20000 FT LBS torque Gauge 36" for casing power tong - Tension',s:'IPG 100289'},
+{d:'12000 FT LBS torque Gauge 36" for casing power tong -Tension',s:'IPG 100290'},
+{d:'30000 FT LBS torque Gauge 36" for casing power tong - Tension',s:'IPG 100291'},
+{d:'30000 FT LBS torque gauge 36" for casing power tong - Tension',s:'IPG 100292'},
+{d:'40000 FT LBS torque Gauge 36" for casing power tong - Tension',s:'IPG 100299'},
+{d:'40000 FT LBS torque Gauge 36" for casing power tong - Tension',s:'IPG 100270'},
+{d:'40000 FT LBS torque Gauge 36" for casing power tong - Tension',s:'IPG 100271'},
+{d:'50000 FT LBS torque gauge 40" for casing power tong - Tension',s:'IPG 100294'},
+{d:'50000 FT LBS torque gauge 40" for casing power tong - Tension',s:'IPG 100295'},
+{d:'50000 FT LBS torque gauge 40" for casing power tong - Tension',s:'IPG 100272'},
+{d:'10000 FT LBS torque Gauge 30" for casing power tong - Tension',s:'IPG 100276'},
+{d:'10000 FT LBS torque Gauge 30" for casing power tong - Tension',s:'IPG 100277'},
+{d:'10000 FT LBS torque Gauge 30" for casing power tong - Tension',s:'IPG 100279'},
+{d:'10000 FT LBS torque Gauge 30" for casing power tong - Tension',s:'IPG 100298'},
+{d:'15000 FT LBS torque Gauge 30" for casing power tong - Tension',s:'IPG 100269'},
+{d:'30000 FT LBS torque gauge 36" for Tubing power tong- Compression',s:'IPG 100273'},
+{d:'30000 FT LBS torque gauge 36" for Tubing power tong- Compression',s:'IPG 100280'},
+{d:'30000 FT LBS torque gauge 36" for Tubing power tong- Compression',s:'IPG 100286'},
+{d:'30000 FT LBS torque gauge 36" for Tubing power tong- Compression',s:'IPG 100293'},
+{d:'20000 FT LBS torque gauge 32" for tubing power tong - Compression',s:'IPG 100288'},
+{d:'30000 FT LBS torque gauge 32" for Tubing power tong- Compression',s:'IPG 100296'},
+{d:'30000 FT LBS torque gauge 32" for Tubing power tong- Compression',s:'IPG 100297'},
+{d:'Torque Gauge 20" for Tubing Power Tong- Compression',s:'IPG 100287'},
+{d:'torque gauge for Tubing power tong- Compression TEDA',s:'IPG 100283'},
+{d:'torque gauge for Tubing power tong- Compression TEDA',s:'IPG 100284'},
+{d:'Analog Torque Gauge (Tension)',s:'20'},
+{d:'Analog Torque Gauge ( Compression)',s:'10'},
+{d:'Elevator Body 500 Ton c/w accessories. BVM ( AIR )',s:'IPG 100300'},
+{d:'Elevator Body 500 Ton c/w accessories. BVM ( AIR )',s:'IPG 100301'},
+{d:'Elevator Body 500 Ton c/w accessories. BJ ( AIR )',s:'IPG 100302'},
+{d:'Elevator Body 500 Ton c/w accessories. BJ (Manual)',s:'IPG 100313'},
+{d:'Elevator Body 500 Ton c/w accessories. BJ (Manual)',s:'IPG 100317'},
+{d:'Elevator Body 350 Ton c/w accessories. Varco ( AIR )',s:'IPG 100303'},
+{d:'Elevator Body 350 Ton c/w accessories. Varco ( AIR )',s:'IPG 100304'},
+{d:'Elevator Body 350 Ton c/w accessories. BJ ( AIR )',s:'IPG 100305'},
+{d:'Elevator Body 350 Ton c/w accessories. Varco ( AIR )',s:'IPG 100306'},
+{d:'spider body 350 ton BJ ( AIR )',s:'IPG 100310'},
+{d:'Elevator Body 350 Ton c/w accessories. BJ ( AIR )',s:'IPG 100311'},
+{d:'Elevator Body 350 Ton c/w accessories. BJ ( AIR )',s:'IPG 100312'},
+{d:'Elevator Body 350 Ton c/w accessories. BJ (Manual)',s:'IPG 100314'},
+{d:'Elevator Body 350 Ton c/w accessories. BJ (Manual)',s:'IPG 100315'},
+{d:'Elevator Body 350 Ton c/w accessories. BJ (Manual)',s:'IPG 100316'},
+{d:'Elevator Body 350 Ton c/w accessories. BJ (Manual)',s:'IPG 100318'},
+{d:'spider body 350 ton BJ ( AIR )',s:'IPG 100319'},
+{d:'spider body 350 ton BJ ( AIR )',s:'IPG 100320'},
+{d:'spider body 350 ton BJ ( AIR )',s:'IPG 100321'},
+{d:'dual spider elevator (Manual)',s:'IPG 100308'},
+{d:'dual spider slips (Manual)',s:'IPG 100309'},
+{d:'Dual Body',s:'2'},
+{d:'Dual Body',s:'2'},
+{d:'20" Elevator Side Door 150 Ton',s:'IPG 100400'},
+{d:'20" Elevator Side Door 150 Ton',s:'IPG 100401'},
+{d:'18 5/8" Elevator Side Door 250 Ton',s:'IPG 100402'},
+{d:'16" Elevator Side Door 150 Ton',s:'IPG 100403'},
+{d:'13 3/8" Elevator Side Door 250 Ton',s:'IPG 100404'},
+{d:'13 3/8" Elevator Side Door 150 Ton',s:'IPG 100424'},
+{d:'13 3/8" Elevator Side Door 150 Ton',s:'IPG 100405'},
+{d:'11 3/4" Elevator Side Door 150 Ton',s:'IPG 100406'},
+{d:'9 7/8" Elevator Side Door 150 Ton',s:'IPG 100407'},
+{d:'9 7/8" Elevator Side Door 150 Ton (10")',s:'IPG 100408'},
+{d:'9 5/8" Elevator Side Door 150 Ton',s:'IPG 100409'},
+{d:'9 5/8" Elevator Side Door 150 Ton',s:'IPG 100410'},
+{d:'9 5/8" Elevator Side Door 150 Ton',s:'IPG 100420'},
+{d:'9 5/8" Elevator Side Door 150 Ton',s:'IPG 100425'},
+{d:'7 5/8" Elevator Side Door 150 Ton (8.065")',s:'IPG 100411'},
+{d:'7 5/8" Elevator Side Door 150 Ton (8.065")',s:'IPG 100412'},
+{d:'7" Elevator Side Door 150 Ton',s:'IPG 100413'},
+{d:'7" Elevator Side Door 150 Ton',s:'IPG 100414'},
+{d:'7" Elevator Side Door 150 Ton',s:'IPG 100421'},
+{d:'7" Elevator Side Door 150 Ton',s:'IPG 100426'},
+{d:'7" Elevator Side Door 150 Ton',s:'IPG 100429'},
+{d:'5 1/2" Elevator Side Door',s:'IPG 100415'},
+{d:'5 1/2" Elevator Side Door',s:'IPG 100428'},
+{d:'5" Elevator Side Door 350 Ton (Drill Pipe)',s:'IPG 100416'},
+{d:'5" Elevator Side Door 100 Ton',s:'IPG 100423'},
+{d:'4 1/2" ~ 5\'\' Elevator Side Door 350 Ton (Drill Pipe)',s:'IPG 100417'},
+{d:'4 1/2" Elevator Side Door 150 Ton',s:'IPG 100427'},
+{d:'4 1/2" Elevator Side Door 150 Ton',s:'IPG 100422'},
+{d:'3 1/2" Elevator Side Door 150 Ton',s:'IPG 100418'},
+{d:'2 7/8" Elevator Side Door',s:'IPG 100419'},
+{d:'MYC Elevator Slip Type Center Latch 5 1/2"- 2 3/8" 150 TON',s:'IPG 100498'},
+{d:'MYC Elevator Slip Type Center Latch 5 1/2"- 2 3/8" 150 TON',s:'IPG 100488'},
+{d:'MYC Elevator Slip Type Center Latch 5 1/2"- 2 3/8" 150 TON',s:'IPG 100487'},
+{d:'MYC Elevator Slip Type Center Latch 5 1/2"- 2 3/8"',s:'IPG 100493'},
+{d:'YT slip type Elevator Center Latch 3 1/2" 75 Ton',s:'IPG 100492'},
+{d:'YT slip type Elevator Center Latch 3 1/2" 75 Ton',s:'IPG 100491'},
+{d:'YT slip type Elevator Center Latch 3 1/2" 75 Ton',s:'IPG 100494'},
+{d:'YT slip type Elevator Center Latch 3 1/2" 75 Ton',s:'IPG 100495'},
+{d:'YT slip type Elevator Center Latch 3 1/2" 75 Ton',s:'IPG 100496'},
+{d:'YT slip type Elevator Center Latch 3 1/2" 75 Ton',s:'IPG 100497'},
+{d:'YT slip type Elevator Center Latch 3 1/2" 75 Ton',s:'IPG 100499'},
+{d:'YT slip type Elevator Center Latch 3 1/2" 75 Ton',s:'IPG 100490'},
+{d:'YT slip type Elevator Center Latch 3 1/2" 75 Ton',s:'IPG 100489'},
+{d:'YT slip type Elevator Center Latch 3 1/2" 75 Ton',s:'IPG 100486'},
+{d:'YT slip type Elevator Center Latch 3 1/2" 75 Ton',s:'IPG 100485'},
+{d:'YT slip type Elevator Center Latch 3 1/2" 75 Ton',s:'IPG 100484'},
+{d:'20" Single Joint Elevator',s:'IPG 100500'},
+{d:'20" Single Joint Elevator',s:'IPG 100501'},
+{d:'18 5/8" Single Joint Elevator',s:'IPG 100502'},
+{d:'16" Single Joint Elevator',s:'IPG 100503'},
+{d:'13 3/8" Single Joint Elevator',s:'IPG 100504'},
+{d:'13 3/8" Single Joint Elevator',s:'IPG 100505'},
+{d:'13 3/8" Single Joint Elevator',s:'IPG 100521'},
+{d:'13 3/8" Single Joint Elevator',s:'IPG 100529'},
+{d:'13 3/8" Single Joint Elevator',s:'IPG 100536'},
+{d:'10 3/4" Single Joint Elevator',s:'IPG 100524'},
+{d:'9 7/8" Single Joint Elevator',s:'IPG 100523'},
+{d:'9 5/8" Single Joint Elevator',s:'IPG 100506'},
+{d:'9 5/8" Single Joint Elevator',s:'IPG 100507'},
+{d:'9 5/8" Single Joint Elevator',s:'IPG 100508'},
+{d:'9 5/8" Single Joint Elevator',s:'IPG 100522'},
+{d:'9 5/8" Single Joint Elevator',s:'IPG 100535'},
+{d:'9 5/8" Single Joint Elevator',s:'IPG 100569'},
+{d:'7" Single Joint Elevator',s:'IPG 100509'},
+{d:'7" Single Joint Elevator',s:'IPG 100510'},
+{d:'7" Single Joint Elevator',s:'IPG 100511'},
+{d:'7" Single Joint Elevator',s:'IPG 100525'},
+{d:'7" Single Joint Elevator',s:'IPG 100539'},
+{d:'5 1/2" Single Joint Elevator',s:'IPG 100512'},
+{d:'5 " Single Joint Elevator',s:'IPG 100513'},
+{d:'5 " Single Joint Elevator',s:'IPG 100526'},
+{d:'5 " Single Joint Elevator',s:'IPG 100550'},
+{d:'5 " Single Joint Elevator',s:'IPG 100551'},
+{d:'5 " Single Joint Elevator',s:'IPG 100569'},
+{d:'4 1/2 " Single Joint Elevator',s:'IPG 100514'},
+{d:'4 1/2" Single Joint elevator',s:'IPG 100515'},
+{d:'4 1/2" Single Joint elevator',s:'IPG 100516'},
+{d:'4 1/2" Single Joint elevator',s:'IPG 100549'},
+{d:'4" Single Joint Elevator',s:'IPG 100531'},
+{d:'4" Single Joint Elevator',s:'IPG 100548'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100517'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100518'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100527'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100530'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100528'},
+{d:'3 1/2" Single Joint Elevator PH6',s:'IPG 100533'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100537'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100538'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100540'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100541'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100542'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100543'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100545'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100546'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100553'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100554'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100555'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100556'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100557'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100558'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100559'},
+{d:'3 1/2" Single Joint Elevator',s:'IPG 100560'},
+{d:'2 7/8" Single Joint Elevator',s:'IPG 100519'},
+{d:'2 7/8" Single Joint Elevator',s:'IPG 100532'},
+{d:'2 7/8" Single Joint Elevator',s:'IPG 100534'},
+{d:'2 7/8"Single Joint Elevator',s:'IPG 100520'},
+{d:'2 7/8"Single Joint Elevator',s:'IPG 100544'},
+{d:'2 7/8"Single Joint Elevator',s:'IPG 100561'},
+{d:'2 7/8"Single Joint Elevator',s:'IPG 100562'},
+{d:'2 7/8"Single Joint Elevator',s:'IPG 100563'},
+{d:'2 7/8"Single Joint Elevator',s:'IPG 100564'},
+{d:'2 7/8"Single Joint Elevator',s:'IPG 100565'},
+{d:'2 7/8"Single Joint Elevator',s:'IPG 100566'},
+{d:'2 3/8" Single Joint Elevator',s:'IPG 100547'},
+{d:'Rotary Hand Slips 20"',s:'IPG 100600'},
+{d:'Rotary Hand Slips 20"',s:'IPG 100650'},
+{d:'Rotary Hand Slips 9 5/8" - 13 3/8 "',s:'IPG 100602'},
+{d:'Rotary Hand Slips 9 5/8" - 13 3/8 "',s:'IPG 100611'},
+{d:'Rotary Hand Slips 9 5/8" - 13 3/8 "',s:'IPG 100622'},
+{d:'Rotary Hand Slips 9 5/8" - 13 3/8 "',s:'IPG 100601'},
+{d:'Rotary Hand Slips 9 5/8" - 13 3/8 "',s:'IPG 100624'},
+{d:'Rotary Hand Slips 9 5/8" - 13 3/8 "',s:'IPG 100626'},
+{d:'Rotary Hand Slips 9 5/8" - 13 3/8 "',s:'IPG 100625'},
+{d:'Rotary Hand Slips 9 5/8" - 13 3/8 "',s:'IPG 100623'},
+{d:'Rotary Hand Slips 9 5/8" - 13 3/8 "',s:'IPG 100652'},
+{d:'Rotary Hand Slips 7"',s:'IPG 100612'},
+{d:'Rotary Hand Slips 7"',s:'IPG 100614'},
+{d:'Rotary Hand Slips 7"',s:'IPG 100621'},
+{d:'Delong Rotary Hand Slips 5 1/2"',s:'IPG 100604'},
+{d:'Delong Rotary Hand Slips 5 "',s:'IPG 100603'},
+{d:'Delong Rotary Hand Slips 5 "',s:'IPG 100605'},
+{d:'Delong Rotary Hand Slips 5"',s:'IPG 100606'},
+{d:'Delong Rotary Hand Slips 5"',s:'IPG 100607'},
+{d:'Delong Rotary Hand Slips 5"',s:'IPG 100633'},
+{d:'Delong Rotary Hand Slips 4 1/2"',s:'IPG 100608'},
+{d:'Delong Rotary Hand Slips 4 1/2"',s:'IPG 100632'},
+{d:'Delong Rotary Hand Slips 4 1/2"',s:'IPG 100635'},
+{d:'Delong Rotary Hand Slips 4 1/2"',s:'IPG 100636'},
+{d:'Delong Rotary Hand Slips 4 1/2"',s:'IPG 100637'},
+{d:'Delong Rotary Hand Slips 4 1/2"',s:'IPG 100638'},
+{d:'Delong Rotary Hand Slips 2 7/8" - 3 1/2"',s:'IPG 100629'},
+{d:'Delong Rotary Hand Slips 2 7/8" - 3 1/2"',s:'ipg100628'},
+{d:'Delong Rotary Hand Slips 2 7/8" - 3 1/2"',s:'IPG 100627'},
+{d:'Delong Rotary Hand Slips 3 1/2"',s:'IPG 100609'},
+{d:'Delong Rotary Hand Slips 3 1/2"',s:'IPG 100617'},
+{d:'Delong Rotary Hand Slips 3 1/2"',s:'IPG 100618'},
+{d:'Delong Rotary Hand Slips 3 1/2"',s:'IPG 100619'},
+{d:'Delong Rotary Hand Slips 2 7/8" - 3 1/2"',s:'IPG 100620'},
+{d:'Delong Rotary Hand Slips 4 1/2"',s:'IPG 100634'},
+{d:'Delong Rotary Hand Slips 3 1/2"',s:'IPG 100641'},
+{d:'Delong Rotary Hand Slips 3 1/2"',s:'IPG 100642'},
+{d:'Delong Rotary Hand Slips 3 1/2"',s:'IPG 100643'},
+{d:'Delong Rotary Hand Slips 3 1/2"',s:'IPG 100644'},
+{d:'Delong Rotary Hand Slips 3 1/2"',s:'IPG 100645'},
+{d:'Delong Rotary Hand Slips 3 1/2"',s:'IPG 100646'},
+{d:'Delong Rotary Hand Slips 3 1/2"',s:'IPG 100647'},
+{d:'Delong Rotary Hand Slips 3 1/2"',s:'IPG 100648'},
+{d:'Delong Rotary Hand Slips 3 1/2"',s:'IPG 100651'},
+{d:'AOT slips 3 1/2" - 2 3/8" c/w bushing',s:'IPG 100610'},
+{d:'slip assembly 3 1/2" - 2 3/8"',s:'IPG 100610-1'},
+{d:'AOT slips 3 1/2" - 2 3/8" c/w bushing',s:'IPG 100630'},
+{d:'AOT slips 3 1/2" - 2 3/8" c/w bushing',s:'IPG  100631'},
+{d:'slip assembly - 2 7/8"',s:'IPG 100631-1'},
+{d:'AOT slips 5 1/2" - 2 3/8" c/w bushing ( with cable hole )',s:'IPG 100613'},
+{d:'slip assembly 5 1/2" - 2 3/8" c/w bushing ( with cable hole )',s:'IPG 100613-1'},
+{d:'AOT slips 5 1/2" - 2 3/8" c/w bushing ( with cable hole )',s:'IPG 100639'},
+{d:'slip assembly 5 1/2" - 2 3/8" c/w bushing ( with cable hole )',s:'IPG 100639-1'},
+{d:'AOT slips 5 1/2" - 2 3/8" c/w bushing ( with cable hole )',s:'IPG 100640'},
+{d:'slip assembly 5 1/2" - 2 3/8" c/w bushing ( with cable hole )',s:'IPG 100640-1'},
+{d:'Bowl Slips 2 3/8" - 3 1/2"',s:'IPG 100615'},
+{d:'Bowl Slips 2 3/8" - 3 1/2"',s:'IPG 100616'},
+{d:'20" hinge casing spider 250 Ton (bowl)',s:'IPG 100699'},
+{d:'20"-16" reducing bushing for hinde spider 250 Ton',s:'IPG 100699-1'},
+{d:'Rotary Hand Slips 20" 26 Segment ( 16"-20")',s:'IPG 100699-2'},
+{d:'20" hinge casing spider 250 Ton (bowl)',s:'IPG 100695'},
+{d:'13 3/8" hinge casing spider 200 Ton (bowl)',s:'IPG 100698'},
+{d:'13 3/8"-10 3/4" reducing bushing for hinge spider 250 Ton',s:'IPG 100698-1'},
+{d:'13 3/8"- 8 5/8" reducing bushing for hinge spider 250 Ton',s:'IPG 100698-2'},
+{d:'Rotary Hand Slips 20" 26 Segment (7"-13 3/8")',s:'IPG 100698-3'},
+{d:'8 5/8" hinge casing spider 200 Ton (bowl)',s:'IPG 100696'},
+{d:'Safety Clamp 20 " Type C',s:'IPG 100700'},
+{d:'Safety Clamp 7" - 13 3/8" type C',s:'IPG 100709'},
+{d:'Safety Clamp 7" - 13 3/8"Type C',s:'IPG 100701'},
+{d:'Safety Clamp 7" - 13 3/8"Type C',s:'IPG 100702'},
+{d:'Safety Clamp 7" - 13 3/8"Type C',s:'IPG 100718'},
+{d:'Safety Clamp 7" - 13 3/8" type C',s:'IPG 100717'},
+{d:'Safety Clamp 7" - 13 3/8"type C',s:'IPG 100703'},
+{d:'Safety Clamp 7" - 13 3/8"type C',s:'IPG 100716'},
+{d:'Safety Clamp 7" - 13 3/8"type C',s:'IPG 100705'},
+{d:'Safety Clamp 7" - 13 3/8"type C',s:'IPG 100720'},
+{d:'Safety Clamp 7" - 13 3/8"type C',s:'IPG 100719'},
+{d:'Safety Clamp 7" - 13 3/8"type C',s:'IPG 100721'},
+{d:'Safety Clamp 5 - 5 1/2" type C',s:'IPG 100704'},
+{d:'Safety Clamp 4 - 4 1/2" type C',s:'IPG 100715'},
+{d:'Safety Clamp 4 - 4 1/2" type C',s:'IPG 100708'},
+{d:'Safety Clamp type T2 7/8" - 3 1/2"',s:'IPG 100711'},
+{d:'Safety Clamp type T2 7/8" - 3 1/2"',s:'IPG 100710'},
+{d:'Safety Clamp type T2 7/8" - 3 1/2"',s:'IPG 100706'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100707'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100712'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100713'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100714'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100722'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100723'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100727'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100724'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100725'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100726'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100728'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100729'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100730'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100731'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100732'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100733'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100734'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100735'},
+{d:'Safety Clamp type T 2 7/8" - 3 1/2"',s:'IPG 100736'},
+{d:'Stabbing Guide 13 3/8"',s:'IPG 100850'},
+{d:'Stabbing Guide 9 5/8"',s:'IPG 100849'},
+{d:'Stabbing Guide 7"',s:'IPG 100848'},
+{d:'Stabbing Guide 5 1/2"',s:'IPG 100847'},
+{d:'Stabbing Guide 5"',s:'IPG 100846'},
+{d:'Stabbing Guide 4 1/2"',s:'IPG 100845'},
+{d:'Stabbing Guide 4 1/2" Ph6',s:'IPG 100841'},
+{d:'Stabbing Guide 3 1/2"',s:'IPG 100844'},
+{d:'Stabbing Guide 3 1/2" PH-6',s:'IPG 100842'},
+{d:'Stabbing Guide 2 7/8"',s:'IPG 100843'},
+{d:'Klepo 20"',s:'IPG 100800-1'},
+{d:'Klepo 20"',s:'IPG 100800-2'},
+{d:'Klepo 18 5/8"',s:'IPG 100801-1'},
+{d:'Klepo 18 5/8"',s:'IPG 100801-2'},
+{d:'Klepo 18 5/8"',s:'IPG 100801-3'},
+{d:'Klepo 17 7/8" - 18"',s:'IPG 100801-4'},
+{d:'Klepo 17 7/8" - 18"',s:'IPG 100801-5'},
+{d:'Klepo 16"',s:'IPG 100802-1'},
+{d:'Klepo 16"',s:'IPG 100802-2'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-4'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-5'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-6'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-7'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-8'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-9'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-10'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-11'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-12'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-13'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-14'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-15'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-16'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-17'},
+{d:'Klepo 13 3/8"',s:'IPG 100803-18'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-1'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-2'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-4'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-5'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-6'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-7'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-8'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-9'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-10'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-11'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-12'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-13'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-14'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-15'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-16'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-17'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-18'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-19'},
+{d:'Klepo 9 5/8"',s:'IPG 100804-20'},
+{d:'Klepo 7"',s:'IPG 100805-4'},
+{d:'Klepo 7"',s:'IPG 100805-5'},
+{d:'Klepo 7"',s:'IPG 100805-6'},
+{d:'Klepo 7"',s:'IPG 100805-7'},
+{d:'Klepo 7"',s:'IPG 100805-8'},
+{d:'Klepo 7"',s:'IPG 100805-9'},
+{d:'Klepo 7"',s:'IPG 100805-10'},
+{d:'Klepo 7"',s:'IPG 100805-11'},
+{d:'Klepo 7"',s:'IPG 100805-12'},
+{d:'Klepo 7"',s:'IPG 100805-13'},
+{d:'Klepo 7"',s:'IPG 100805-14'},
+{d:'Klepo 7"',s:'IPG 100805-15'},
+{d:'Klepo 7"',s:'IPG 100805-16'},
+{d:'Klepo 7"',s:'IPG 100805-17'},
+{d:'Casing Drifts: 20" wt. 133(OD: 18.625)',s:'IPG 100853'},
+{d:'Casing Drifts: 20" wt. 94 (OD: 18.936)',s:'IPG 100884'},
+{d:'Casing Drifts : 13 3/8" wt. 68 (O.D: 12.259)',s:'IPG 100875'},
+{d:'Casing Drifts : 13 3/8" wt. 72 (O.D: 12.191)',s:'IPG 100887'},
+{d:'Casing Drifts : 13 3/8" wt. 68 (O.D: 12.259)',s:'IPG 100888'},
+{d:'Casing Drifts : 13 3/8" wt. 68 (O.D: 12.259)',s:'IPG 100883'},
+{d:'Casing Drifts : 9 5/8" wt 53.5 (O.D: 8.379)',s:'IPG 100889'},
+{d:'Casing Drifts : 9 5/8" wt. 47 OD: 8.525',s:'IPG 100882'},
+{d:'Casing Drifts : 9 5/8" wt. 47 OD: 8.525',s:'IPG 100885'},
+{d:'Casing Drifts : 9 5/8" wt. 47 OD: 8.525',s:'IPG 100890'},
+{d:'Casing Drifts : 9 5/8" wt 43.5 (O.D: 8.599)',s:'IPG 100891'},
+{d:'Casing Drifts : 9 5/8" wt 40 (O.D: 8.679)',s:'IPG 100892'},
+{d:'Casing Drifts : 9 5/8" wt 40 (O.D: 8.679)',s:'IPG 100864'},
+{d:'Casing Drifts : 9 5/8" wt 36 (O.D: 8.765)',s:'IPG 100865'},
+{d:'Casing Drifts : 7" wt 29 (O.D:6.059)',s:'IPG 100858'},
+{d:'Casing Drifts : 7" wt 29 (O.D:6.059)',s:'IPG 100840'},
+{d:'Casing Drifts : 7" wt 32 (O.D: 5.969)',s:'IPG 100893'},
+{d:'Casing Drifts : 7" wt 32 (O.D:5.969)',s:'IPG 100880'},
+{d:'Casing Drifts : 7" wt 29 (O.D:6.059)',s:'IPG 100894'},
+{d:'Casing Drifts : 7" wt 32 (O.D:5.969)',s:'IPG 100851'},
+{d:'Casing Drifts : 7" wt 29 (O.D:6.059)',s:'IPG 100868'},
+{d:'Casing Drifts : 7" wt 29 (O.D:6.059)',s:'Sapasco 001'},
+{d:'Casing Drifts : 7" wt 26 (O.D: 6.151)',s:'IPG 100895'},
+{d:'Casing Drifts : 7" wt 23 (O.D: 6.241)',s:'IPG 100860'},
+{d:'Casing Drifts : 5" wt 18 (OD: 4.151)',s:'IPG 100879'},
+{d:'Tubing Drifts: 5" wt 15 (OD: 4.283)',s:'IPG 100839'},
+{d:'Tubing Drifts: 5" wt 18 (OD: 4.151)',s:'IPG 100881'},
+{d:'Tubing Drifts: 5" wt 15 (OD: 4.283)',s:'IPG100870'},
+{d:'Tubing Drifts: 4 1/2" wt 18.8 (O.D: 3.515)',s:'IPG 100886'},
+{d:'Tubing Drifts: 4 1/2" wt 15.5 (O.D: 3.701)',s:'IPG 100859'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.867) Teflon',s:'IPG 100852'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.867)',s:'IPG 100854'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.867) Teflon',s:'IPG 100857'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.867) Teflon',s:'IPG 100896'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.867)',s:'IPG 100897'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.867) MG Teflon',s:'IPG 100876'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.867)',s:'IPG 100874'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.867)',s:'IPG 100873'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.867)',s:'IPG 100866'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.867)',s:'IPG 100867'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.867) Teflon',s:'IPG 100877'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.625)',s:'IPG 100869'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.867) Teflon',s:'IPG 100861'},
+{d:'Tubing Drifts: 3 1/2" wt 9.2 (O.D : 2.867) Teflon',s:'IPG 100864'},
+{d:'Tubing Drifts: 2 7/8" wt 6.4 (O.D : 2.347)',s:'IPG 100855'},
+{d:'Tubing Drifts: 2 7/8" wt 6.4 (O.D : 2.347)',s:'IPG 100856'},
+{d:'Tubing Drifts: 2 7/8" wt 6.4 (O.D : 2.347)',s:'IPG 100871'},
+{d:'Tubing Drifts: 2 7/8" wt 6.4 (O.D : 2.347)',s:'IPG 100872'},
+{d:'Tubing Drifts: 2 7/8" wt 6.4 (O.D : 2.347) Teflon',s:'IPG 100862'},
+{d:'Tubing Drifts: 2 7/8" wt 6.4 (O.D : 2.347) Teflon',s:'IPG 100863'},
+{d:'Tubing Drifts: 2 7/8" wt 6.4 (O.D : 2.347)',s:'IPG 100899'},
+{d:'Tubing Drifts: 2 3/8" wt 4.7 (O.D : 1.906)',s:'IPG 100878'},
+{d:'Fill up & circulating Tool TOP Drive 13 3/8" & 9 5/8" & 7\'\'',s:'IPG 100792'},
+{d:'Fill up & circulating Tool TOP Drive 13 3/8" - 9 5/8" - 7"',s:'IPG 100798'},
+{d:'Fill up & circulating Tool TOP Drive 13 3/8" - 9 5/8" - 7"',s:'IPG 100791'},
+{d:'Fill up & circulating Tool TOP Drive 13 3/8" & 9 5/8"',s:'IPG 100793'},
+{d:'Fill up & circulating Tool TOP Drive 13 3/8" - 9"',s:'IPG 100799'},
+{d:'circulating HEAD 20"',s:'IPG 100794'},
+{d:'circulating HEAD 13 3/8"',s:'IPG 100797'},
+{d:'circulating HEAD 7"',s:'IPG 100795'},
+{d:'circulating HEAD 7"',s:'IPG 100796'},
+{d:'WinCatt 2k Computer analyzed torque (turm/torque/time)',s:'IPG 100200'},
+{d:'WinCatt 2k Computer analyzed torque (turm/torque/time',s:'IPG 100201'},
+{d:'WinCatt 2k Computer analyzed torque (turm/torque/time)',s:'Ipg 100202'},
+{d:'WinCatt 2k Computer analyzed torque (turm/torque/time)',s:'IPG 100203'},
+{d:'WinCatt 2k Computer analyzed torque (turm/torque/time)',s:'IPG 100204'},
+{d:'2 legged wire rope sling ( New )',s:'418'},
+{d:'2 legged wire rope sling ( New )',s:'419'},
+{d:'2 legged wire rope sling ( New )',s:'420'},
+{d:'2 legged wire rope sling ( New )',s:'421'},
+{d:'2 legged wire rope sling ( New )',s:'422'},
+{d:'2 legged wire rope sling',s:'2011'},
+{d:'2 legged wire rope sling',s:'CA213'},
+{d:'2 legged wire rope sling',s:'CAN 1290'},
+{d:'2 legged wire rope sling',s:'IPG 2014/1'},
+{d:'2 legged wire rope sling',s:'IPG 2014/2'},
+{d:'2 legged wire rope sling',s:'IPG 2014/3'},
+{d:'2 legged wire rope sling',s:'IPG 11725/5'},
+{d:'2 legged wire rope sling',s:'AND 2'},
+{d:'2 legged wire rope sling + shackles from 832/1 to 832/44',s:'11832/1'},
+{d:'2 legged wire rope sling',s:'11832/2'},
+{d:'2 legged wire rope sling',s:'415'},
+{d:'2 legged wire rope sling',s:'416'},
+{d:'2 legged wire rope sling',s:'417'},
+{d:'2 legged wire rope sling',s:'0020/1'},
+{d:'2 legged wire rope sling',s:'11371'},
+{d:'2 legged wire rope sling',s:'14201-1'},
+{d:'2 legged wire rope sling',s:'14201-2'},
+{d:'2 legged wire rope sling',s:'15191'},
+{d:'2 legged wire rope sling',s:'15192'},
+{d:'2 legged wire rope sling',s:'19805/40'},
+{d:'2 legged wire rope sling',s:'268-47'},
+{d:'2 legged wire rope sling',s:'15444'},
+{d:'4 legged wire rope sling',s:'11832/3'},
+{d:'4 legged wire rope sling',s:'11832/4'},
+{d:'4 legged wire rope sling',s:'11832/5'},
+{d:'4 legged wire rope sling',s:'11832/6'},
+{d:'4 legged wire rope sling',s:'11832/7'},
+{d:'4 legged wire rope sling',s:'11832/8'},
+{d:'4 legged wire rope sling',s:'11832/9'},
+{d:'4 legged wire rope sling',s:'11832/10'},
+{d:'4 legged wire rope sling',s:'11832/11'},
+{d:'4 legged wire rope sling + shackles from 859/1 to 859/28',s:'11832/12'},
+{d:'4 legged wire rope sling + shackles from 880/1 to 880/8',s:'11859/1'},
+{d:'4 legged wire rope sling',s:'11859/2'},
+{d:'4 legged wire rope sling',s:'11859/3'},
+{d:'4 legged wire rope sling',s:'11859/4'},
+{d:'4 legged wire rope sling',s:'11859/5'},
+{d:'4 legged wire rope sling + shackles from 775/1 to 775/4',s:'15577'},
+{d:'4 legged wire rope sling + shackles from 578/1 to 578/4',s:'15578'},
+{d:'4 legged wire rope sling + shackles from 577/1 to 577/4',s:'15775'},
+{d:'4 legged wire rope sling + shackles from 776/1 to 776/4',s:'15776'},
+{d:'C-Plat 5.5',s:'IPG 02'},
+{d:'C-Plat 5.5',s:'IPG 03'},
+{d:'C-Plat 5.5',s:'IPG 04'},
+{d:'C-Plat',s:'IPG 06'},
+{d:'C-Plat',s:'IPG 07'},
+{d:'C-Plat',s:'IPG 08'},
+{d:'C-Plat',s:'IPG 09'},
+{d:'C-Plat',s:'IPG 105'},
+{d:'C-Plat',s:'IPG 010'}
+];
+const EQUIPMENT_DESCRIPTIONS = [...new Set(EQUIPMENT_CATALOG.map(x=>x.d))].sort();
+
 // ── Sync ───────────────────────────────────────────────────
 function setSync(ok) {
   document.getElementById('sync-dot').className = 'sync-dot' + (ok ? '' : ' offline');
@@ -589,7 +1377,19 @@ onSnapshot(query(collection(db,'tickets'), orderBy('createdAt','desc')), snap =>
   tickets = snap.docs.map(d => ({id:d.id,...d.data()}));
   setSync(true);
   ticketCounter = tickets.reduce((m,t)=>{ const n=parseInt((t.ticketId||'TKT-000').split('-')[1]||0); return n>m?n:m; },0)+1;
-  renderTickets(); renderDashboard();
+  renderTickets(); renderDashboard(); renderTicketNumList();
+}, ()=>setSync(false));
+
+onSnapshot(query(collection(db,'serviceOrders'), orderBy('createdAt','desc')), snap => {
+  serviceOrders = snap.docs.map(d => ({id:d.id,...d.data()}));
+  setSync(true);
+  renderOrders(); populateOrderSelectForDelivery();
+}, ()=>setSync(false));
+
+onSnapshot(query(collection(db,'deliveryTickets'), orderBy('createdAt','desc')), snap => {
+  deliveryTickets = snap.docs.map(d => ({id:d.id,...d.data()}));
+  setSync(true);
+  renderDeliveries();
 }, ()=>setSync(false));
 
 onSnapshot(query(collection(db,'equipment'), orderBy('createdAt','desc')), snap => {
@@ -618,6 +1418,19 @@ const fmtDate = s => { if(!s) return '—'; const d=new Date(s); return d.toLoca
 const equipName = id => { const e=equipment.find(x=>x.id===id); return e?e.name:id; };
 const equipById = id => equipment.find(x=>x.id===id);
 
+// Keep the report's ticket-number field suggesting real, existing ticket numbers
+function renderTicketNumList(){
+  document.getElementById('ticketnum-list').innerHTML =
+    tickets.map(t=>`<option value="${(t.ticketId||'').replace(/"/g,'&quot;')}">`).join('');
+}
+
+// Populate the equipment catalog datalists (from the mechanic & handling worksheets)
+function renderEquipmentDatalists(){
+  document.getElementById('equip-desc-list').innerHTML = EQUIPMENT_DESCRIPTIONS.map(d=>`<option value="${d.replace(/"/g,'&quot;')}">`).join('');
+  document.getElementById('equip-serial-list').innerHTML = EQUIPMENT_CATALOG.map(x=>`<option value="${x.s.replace(/"/g,'&quot;')}">${x.d.replace(/"/g,'&quot;')}</option>`).join('');
+}
+renderEquipmentDatalists();
+
 function badgeHTML(status){
   const cls={open:'open','in-progress':'progress',closed:'closed',available:'available','on-site':'on-site',maintenance:'maintenance'};
   const lbl={open:'Open / مفتوحة','in-progress':'In progress / قيد التنفيذ',closed:'Closed / مغلقة',available:'Available / متاحة','on-site':'On site / في الموقع',maintenance:'Maintenance / صيانة'};
@@ -634,6 +1447,14 @@ window.showPage = function(p) {
   if(p==='tickets') renderTickets();
   if(p==='costs') renderCosts();
   if(p==='reports') renderReports();
+  if(p==='orders'){ renderOrders(); renderDeliveries(); }
+}
+
+window.showOrderStep = function(n){
+  document.querySelectorAll('.step-tab').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.order-step').forEach(el=>el.classList.remove('active'));
+  document.getElementById('step-tab-'+n).classList.add('active');
+  document.getElementById('order-step-'+n).classList.add('active');
 }
 
 // ── Dashboard ──────────────────────────────────────────────
@@ -779,7 +1600,8 @@ document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>
 window.openNewTicket = function(){
   editTicketId=null;
   document.getElementById('ticket-modal-title').textContent='New job ticket / تذكرة جديدة';
-  ['t-site','t-operator','t-customer','t-rig','t-notes'].forEach(id=>document.getElementById(id).value='');
+  ['t-site','t-customer','t-rig','t-notes'].forEach(id=>document.getElementById(id).value='');
+  setTicketOperatorField('');
   document.getElementById('t-datetime').value=nowDT();
   document.getElementById('t-status').value='open';
   document.getElementById('conflict-banner').classList.remove('show');
@@ -794,7 +1616,7 @@ window.editTicket = function(id){
   editTicketId=id;
   document.getElementById('ticket-modal-title').textContent='Edit / تعديل '+(t.ticketId||id.slice(0,6));
   document.getElementById('t-site').value=t.site||'';
-  document.getElementById('t-operator').value=t.operator||'';
+  setTicketOperatorField(t.operator||'');
   document.getElementById('t-customer').value=t.customer||'';
   document.getElementById('t-rig').value=t.rig||'';
   document.getElementById('t-datetime').value=t.datetime||nowDT();
@@ -807,7 +1629,7 @@ window.editTicket = function(id){
 
 window.saveTicket = async function(){
   const site=document.getElementById('t-site').value.trim();
-  const operator=document.getElementById('t-operator').value.trim();
+  const operator=getTicketOperatorValue();
   if(!site||!operator){ showToast('Fill in site and operator / يرجى ملء الموقع والمشغل','error'); return; }
   const selEquip=getSelEquip();
   if(getConflicts(selEquip,editTicketId).length){ showToast('Remove conflicting equipment / أزل المعدات المتعارضة','error'); return; }
@@ -827,6 +1649,24 @@ function operatorSelectOptions(selectedName){
   opts += OPERATOR_DB.map(o=>`<option value="${o.name}" data-bonus="${o.bonus}"${o.name===selectedName?' selected':''}>${o.name} (${o.bonus}/day)</option>`).join('');
   opts += `<option value="__custom__"${selectedName&&!OPERATOR_DB.some(o=>o.name===selectedName)?' selected':''}>Other / آخر…</option>`;
   return opts;
+}
+
+function setTicketOperatorField(name){
+  document.getElementById('t-operator-select').innerHTML = operatorSelectOptions(name);
+  const known = name && OPERATOR_DB.some(o=>o.name===name);
+  const custom = document.getElementById('t-operator-custom');
+  custom.style.display = (name && !known) ? '' : 'none';
+  custom.value = (name && !known) ? name : '';
+}
+window.onTicketOpSelect = function(){
+  const sel=document.getElementById('t-operator-select');
+  const custom=document.getElementById('t-operator-custom');
+  if(sel.value==='__custom__'){ custom.style.display=''; custom.value=''; custom.focus(); }
+  else{ custom.style.display='none'; custom.value=''; }
+}
+function getTicketOperatorValue(){
+  const sel=document.getElementById('t-operator-select');
+  return sel.value==='__custom__' ? document.getElementById('t-operator-custom').value.trim() : sel.value;
 }
 
 window.addCostOpRow = function(op={}){
@@ -958,6 +1798,232 @@ window.saveCost = async function(){
   }catch(e){ showToast('Error saving / خطأ في الحفظ','error'); console.error(e); }
 }
 
+// ── Orders (Step 1: Internal Service/Sales Order) ──────────
+function renderOrders(){
+  const q=(document.getElementById('order-search').value||'').toLowerCase();
+  const wrap=document.getElementById('orders-list');
+  const list=serviceOrders.filter(o=>!q||((o.orderNo||'')+(o.customer||'')+(o.rig||'')).toLowerCase().includes(q));
+  if(!list.length){ wrap.innerHTML=`<div class="empty-state">No orders yet / لا توجد طلبات</div>`; return; }
+  wrap.innerHTML = list.map(o=>`<div class="order-card">
+    <div class="order-card-top">
+      <div><div class="order-card-title">${o.orderNo||'—'} · ${o.customer||'—'}</div>
+      <div class="order-card-meta">Rig ${o.rig||'—'} · ${o.orderType==='sales'?'Sales':'Service'} · ${(o.items||[]).length} item(s)</div></div>
+      <div style="display:flex;flex-shrink:0">
+        <button class="action-btn" onclick="editOrder('${o.id}')">✎</button>
+        <button class="action-btn del" onclick="quickDeleteOrder('${o.id}','${(o.orderNo||'').replace(/'/g,"\\'")}')">✕</button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+function orderItemRowHTML(it={}){
+  orderItemCount++;
+  return `<tr id="oi-row-${orderItemCount}" data-row="${orderItemCount}">
+    <td><input type="text" class="oi-item" value="${it.item||''}" placeholder="1"></td>
+    <td><input type="text" class="oi-size" value="${it.size||''}" placeholder="-----"></td>
+    <td><input type="text" class="oi-desc" list="equip-desc-list" value="${it.description||''}" placeholder="Description"></td>
+    <td><input type="text" class="oi-qty" value="${it.qty||''}" placeholder="1"></td>
+    <td><input type="text" class="oi-from" value="${it.from||''}" placeholder="ZM"></td>
+    <td><input type="text" class="oi-asset" list="equip-serial-list" value="${it.assetNo||''}" placeholder="Asset No."></td>
+    <td><input type="text" class="oi-jc" value="${it.jcNo||''}" placeholder=""></td>
+    <td><button type="button" class="btn-remove-op" onclick="removeOrderItemRow(${orderItemCount})">✕</button></td>
+  </tr>`;
+}
+window.addOrderItemRow = function(it={}){
+  document.getElementById('order-items-body').insertAdjacentHTML('beforeend', orderItemRowHTML(it));
+}
+window.removeOrderItemRow = function(n){
+  const r=document.getElementById('oi-row-'+n); if(r) r.remove();
+}
+function getOrderItems(){
+  return [...document.querySelectorAll('#order-items-body tr')].map(row=>({
+    item:row.querySelector('.oi-item').value.trim(),
+    size:row.querySelector('.oi-size').value.trim(),
+    description:row.querySelector('.oi-desc').value.trim(),
+    qty:row.querySelector('.oi-qty').value.trim(),
+    from:row.querySelector('.oi-from').value.trim(),
+    assetNo:row.querySelector('.oi-asset').value.trim(),
+    jcNo:row.querySelector('.oi-jc').value.trim(),
+  })).filter(r=>r.description||r.assetNo||r.item);
+}
+
+window.openNewOrder = function(){
+  editOrderId=null;
+  document.getElementById('order-modal-title').innerHTML='Internal Service/Sales Order<span class="ar">طلب خدمة/بيع داخلي</span>';
+  ['o-orderno','o-orderfrom','o-orderto','o-customer','o-rig'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('o-orderdate').value=todayStr();
+  document.getElementById('o-reqdate').value=todayStr();
+  document.querySelector('input[name="o-type"][value="service"]').checked=true;
+  document.getElementById('order-items-body').innerHTML=''; addOrderItemRow();
+  document.getElementById('delete-order-btn').style.display='none';
+  openModal('order-modal');
+}
+
+window.editOrder = function(id){
+  const o=serviceOrders.find(x=>x.id===id); if(!o) return;
+  editOrderId=id;
+  document.getElementById('order-modal-title').innerHTML='Edit order '+(o.orderNo||'')+'<span class="ar">تعديل الطلب</span>';
+  document.getElementById('o-orderno').value=o.orderNo||'';
+  document.getElementById('o-orderdate').value=o.orderDate||'';
+  document.getElementById('o-orderfrom').value=o.orderFrom||'';
+  document.getElementById('o-orderto').value=o.orderTo||'';
+  document.getElementById('o-customer').value=o.customer||'';
+  document.getElementById('o-rig').value=o.rig||'';
+  document.getElementById('o-reqdate').value=o.requestedDate||'';
+  document.querySelector(`input[name="o-type"][value="${o.orderType||'service'}"]`).checked=true;
+  document.getElementById('order-items-body').innerHTML='';
+  (o.items&&o.items.length?o.items:[{}]).forEach(it=>addOrderItemRow(it));
+  document.getElementById('delete-order-btn').style.display='inline-flex';
+  openModal('order-modal');
+}
+
+window.saveOrder = async function(){
+  const orderNo=document.getElementById('o-orderno').value.trim();
+  if(!orderNo){ showToast('Enter the order number / أدخل رقم الطلب','error'); return; }
+  const obj={
+    orderNo,
+    orderDate:document.getElementById('o-orderdate').value,
+    orderFrom:document.getElementById('o-orderfrom').value.trim(),
+    orderTo:document.getElementById('o-orderto').value.trim(),
+    customer:document.getElementById('o-customer').value.trim(),
+    rig:document.getElementById('o-rig').value.trim(),
+    requestedDate:document.getElementById('o-reqdate').value,
+    orderType:document.querySelector('input[name="o-type"]:checked').value,
+    items:getOrderItems(),
+    updatedAt:serverTimestamp()
+  };
+  try{
+    if(editOrderId){ await updateDoc(doc(db,'serviceOrders',editOrderId),obj); showToast('Order updated / تم التحديث','success'); }
+    else{ await addDoc(collection(db,'serviceOrders'),{...obj,createdAt:serverTimestamp()}); showToast('Order created / تم الإنشاء','success'); }
+    closeModal('order-modal');
+  }catch(e){ showToast('Error saving / خطأ في الحفظ','error'); console.error(e); }
+}
+
+window.quickDeleteOrder = (id,label) => showConfirm(`Delete order ${label}?`,`حذف الطلب ${label}؟`,'This will permanently remove this order.','سيتم حذف هذا الطلب نهائياً.',async()=>{ await deleteDoc(doc(db,'serviceOrders',id)); showToast('Order deleted / تم الحذف','success'); });
+window.confirmDeleteOrder = () => { const o=serviceOrders.find(x=>x.id===editOrderId); if(!o)return; showConfirm(`Delete order ${o.orderNo||''}?`,`حذف الطلب ${o.orderNo||''}؟`,'This will permanently remove this order.','سيتم حذف هذا الطلب نهائياً.',async()=>{ await deleteDoc(doc(db,'serviceOrders',editOrderId)); showToast('Order deleted / تم الحذف','success'); closeModal('order-modal'); }); };
+
+// ── Delivery Tickets (Step 2) ───────────────────────────────
+function populateOrderSelectForDelivery(){
+  const sel=document.getElementById('d-orderid'); if(!sel) return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">— Select order / اختر الطلب —</option>'+
+    serviceOrders.map(o=>`<option value="${o.id}"${o.id===cur?' selected':''}>${o.orderNo||o.id.slice(0,6)} — ${o.customer||''}${o.rig?' · Rig '+o.rig:''}</option>`).join('');
+}
+window.onDeliveryOrderChange = function(){
+  const sel=document.getElementById('d-orderid');
+  const o=serviceOrders.find(x=>x.id===sel.value);
+  const disp=document.getElementById('d-rig-display');
+  document.getElementById('d-rig').value = o?(o.rig||''):'';
+  disp.innerHTML = o ? `${o.rig||'—'}<span class="ar">من الطلب ${o.orderNo||''}</span>` : '— select linked order —<span class="ar">اختر الطلب المرتبط أولاً</span>';
+}
+
+function renderDeliveries(){
+  const q=(document.getElementById('delivery-search').value||'').toLowerCase();
+  const wrap=document.getElementById('deliveries-list');
+  const list=deliveryTickets.filter(d=>!q||((d.ticketNo||'')+(d.rig||'')+(d.shipTo||'')).toLowerCase().includes(q));
+  if(!list.length){ wrap.innerHTML=`<div class="empty-state">No delivery tickets yet / لا توجد تذاكر تسليم</div>`; return; }
+  wrap.innerHTML = list.map(d=>{
+    const o=serviceOrders.find(x=>x.id===d.orderId);
+    return `<div class="order-card">
+    <div class="order-card-top">
+      <div><div class="order-card-title">${d.ticketNo||'—'} · Rig ${d.rig||'—'}</div>
+      <div class="order-card-meta">${d.shipFrom||'—'} → ${d.shipTo||'—'} · Order ${o?o.orderNo:'—'} · ${(d.lines||[]).length} line(s)</div></div>
+      <div style="display:flex;flex-shrink:0">
+        <button class="action-btn" onclick="editDelivery('${d.id}')">✎</button>
+        <button class="action-btn del" onclick="quickDeleteDelivery('${d.id}','${(d.ticketNo||'').replace(/'/g,"\\'")}')">✕</button>
+      </div>
+    </div>
+  </div>`;
+  }).join('');
+}
+
+function deliveryLineRowHTML(ln={}){
+  deliveryLineCount++;
+  return `<tr id="dl-row-${deliveryLineCount}" data-row="${deliveryLineCount}">
+    <td><input type="text" class="dl-line" value="${ln.lineNo||''}" placeholder="1"></td>
+    <td><input type="text" class="dl-qty" value="${ln.qty||''}" placeholder="1"></td>
+    <td><input type="text" class="dl-desc" list="equip-desc-list" value="${ln.description||''}" placeholder="Description"></td>
+    <td><input type="text" class="dl-serial" list="equip-serial-list" value="${ln.serial||''}" placeholder="Serial No."></td>
+    <td><button type="button" class="btn-remove-op" onclick="removeDeliveryLineRow(${deliveryLineCount})">✕</button></td>
+  </tr>`;
+}
+window.addDeliveryLineRow = function(ln={}){
+  document.getElementById('delivery-lines-body').insertAdjacentHTML('beforeend', deliveryLineRowHTML(ln));
+}
+window.removeDeliveryLineRow = function(n){
+  const r=document.getElementById('dl-row-'+n); if(r) r.remove();
+}
+function getDeliveryLines(){
+  return [...document.querySelectorAll('#delivery-lines-body tr')].map(row=>({
+    lineNo:row.querySelector('.dl-line').value.trim(),
+    qty:row.querySelector('.dl-qty').value.trim(),
+    description:row.querySelector('.dl-desc').value.trim(),
+    serial:row.querySelector('.dl-serial').value.trim(),
+  })).filter(r=>r.description||r.serial||r.lineNo);
+}
+
+window.openNewDelivery = function(){
+  editDeliveryId=null;
+  document.getElementById('delivery-modal-title').innerHTML='Delivery Ticket<span class="ar">تذكرة تسليم</span>';
+  populateOrderSelectForDelivery();
+  ['d-ticketno','d-shipfrom','d-shipto','d-field','d-well'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('d-orderid').value='';
+  document.getElementById('d-rig').value='';
+  document.getElementById('d-rig-display').innerHTML='— select linked order —<span class="ar">اختر الطلب المرتبط أولاً</span>';
+  document.getElementById('d-date').value=todayStr();
+  document.getElementById('delivery-lines-body').innerHTML=''; addDeliveryLineRow();
+  document.getElementById('delete-delivery-btn').style.display='none';
+  openModal('delivery-modal');
+}
+
+window.editDelivery = function(id){
+  const d=deliveryTickets.find(x=>x.id===id); if(!d) return;
+  editDeliveryId=id;
+  document.getElementById('delivery-modal-title').innerHTML='Edit delivery ticket '+(d.ticketNo||'')+'<span class="ar">تعديل تذكرة التسليم</span>';
+  populateOrderSelectForDelivery();
+  document.getElementById('d-ticketno').value=d.ticketNo||'';
+  document.getElementById('d-orderid').value=d.orderId||'';
+  document.getElementById('d-shipfrom').value=d.shipFrom||'';
+  document.getElementById('d-shipto').value=d.shipTo||'';
+  document.getElementById('d-field').value=d.field||'';
+  document.getElementById('d-well').value=d.well||'';
+  document.getElementById('d-rig').value=d.rig||'';
+  const o=serviceOrders.find(x=>x.id===d.orderId);
+  document.getElementById('d-rig-display').innerHTML = d.rig ? `${d.rig}<span class="ar">من الطلب ${o?o.orderNo:''}</span>` : '— select linked order —<span class="ar">اختر الطلب المرتبط أولاً</span>';
+  document.getElementById('d-date').value=d.date||'';
+  document.getElementById('delivery-lines-body').innerHTML='';
+  (d.lines&&d.lines.length?d.lines:[{}]).forEach(ln=>addDeliveryLineRow(ln));
+  document.getElementById('delete-delivery-btn').style.display='inline-flex';
+  openModal('delivery-modal');
+}
+
+window.saveDelivery = async function(){
+  const ticketNo=document.getElementById('d-ticketno').value.trim();
+  const orderId=document.getElementById('d-orderid').value;
+  if(!ticketNo){ showToast('Enter the delivery ticket number / أدخل رقم تذكرة التسليم','error'); return; }
+  if(!orderId){ showToast('Select the linked internal order / اختر الطلب الداخلي المرتبط','error'); return; }
+  const o=serviceOrders.find(x=>x.id===orderId);
+  const obj={
+    ticketNo, orderId,
+    shipFrom:document.getElementById('d-shipfrom').value.trim(),
+    shipTo:document.getElementById('d-shipto').value.trim(),
+    field:document.getElementById('d-field').value.trim(),
+    well:document.getElementById('d-well').value.trim(),
+    rig: (o?o.rig:'') || document.getElementById('d-rig').value.trim(),
+    date:document.getElementById('d-date').value,
+    lines:getDeliveryLines(),
+    updatedAt:serverTimestamp()
+  };
+  try{
+    if(editDeliveryId){ await updateDoc(doc(db,'deliveryTickets',editDeliveryId),obj); showToast('Delivery ticket updated / تم التحديث','success'); }
+    else{ await addDoc(collection(db,'deliveryTickets'),{...obj,createdAt:serverTimestamp()}); showToast('Delivery ticket created / تم الإنشاء','success'); }
+    closeModal('delivery-modal');
+  }catch(e){ showToast('Error saving / خطأ في الحفظ','error'); console.error(e); }
+}
+
+window.quickDeleteDelivery = (id,label) => showConfirm(`Delete delivery ticket ${label}?`,`حذف تذكرة التسليم ${label}؟`,'This will permanently remove this delivery ticket.','سيتم حذف هذه التذكرة نهائياً.',async()=>{ await deleteDoc(doc(db,'deliveryTickets',id)); showToast('Delivery ticket deleted / تم الحذف','success'); });
+window.confirmDeleteDelivery = () => { const d=deliveryTickets.find(x=>x.id===editDeliveryId); if(!d)return; showConfirm(`Delete delivery ticket ${d.ticketNo||''}?`,`حذف تذكرة التسليم ${d.ticketNo||''}؟`,'This will permanently remove this delivery ticket.','سيتم حذف هذه التذكرة نهائياً.',async()=>{ await deleteDoc(doc(db,'deliveryTickets',editDeliveryId)); showToast('Delivery ticket deleted / تم الحذف','success'); closeModal('delivery-modal'); }); };
+
 // ── Delete ─────────────────────────────────────────────────
 function showConfirm(titleEn, titleAr, bodyEn, bodyAr, onConfirm){
   document.getElementById('confirm-title').innerHTML=`${titleEn}<span class="ar">${titleAr}</span>`;
@@ -986,12 +2052,28 @@ let operatorCount=0;
 window.addOperatorField = function(val=''){
   operatorCount++;
   const list=document.getElementById('operators-list');
+  const known = val && OPERATOR_DB.some(o=>o.name===val);
   const row=document.createElement('div'); row.className='operator-row'; row.id='op-row-'+operatorCount;
-  row.innerHTML=`<input type="text" placeholder="Operator full name / اسم المشغل" value="${val}"><button type="button" class="btn-remove-op" onclick="removeOp(${operatorCount})">✕</button>`;
+  row.innerHTML=`<select class="op-select" onchange="onReportOpSelect(${operatorCount})">${operatorSelectOptions(val)}</select>
+    <input type="text" class="op-custom" placeholder="Name / الاسم" style="display:${val&&!known?'':'none'}" value="${val&&!known?val:''}">
+    <button type="button" class="btn-remove-op" onclick="removeOp(${operatorCount})">✕</button>`;
   list.appendChild(row);
 }
-window.removeOp = id => { const r=document.getElementById('op-row-'+id); if(r&&document.querySelectorAll('.operator-row').length>1) r.remove(); else if(r) r.querySelector('input').value=''; };
-const getOperators = () => [...document.querySelectorAll('.operator-row input')].map(i=>i.value.trim()).filter(Boolean);
+window.onReportOpSelect = function(rowNum){
+  const row=document.getElementById('op-row-'+rowNum);
+  const sel=row.querySelector('.op-select'); const custom=row.querySelector('.op-custom');
+  if(sel.value==='__custom__'){ custom.style.display=''; custom.value=''; custom.focus(); }
+  else{ custom.style.display='none'; custom.value=''; }
+}
+window.removeOp = id => {
+  const r=document.getElementById('op-row-'+id);
+  if(r&&document.querySelectorAll('.operator-row').length>1) r.remove();
+  else if(r){ r.querySelector('.op-select').value=''; r.querySelector('.op-custom').style.display='none'; r.querySelector('.op-custom').value=''; }
+};
+const getOperators = () => [...document.querySelectorAll('.operator-row')].map(row=>{
+  const sel=row.querySelector('.op-select');
+  return sel.value==='__custom__' ? row.querySelector('.op-custom').value.trim() : sel.value;
+}).filter(Boolean);
 
 document.getElementById('f-date').value=todayStr();
 addOperatorField();

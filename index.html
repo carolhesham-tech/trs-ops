@@ -363,6 +363,7 @@ tr:hover td{background:#fafaf8}
     <div class="table-wrap"><table>
       <thead><tr>
         <th>Ticket #<span class="ar">رقم التذكرة</span></th>
+        <th>Order<span class="ar">الطلب</span></th>
         <th>Customer<span class="ar">العميل</span></th>
         <th>Rig<span class="ar">الحفارة</span></th>
         <th>Site<span class="ar">الموقع</span></th>
@@ -434,9 +435,9 @@ tr:hover td{background:#fafaf8}
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <button class="bnav-btn active" onclick="showPage('dashboard')" id="nav-dashboard"><span class="icon">⊞</span>Dashboard<span class="ar">لوحة التحكم</span></button>
-  <button class="bnav-btn" onclick="showPage('report')" id="nav-report"><span class="icon">✎</span>Report<span class="ar">تقرير</span></button>
   <button class="bnav-btn" onclick="showPage('orders')" id="nav-orders">Orders<span class="ar">الطلبات</span></button>
   <button class="bnav-btn" onclick="showPage('reports')" id="nav-reports"><span class="icon">☰</span>Reports<span class="ar">التقارير</span></button>
+  <button class="bnav-btn" onclick="showPage('report')" id="nav-report"><span class="icon">✎</span>Report<span class="ar">تقرير</span></button>
   <button class="bnav-btn" onclick="showPage('tickets')" id="nav-tickets"><span class="icon">🎫</span>Tickets<span class="ar">التذاكر</span></button>
   <button class="bnav-btn" onclick="showPage('costs')" id="nav-costs"><span class="icon">💰</span>Cost<span class="ar">التكلفة</span></button>
 </nav>
@@ -473,6 +474,11 @@ tr:hover td{background:#fafaf8}
       <div class="field">
         <label>Rig number<span class="ar">رقم الحفارة</span></label>
         <input type="text" id="t-rig" placeholder="e.g. Rig-12">
+      </div>
+      <div class="field">
+        <label>Linked order (optional)<span class="ar">الطلب المرتبط (اختياري)</span></label>
+        <input type="text" id="t-order-search" list="order-no-list" placeholder="Search order no. / ابحث برقم الطلب" oninput="onTicketOrderSearch()">
+        <input type="hidden" id="t-orderid">
       </div>
       <div class="field">
         <label>Date & time<span class="ar">التاريخ والوقت</span></label>
@@ -652,7 +658,8 @@ tr:hover td{background:#fafaf8}
       </div>
       <div class="field">
         <label>Linked Internal Order <span class="req">*</span><span class="ar">الطلب الداخلي المرتبط</span></label>
-        <select id="d-orderid" onchange="onDeliveryOrderChange()"></select>
+        <input type="text" id="d-order-search" list="order-no-list" placeholder="Search order no., customer or rig / ابحث" oninput="onDeliveryOrderSearch()">
+        <input type="hidden" id="d-orderid">
       </div>
       <div class="field">
         <label>Ship From<span class="ar">الشحن من</span></label>
@@ -725,6 +732,7 @@ tr:hover td{background:#fafaf8}
 <datalist id="equip-desc-list"></datalist>
 <datalist id="equip-serial-list"></datalist>
 <datalist id="ticketnum-list"></datalist>
+<datalist id="order-no-list"></datalist>
 
 </div><!-- /app -->
 
@@ -1383,7 +1391,7 @@ onSnapshot(query(collection(db,'tickets'), orderBy('createdAt','desc')), snap =>
 onSnapshot(query(collection(db,'serviceOrders'), orderBy('createdAt','desc')), snap => {
   serviceOrders = snap.docs.map(d => ({id:d.id,...d.data()}));
   setSync(true);
-  renderOrders(); populateOrderSelectForDelivery();
+  renderOrders(); populateOrderSelectForDelivery(); renderTickets();
 }, ()=>setSync(false));
 
 onSnapshot(query(collection(db,'deliveryTickets'), orderBy('createdAt','desc')), snap => {
@@ -1483,9 +1491,15 @@ function renderDashboard(){
 function renderTickets(){
   const q=(document.getElementById('ticket-search').value||'').toLowerCase();
   const f=document.getElementById('ticket-filter').value;
-  const list=tickets.filter(t=>(!q||((t.site||'')+(t.operator||'')).toLowerCase().includes(q))&&(!f||t.status===f));
-  document.getElementById('tickets-body').innerHTML = list.map(t=>`<tr>
+  const list=tickets.filter(t=>{
+    const o=serviceOrders.find(x=>x.id===t.orderId);
+    return (!q||((t.site||'')+(t.operator||'')+(o?.orderNo||'')).toLowerCase().includes(q))&&(!f||t.status===f);
+  });
+  document.getElementById('tickets-body').innerHTML = list.map(t=>{
+    const o=serviceOrders.find(x=>x.id===t.orderId);
+    return `<tr>
     <td><span class="ticket-id">${t.ticketId||t.id.slice(0,6)}</span></td>
+    <td>${o?`<span class="ticket-id">${o.orderNo}</span>`:'<span style="color:#bbb">—</span>'}</td>
     <td>${t.customer||'—'}</td>
     <td>${t.rig||'—'}</td>
     <td>${t.site||'—'}</td><td>${t.operator||'—'}</td>
@@ -1496,8 +1510,9 @@ function renderTickets(){
       <button class="action-btn" onclick="editTicket('${t.id}')">✎</button>
       <button class="action-btn" title="Cost sheet / ورقة تكلفة" onclick="openCostForTicket('${t.id}')">💰</button>
       <button class="action-btn del" onclick="quickDeleteTicket('${t.id}','${t.ticketId||''}')">✕</button>
-    </td></tr>`).join('') ||
-    `<tr><td colspan="9"><div class="empty-state">No tickets / لا توجد تذاكر</div></td></tr>`;
+    </td></tr>`;
+  }).join('') ||
+    `<tr><td colspan="10"><div class="empty-state">No tickets / لا توجد تذاكر</div></td></tr>`;
 }
 
 // ── Cost of each job ───────────────────────────────────────
@@ -1600,7 +1615,8 @@ document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>
 window.openNewTicket = function(){
   editTicketId=null;
   document.getElementById('ticket-modal-title').textContent='New job ticket / تذكرة جديدة';
-  ['t-site','t-customer','t-rig','t-notes'].forEach(id=>document.getElementById(id).value='');
+  ['t-site','t-customer','t-rig','t-notes','t-order-search'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('t-orderid').value='';
   setTicketOperatorField('');
   document.getElementById('t-datetime').value=nowDT();
   document.getElementById('t-status').value='open';
@@ -1611,6 +1627,15 @@ window.openNewTicket = function(){
   openModal('ticket-modal');
 }
 
+window.onTicketOrderSearch = function(){
+  const o=resolveOrderBySearch(document.getElementById('t-order-search').value);
+  document.getElementById('t-orderid').value = o?o.id:'';
+  if(o){
+    if(!document.getElementById('t-rig').value.trim()) document.getElementById('t-rig').value=o.rig||'';
+    if(!document.getElementById('t-customer').value.trim()) document.getElementById('t-customer').value=o.customer||'';
+  }
+}
+
 window.editTicket = function(id){
   const t=tickets.find(x=>x.id===id); if(!t) return;
   editTicketId=id;
@@ -1619,6 +1644,9 @@ window.editTicket = function(id){
   setTicketOperatorField(t.operator||'');
   document.getElementById('t-customer').value=t.customer||'';
   document.getElementById('t-rig').value=t.rig||'';
+  const linkedOrder=serviceOrders.find(x=>x.id===t.orderId);
+  document.getElementById('t-order-search').value=linkedOrder?(linkedOrder.orderNo||''):'';
+  document.getElementById('t-orderid').value=t.orderId||'';
   document.getElementById('t-datetime').value=t.datetime||nowDT();
   document.getElementById('t-status').value=t.status||'open';
   document.getElementById('t-notes').value=t.notes||'';
@@ -1633,7 +1661,8 @@ window.saveTicket = async function(){
   if(!site||!operator){ showToast('Fill in site and operator / يرجى ملء الموقع والمشغل','error'); return; }
   const selEquip=getSelEquip();
   if(getConflicts(selEquip,editTicketId).length){ showToast('Remove conflicting equipment / أزل المعدات المتعارضة','error'); return; }
-  const obj={site,operator,customer:document.getElementById('t-customer').value.trim(),rig:document.getElementById('t-rig').value.trim(),datetime:document.getElementById('t-datetime').value,status:document.getElementById('t-status').value,equipment:selEquip,notes:document.getElementById('t-notes').value.trim(),updatedAt:serverTimestamp()};
+  const linkedOrder=resolveOrderBySearch(document.getElementById('t-order-search').value) || serviceOrders.find(x=>x.id===document.getElementById('t-orderid').value) || null;
+  const obj={site,operator,customer:document.getElementById('t-customer').value.trim(),rig:document.getElementById('t-rig').value.trim(),datetime:document.getElementById('t-datetime').value,status:document.getElementById('t-status').value,equipment:selEquip,notes:document.getElementById('t-notes').value.trim(),orderId:linkedOrder?linkedOrder.id:'',updatedAt:serverTimestamp()};
   try{
     if(editTicketId){ await updateDoc(doc(db,'tickets',editTicketId),obj); showToast('Ticket updated / تم التحديث','success'); }
     else{ await addDoc(collection(db,'tickets'),{...obj,ticketId:'TKT-'+pad(ticketCounter),createdAt:serverTimestamp()}); showToast('Ticket created / تم الإنشاء','success'); }
@@ -1824,7 +1853,7 @@ function orderItemRowHTML(it={}){
     <td><input type="text" class="oi-desc" list="equip-desc-list" value="${it.description||''}" placeholder="Description"></td>
     <td><input type="text" class="oi-qty" value="${it.qty||''}" placeholder="1"></td>
     <td><input type="text" class="oi-from" value="${it.from||''}" placeholder="ZM"></td>
-    <td><input type="text" class="oi-asset" list="equip-serial-list" value="${it.assetNo||''}" placeholder="Asset No."></td>
+    <td><input type="text" class="oi-asset" value="${it.assetNo||''}" placeholder="Asset No."></td>
     <td><input type="text" class="oi-jc" value="${it.jcNo||''}" placeholder=""></td>
     <td><button type="button" class="btn-remove-op" onclick="removeOrderItemRow(${orderItemCount})">✕</button></td>
   </tr>`;
@@ -1904,23 +1933,32 @@ window.confirmDeleteOrder = () => { const o=serviceOrders.find(x=>x.id===editOrd
 
 // ── Delivery Tickets (Step 2) ───────────────────────────────
 function populateOrderSelectForDelivery(){
-  const sel=document.getElementById('d-orderid'); if(!sel) return;
-  const cur=sel.value;
-  sel.innerHTML='<option value="">— Select order / اختر الطلب —</option>'+
-    serviceOrders.map(o=>`<option value="${o.id}"${o.id===cur?' selected':''}>${o.orderNo||o.id.slice(0,6)} — ${o.customer||''}${o.rig?' · Rig '+o.rig:''}</option>`).join('');
+  const dl=document.getElementById('order-no-list'); if(!dl) return;
+  dl.innerHTML = serviceOrders.map(o=>`<option value="${(o.orderNo||'').replace(/"/g,'&quot;')}">${(o.customer||'')}${o.rig?' · Rig '+o.rig:''}</option>`).join('');
 }
-window.onDeliveryOrderChange = function(){
-  const sel=document.getElementById('d-orderid');
-  const o=serviceOrders.find(x=>x.id===sel.value);
+function resolveOrderBySearch(val){
+  val=(val||'').trim();
+  if(!val) return null;
+  return serviceOrders.find(x=>(x.orderNo||'').trim()===val) || null;
+}
+window.onDeliveryOrderSearch = function(){
+  const val=document.getElementById('d-order-search').value;
+  const o=resolveOrderBySearch(val);
   const disp=document.getElementById('d-rig-display');
-  document.getElementById('d-rig').value = o?(o.rig||''):'';
-  disp.innerHTML = o ? `${o.rig||'—'}<span class="ar">من الطلب ${o.orderNo||''}</span>` : '— select linked order —<span class="ar">اختر الطلب المرتبط أولاً</span>';
+  document.getElementById('d-orderid').value = o? o.id : '';
+  document.getElementById('d-rig').value = o? (o.rig||'') : '';
+  if(o) disp.innerHTML = `${o.rig||'—'}<span class="ar">من الطلب ${o.orderNo||''}</span>`;
+  else if(val.trim()) disp.innerHTML = `<span style="color:#A32D2D">No matching order — pick one from the suggestions<span class="ar">لا يوجد طلب مطابق — اختر من الاقتراحات</span></span>`;
+  else disp.innerHTML = '— search for the linked order —<span class="ar">ابحث عن الطلب المرتبط أولاً</span>';
 }
 
 function renderDeliveries(){
   const q=(document.getElementById('delivery-search').value||'').toLowerCase();
   const wrap=document.getElementById('deliveries-list');
-  const list=deliveryTickets.filter(d=>!q||((d.ticketNo||'')+(d.rig||'')+(d.shipTo||'')).toLowerCase().includes(q));
+  const list=deliveryTickets.filter(d=>{
+    const o=serviceOrders.find(x=>x.id===d.orderId);
+    return !q||((d.ticketNo||'')+(d.rig||'')+(d.shipTo||'')+(o?.orderNo||'')).toLowerCase().includes(q);
+  });
   if(!list.length){ wrap.innerHTML=`<div class="empty-state">No delivery tickets yet / لا توجد تذاكر تسليم</div>`; return; }
   wrap.innerHTML = list.map(d=>{
     const o=serviceOrders.find(x=>x.id===d.orderId);
@@ -1943,7 +1981,7 @@ function deliveryLineRowHTML(ln={}){
     <td><input type="text" class="dl-line" value="${ln.lineNo||''}" placeholder="1"></td>
     <td><input type="text" class="dl-qty" value="${ln.qty||''}" placeholder="1"></td>
     <td><input type="text" class="dl-desc" list="equip-desc-list" value="${ln.description||''}" placeholder="Description"></td>
-    <td><input type="text" class="dl-serial" list="equip-serial-list" value="${ln.serial||''}" placeholder="Serial No."></td>
+    <td><input type="text" class="dl-serial" value="${ln.serial||''}" placeholder="Serial No."></td>
     <td><button type="button" class="btn-remove-op" onclick="removeDeliveryLineRow(${deliveryLineCount})">✕</button></td>
   </tr>`;
 }
@@ -1966,10 +2004,10 @@ window.openNewDelivery = function(){
   editDeliveryId=null;
   document.getElementById('delivery-modal-title').innerHTML='Delivery Ticket<span class="ar">تذكرة تسليم</span>';
   populateOrderSelectForDelivery();
-  ['d-ticketno','d-shipfrom','d-shipto','d-field','d-well'].forEach(id=>document.getElementById(id).value='');
+  ['d-ticketno','d-shipfrom','d-shipto','d-field','d-well','d-order-search'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('d-orderid').value='';
   document.getElementById('d-rig').value='';
-  document.getElementById('d-rig-display').innerHTML='— select linked order —<span class="ar">اختر الطلب المرتبط أولاً</span>';
+  document.getElementById('d-rig-display').innerHTML='— search for the linked order —<span class="ar">ابحث عن الطلب المرتبط أولاً</span>';
   document.getElementById('d-date').value=todayStr();
   document.getElementById('delivery-lines-body').innerHTML=''; addDeliveryLineRow();
   document.getElementById('delete-delivery-btn').style.display='none';
@@ -1982,14 +2020,15 @@ window.editDelivery = function(id){
   document.getElementById('delivery-modal-title').innerHTML='Edit delivery ticket '+(d.ticketNo||'')+'<span class="ar">تعديل تذكرة التسليم</span>';
   populateOrderSelectForDelivery();
   document.getElementById('d-ticketno').value=d.ticketNo||'';
+  const o=serviceOrders.find(x=>x.id===d.orderId);
+  document.getElementById('d-order-search').value=o?(o.orderNo||''):'';
   document.getElementById('d-orderid').value=d.orderId||'';
   document.getElementById('d-shipfrom').value=d.shipFrom||'';
   document.getElementById('d-shipto').value=d.shipTo||'';
   document.getElementById('d-field').value=d.field||'';
   document.getElementById('d-well').value=d.well||'';
   document.getElementById('d-rig').value=d.rig||'';
-  const o=serviceOrders.find(x=>x.id===d.orderId);
-  document.getElementById('d-rig-display').innerHTML = d.rig ? `${d.rig}<span class="ar">من الطلب ${o?o.orderNo:''}</span>` : '— select linked order —<span class="ar">اختر الطلب المرتبط أولاً</span>';
+  document.getElementById('d-rig-display').innerHTML = d.rig ? `${d.rig}<span class="ar">من الطلب ${o?o.orderNo:''}</span>` : '— search for the linked order —<span class="ar">ابحث عن الطلب المرتبط أولاً</span>';
   document.getElementById('d-date').value=d.date||'';
   document.getElementById('delivery-lines-body').innerHTML='';
   (d.lines&&d.lines.length?d.lines:[{}]).forEach(ln=>addDeliveryLineRow(ln));
@@ -1999,17 +2038,16 @@ window.editDelivery = function(id){
 
 window.saveDelivery = async function(){
   const ticketNo=document.getElementById('d-ticketno').value.trim();
-  const orderId=document.getElementById('d-orderid').value;
+  const o=resolveOrderBySearch(document.getElementById('d-order-search').value) || serviceOrders.find(x=>x.id===document.getElementById('d-orderid').value);
   if(!ticketNo){ showToast('Enter the delivery ticket number / أدخل رقم تذكرة التسليم','error'); return; }
-  if(!orderId){ showToast('Select the linked internal order / اختر الطلب الداخلي المرتبط','error'); return; }
-  const o=serviceOrders.find(x=>x.id===orderId);
+  if(!o){ showToast('Search and pick a valid linked order / ابحث واختر طلباً صحيحاً','error'); return; }
   const obj={
-    ticketNo, orderId,
+    ticketNo, orderId:o.id,
     shipFrom:document.getElementById('d-shipfrom').value.trim(),
     shipTo:document.getElementById('d-shipto').value.trim(),
     field:document.getElementById('d-field').value.trim(),
     well:document.getElementById('d-well').value.trim(),
-    rig: (o?o.rig:'') || document.getElementById('d-rig').value.trim(),
+    rig: o.rig || document.getElementById('d-rig').value.trim(),
     date:document.getElementById('d-date').value,
     lines:getDeliveryLines(),
     updatedAt:serverTimestamp()

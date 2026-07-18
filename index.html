@@ -532,7 +532,7 @@ tr:hover td{background:#fafaf8}
     <div class="form-grid">
       <div class="field" style="grid-column:1/-1">
         <label>Linked service ticket <span class="req">*</span><span class="ar">تذكرة الخدمة المرتبطة</span></label>
-        <select id="c-ticket"></select>
+        <select id="c-ticket" onchange="onCostTicketChange()"></select>
       </div>
     </div>
 
@@ -1684,7 +1684,7 @@ window.saveTicket = async function(){
   const selEquip=getSelEquip();
   if(getConflicts(selEquip,editTicketId).length){ showToast('Remove conflicting equipment / أزل المعدات المتعارضة','error'); return; }
   const linkedOrder=resolveOrderBySearch(document.getElementById('t-order-search').value) || serviceOrders.find(x=>x.id===document.getElementById('t-orderid').value) || null;
-  const obj={site,operator,customer:document.getElementById('t-customer').value.trim(),rig:document.getElementById('t-rig').value.trim(),datetime:document.getElementById('t-datetime').value,status:document.getElementById('t-status').value,equipment:selEquip,notes:document.getElementById('t-notes').value.trim(),orderId:linkedOrder?linkedOrder.id:'',updatedAt:serverTimestamp()};
+  const obj={site,operator,operators:[operator],customer:document.getElementById('t-customer').value.trim(),rig:document.getElementById('t-rig').value.trim(),datetime:document.getElementById('t-datetime').value,status:document.getElementById('t-status').value,equipment:selEquip,notes:document.getElementById('t-notes').value.trim(),orderId:linkedOrder?linkedOrder.id:'',updatedAt:serverTimestamp()};
   try{
     if(editTicketId){ await updateDoc(doc(db,'tickets',editTicketId),obj); showToast('Ticket updated / تم التحديث','success'); }
     else{ await addDoc(collection(db,'tickets'),{...obj,ticketId:'TKT-'+pad(ticketCounter),createdAt:serverTimestamp()}); showToast('Ticket created / تم الإنشاء','success'); }
@@ -1724,11 +1724,12 @@ window.addCostOpRow = function(op={}){
   costOpCount++;
   const list=document.getElementById('cost-op-list');
   const row=document.createElement('div'); row.className='cost-op-row'; row.id='cop-row-'+costOpCount;
-  const known = op.name && OPERATOR_DB.some(o=>o.name===op.name);
+  const known = op.name && OPERATOR_DB.find(o=>o.name===op.name);
+  const bonusVal = op.bonus ?? (known ? known.bonus : '');
   row.innerHTML = `
     <select class="cop-name" onchange="onCostOpSelect(${costOpCount})">${operatorSelectOptions(op.name)}</select>
     <input type="text" class="cop-name-custom" placeholder="Name / الاسم" style="display:${op.name&&!known?'':'none'}" value="${op.name&&!known?op.name:''}" oninput="recalcCostTotals()">
-    <input type="number" class="cop-bonus" min="0" step="0.01" placeholder="Bonus/day" value="${op.bonus??''}" oninput="recalcCostTotals()">
+    <input type="number" class="cop-bonus" min="0" step="0.01" placeholder="Bonus/day" value="${bonusVal}" oninput="recalcCostTotals()">
     <input type="number" class="cop-days" min="0" step="0.5" placeholder="Days" value="${op.days??''}" oninput="recalcCostTotals()">
     <div class="op-cost-display" id="cop-cost-${costOpCount}">0</div>
     <button type="button" class="btn-remove-op" onclick="removeCostOp(${costOpCount})">✕</button>`;
@@ -1783,11 +1784,32 @@ function populateCostTicketSelect(selectedId){
     tickets.map(t=>`<option value="${t.id}"${t.id===selectedId?' selected':''}>${t.ticketId||t.id.slice(0,6)} — ${t.site||''}${t.customer?' · '+t.customer:''}</option>`).join('');
 }
 
+function operatorsForTicket(t){
+  if(!t) return [];
+  if(t.operators && t.operators.length) return t.operators;
+  if(t.operator) return t.operator.split(',').map(s=>s.trim()).filter(Boolean);
+  return [];
+}
+
+window.onCostTicketChange = function(){
+  if(editCostId) return; // don't overwrite an already-saved cost sheet's operators
+  const t = tickets.find(x=>x.id===document.getElementById('c-ticket').value);
+  const opNames = operatorsForTicket(t);
+  document.getElementById('cost-op-list').innerHTML=''; costOpCount=0;
+  if(opNames.length) opNames.forEach(name=>addCostOpRow({name}));
+  else addCostOpRow();
+  recalcCostTotals();
+}
+
 window.openNewCost = function(presetTicketId=null){
   editCostId=null;
   document.getElementById('cost-modal-title').textContent='New job cost sheet / ورقة تكلفة جديدة';
   populateCostTicketSelect(presetTicketId);
-  document.getElementById('cost-op-list').innerHTML=''; costOpCount=0; addCostOpRow();
+  document.getElementById('cost-op-list').innerHTML=''; costOpCount=0;
+  const t = presetTicketId ? tickets.find(x=>x.id===presetTicketId) : null;
+  const opNames = operatorsForTicket(t);
+  if(opNames.length) opNames.forEach(name=>addCostOpRow({name}));
+  else addCostOpRow();
   ['c-diesel','c-route','c-military','c-other','c-description'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('delete-cost-btn').style.display='none';
   recalcCostTotals();
@@ -2173,7 +2195,7 @@ async function upsertTicketFromReport({ticketNum, location, operators, customer,
   const ticketDocId = ticketSlug(ticketNum);
   const existing = tickets.find(t=>t.id===ticketDocId);
   const data = {
-    ticketId:ticketNum, site:location, operator:operators.join(', '),
+    ticketId:ticketNum, site:location, operator:operators.join(', '), operators,
     customer, rig, lastReportId:reportId, updatedAt:serverTimestamp()
   };
   if(!existing){

@@ -265,86 +265,6 @@ tr:hover td{background:#fafaf8}
     </table></div>
   </div>
 
-  <!-- JOB REPORT FORM -->
-  <div class="page" id="page-report">
-    <div class="form-view" id="form-view">
-      <p class="intro">Fill in the job details and upload photos.<br>يرجى ملء تفاصيل العمل ورفع الصور.</p>
-      <div class="form-grid" style="margin-bottom:0">
-        <div class="field">
-          <label>Date <span class="req">*</span><span class="ar">التاريخ</span></label>
-          <input type="date" id="f-date">
-        </div>
-        <div class="field">
-          <label>Customer <span class="req">*</span><span class="ar">العميل</span></label>
-          <input type="text" id="f-customer" placeholder="e.g. Saudi Aramco">
-        </div>
-        <div class="field">
-          <label>Service ticket number <span class="req">*</span><span class="ar">رقم تذكرة الخدمة</span></label>
-          <input type="text" id="f-ticketnum" list="ticketnum-list" placeholder="Pick existing or type new / اختر أو أدخل رقماً جديداً">
-        </div>
-        <div class="field">
-          <label>Rig number<span class="ar">رقم الحفارة</span></label>
-          <input type="text" id="f-rig" placeholder="e.g. Rig-12">
-        </div>
-        <div class="field">
-          <label>Location <span class="req">*</span><span class="ar">الموقع</span></label>
-          <input type="text" id="f-location" placeholder="e.g. Site A – North">
-        </div>
-      </div>
-
-      <div class="form-divider"></div>
-      <div class="form-section-label">Operators<span class="ar">المشغلون</span></div>
-      <div class="operators-list" id="operators-list"></div>
-      <button type="button" class="btn-add-op" onclick="addOperatorField()">+ Add another operator<span class="ar">إضافة مشغل آخر</span></button>
-
-      <div class="form-divider"></div>
-      <div class="form-section-label">Photos<span class="ar">الصور</span></div>
-
-      <div class="field">
-        <label>Job performance photo<span class="ar">صورة أداء العمل</span></label>
-        <div class="photo-upload"><input type="file" accept="image/*" capture="environment" onchange="handleFiles(this,'feedback')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Tap to take or upload<span class="ar">اضغط للالتقاط أو الرفع</span></div></div>
-        <div class="photo-preview" id="preview-feedback"></div>
-      </div>
-      <div class="field">
-        <label>Fault report photo<span class="ar">صورة تقرير الأعطال</span></label>
-        <div class="photo-upload"><input type="file" accept="image/*" capture="environment" onchange="handleFiles(this,'faultreport')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Tap to take or upload<span class="ar">اضغط للالتقاط أو الرفع</span></div></div>
-        <div class="photo-preview" id="preview-faultreport"></div>
-      </div>
-      <div class="field">
-        <label>Delivery ticket photo<span class="ar">صورة تذكرة التسليم</span></label>
-        <div class="photo-upload"><input type="file" accept="image/*" capture="environment" onchange="handleFiles(this,'delivery')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Tap to take or upload<span class="ar">اضغط للالتقاط أو الرفع</span></div></div>
-        <div class="photo-preview" id="preview-delivery"></div>
-      </div>
-      <div class="field">
-        <label>Pre-job equipment<span class="ar">معدات ما قبل العمل</span></label>
-        <div class="photo-upload"><input type="file" accept="image/*" capture="environment" multiple onchange="handleFiles(this,'before')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Multiple photos allowed<span class="ar">يمكن إضافة عدة صور</span></div></div>
-        <div class="photo-preview" id="preview-before"></div>
-      </div>
-      <div class="field">
-        <label>After job equipment<span class="ar">معدات بعد العمل</span></label>
-        <div class="photo-upload"><input type="file" accept="image/*" capture="environment" multiple onchange="handleFiles(this,'after')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Multiple photos allowed<span class="ar">يمكن إضافة عدة صور</span></div></div>
-        <div class="photo-preview" id="preview-after"></div>
-      </div>
-
-      <button class="btn-submit" id="submit-btn" onclick="submitReport()">Submit job report<span class="ar">إرسال تقرير العمل</span></button>
-    </div>
-    <div class="success-screen" id="success-screen">
-      <div class="success-icon">✓</div>
-      <div class="success-title">Report submitted<span class="ar">تم إرسال التقرير</span></div>
-      <div class="success-sub">Saved successfully.<span class="ar">تم الحفظ بنجاح.</span></div>
-      <button class="btn-new" onclick="resetForm()">Submit another<span class="ar">إرسال تقرير آخر</span></button>
-    </div>
-  </div>
-
-  <!-- REPORTS LIST -->
-  <div class="page" id="page-reports">
-    <div class="section-header">
-      <span class="section-title">Job reports<span class="ar">تقارير العمل</span></span>
-    </div>
-    <p class="intro">All submitted reports. Tap ✕ to delete one entered by mistake.<br>جميع التقارير المُرسلة. اضغط ✕ لحذف تقرير أُدخل بالخطأ.</p>
-    <div id="reports-list"></div>
-  </div>
-
   <!-- TICKETS -->
   <div class="page" id="page-tickets">
     <div class="section-header">
@@ -405,6 +325,7 @@ tr:hover td{background:#fafaf8}
     <div class="step-tabs">
       <button class="step-tab active" id="step-tab-1" onclick="showOrderStep(1)">Step 1 · Internal Service/Sales Order<span class="ar">الخطوة ١ · طلب خدمة/بيع داخلي</span></button>
       <button class="step-tab" id="step-tab-2" onclick="showOrderStep(2)">Step 2 · Delivery Ticket<span class="ar">الخطوة ٢ · تذكرة تسليم</span></button>
+      <button class="step-tab" id="step-tab-3" onclick="showOrderStep(3)">Step 3 · Service Ticket Number<span class="ar">الخطوة ٣ · رقم تذكرة الخدمة</span></button>
     </div>
 
     <!-- STEP 1 LIST -->
@@ -428,6 +349,98 @@ tr:hover td{background:#fafaf8}
       <div class="search-row"><input type="text" placeholder="Search ticket no., rig or ship to / بحث" id="delivery-search" oninput="renderDeliveries()"></div>
       <div id="deliveries-list"></div>
     </div>
+
+    <!-- STEP 3: SERVICE TICKET NUMBER (job report, linked to an order) -->
+    <div class="order-step" id="order-step-3">
+
+      <!-- Step 3 · list view -->
+      <div id="step3-list-view">
+        <div class="section-header">
+          <span class="section-title">Service Tickets<span class="ar">تذاكر الخدمة</span></span>
+          <button class="btn-primary" onclick="showStep3Form()">+ New<span class="ar">جديد</span></button>
+        </div>
+        <p class="intro">Each service ticket links to an internal order — rig, customer and site fill in automatically.<br>كل تذكرة خدمة مرتبطة بطلب داخلي — يتم تعبئة الحفارة والعميل والموقع تلقائياً.</p>
+        <div id="reports-list"></div>
+      </div>
+
+      <!-- Step 3 · form view -->
+      <div id="step3-form-view" style="display:none">
+        <button type="button" class="btn-secondary" style="margin-bottom:14px" onclick="showStep3List()">← Back to list<span class="ar">رجوع للقائمة</span></button>
+        <div class="form-view" id="form-view">
+          <p class="intro">Fill in the job details and upload photos.<br>يرجى ملء تفاصيل العمل ورفع الصور.</p>
+          <div class="form-grid" style="margin-bottom:0">
+            <div class="field">
+              <label>Service ticket number <span class="req">*</span><span class="ar">رقم تذكرة الخدمة</span></label>
+              <input type="text" id="f-ticketnum" list="ticketnum-list" placeholder="Pick existing or type new / اختر أو أدخل رقماً جديداً">
+            </div>
+            <div class="field">
+              <label>Linked order<span class="ar">الطلب المرتبط</span></label>
+              <input type="text" id="f-order-search" list="order-no-list" placeholder="Search order no. / ابحث برقم الطلب" oninput="onReportOrderSearch()">
+              <input type="hidden" id="f-orderid">
+            </div>
+            <div class="field">
+              <label>Date <span class="req">*</span><span class="ar">التاريخ</span></label>
+              <input type="date" id="f-date">
+            </div>
+            <div class="field">
+              <label>Customer <span class="req">*</span><span class="ar">العميل</span></label>
+              <input type="text" id="f-customer" placeholder="e.g. Saudi Aramco">
+            </div>
+            <div class="field">
+              <label>Rig number<span class="ar">رقم الحفارة</span></label>
+              <input type="text" id="f-rig" placeholder="e.g. Rig-12">
+            </div>
+            <div class="field">
+              <label>Location <span class="req">*</span><span class="ar">الموقع</span></label>
+              <input type="text" id="f-location" placeholder="e.g. Site A – North">
+            </div>
+          </div>
+
+          <div class="form-divider"></div>
+          <div class="form-section-label">Operators<span class="ar">المشغلون</span></div>
+          <div class="operators-list" id="operators-list"></div>
+          <button type="button" class="btn-add-op" onclick="addOperatorField()">+ Add another operator<span class="ar">إضافة مشغل آخر</span></button>
+
+          <div class="form-divider"></div>
+          <div class="form-section-label">Photos<span class="ar">الصور</span></div>
+
+          <div class="field">
+            <label>Job performance photo<span class="ar">صورة أداء العمل</span></label>
+            <div class="photo-upload"><input type="file" accept="image/*" capture="environment" onchange="handleFiles(this,'feedback')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Tap to take or upload<span class="ar">اضغط للالتقاط أو الرفع</span></div></div>
+            <div class="photo-preview" id="preview-feedback"></div>
+          </div>
+          <div class="field">
+            <label>Fault report photo<span class="ar">صورة تقرير الأعطال</span></label>
+            <div class="photo-upload"><input type="file" accept="image/*" capture="environment" onchange="handleFiles(this,'faultreport')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Tap to take or upload<span class="ar">اضغط للالتقاط أو الرفع</span></div></div>
+            <div class="photo-preview" id="preview-faultreport"></div>
+          </div>
+          <div class="field">
+            <label>Delivery ticket photo<span class="ar">صورة تذكرة التسليم</span></label>
+            <div class="photo-upload"><input type="file" accept="image/*" capture="environment" onchange="handleFiles(this,'delivery')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Tap to take or upload<span class="ar">اضغط للالتقاط أو الرفع</span></div></div>
+            <div class="photo-preview" id="preview-delivery"></div>
+          </div>
+          <div class="field">
+            <label>Pre-job equipment<span class="ar">معدات ما قبل العمل</span></label>
+            <div class="photo-upload"><input type="file" accept="image/*" capture="environment" multiple onchange="handleFiles(this,'before')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Multiple photos allowed<span class="ar">يمكن إضافة عدة صور</span></div></div>
+            <div class="photo-preview" id="preview-before"></div>
+          </div>
+          <div class="field">
+            <label>After job equipment<span class="ar">معدات بعد العمل</span></label>
+            <div class="photo-upload"><input type="file" accept="image/*" capture="environment" multiple onchange="handleFiles(this,'after')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Multiple photos allowed<span class="ar">يمكن إضافة عدة صور</span></div></div>
+            <div class="photo-preview" id="preview-after"></div>
+          </div>
+
+          <button class="btn-submit" id="submit-btn" onclick="submitReport()">Submit service ticket<span class="ar">إرسال تذكرة الخدمة</span></button>
+        </div>
+        <div class="success-screen" id="success-screen">
+          <div class="success-icon">✓</div>
+          <div class="success-title">Service ticket submitted<span class="ar">تم إرسال تذكرة الخدمة</span></div>
+          <div class="success-sub">Saved successfully.<span class="ar">تم الحفظ بنجاح.</span></div>
+          <button class="btn-new" onclick="resetForm()">Submit another<span class="ar">إرسال تذكرة أخرى</span></button>
+          <button class="btn-secondary" style="margin-top:8px" onclick="showStep3List()">Back to list<span class="ar">رجوع للقائمة</span></button>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div><!-- /main -->
@@ -436,8 +449,6 @@ tr:hover td{background:#fafaf8}
 <nav class="bottom-nav">
   <button class="bnav-btn active" onclick="showPage('dashboard')" id="nav-dashboard"><span class="icon">⊞</span>Dashboard<span class="ar">لوحة التحكم</span></button>
   <button class="bnav-btn" onclick="showPage('orders')" id="nav-orders">Orders<span class="ar">الطلبات</span></button>
-  <button class="bnav-btn" onclick="showPage('reports')" id="nav-reports"><span class="icon">☰</span>Reports<span class="ar">التقارير</span></button>
-  <button class="bnav-btn" onclick="showPage('report')" id="nav-report"><span class="icon">✎</span>Report<span class="ar">تقرير</span></button>
   <button class="bnav-btn" onclick="showPage('tickets')" id="nav-tickets"><span class="icon">🎫</span>Tickets<span class="ar">التذاكر</span></button>
   <button class="bnav-btn" onclick="showPage('costs')" id="nav-costs"><span class="icon">💰</span>Cost<span class="ar">التكلفة</span></button>
 </nav>
@@ -1454,8 +1465,7 @@ window.showPage = function(p) {
   if(p==='dashboard') renderDashboard();
   if(p==='tickets') renderTickets();
   if(p==='costs') renderCosts();
-  if(p==='reports') renderReports();
-  if(p==='orders'){ renderOrders(); renderDeliveries(); }
+  if(p==='orders'){ renderOrders(); renderDeliveries(); renderReports(); }
 }
 
 window.showOrderStep = function(n){
@@ -1463,6 +1473,18 @@ window.showOrderStep = function(n){
   document.querySelectorAll('.order-step').forEach(el=>el.classList.remove('active'));
   document.getElementById('step-tab-'+n).classList.add('active');
   document.getElementById('order-step-'+n).classList.add('active');
+  if(n===3) renderReports();
+}
+
+window.showStep3List = function(){
+  document.getElementById('step3-list-view').style.display='';
+  document.getElementById('step3-form-view').style.display='none';
+  renderReports();
+}
+window.showStep3Form = function(){
+  resetForm();
+  document.getElementById('step3-list-view').style.display='none';
+  document.getElementById('step3-form-view').style.display='';
 }
 
 // ── Dashboard ──────────────────────────────────────────────
@@ -2161,6 +2183,16 @@ async function upsertTicketFromReport({ticketNum, location, operators, customer,
   await setDoc(doc(db,'tickets',ticketDocId), data, {merge:true});
 }
 
+window.onReportOrderSearch = function(){
+  const o=resolveOrderBySearch(document.getElementById('f-order-search').value);
+  document.getElementById('f-orderid').value = o?o.id:'';
+  if(o){
+    if(!document.getElementById('f-rig').value.trim()) document.getElementById('f-rig').value=o.rig||'';
+    if(!document.getElementById('f-customer').value.trim()) document.getElementById('f-customer').value=o.customer||'';
+    if(!document.getElementById('f-location').value.trim()) document.getElementById('f-location').value=o.rig||'';
+  }
+}
+
 window.submitReport = async function(){
   const date=document.getElementById('f-date').value;
   const customer=document.getElementById('f-customer').value.trim();
@@ -2168,22 +2200,24 @@ window.submitReport = async function(){
   const rig=document.getElementById('f-rig').value.trim();
   const location=document.getElementById('f-location').value.trim();
   const operators=getOperators();
+  const linkedOrder=resolveOrderBySearch(document.getElementById('f-order-search').value) || serviceOrders.find(x=>x.id===document.getElementById('f-orderid').value) || null;
   if(!date||!customer||!ticketNum||!location){ showToast('Fill in all required fields / يرجى ملء جميع الحقول','error'); return; }
   if(!operators.length){ showToast('Add at least one operator / أضف مشغلاً واحداً','error'); return; }
   if(Object.values(photos).some(a=>a.some(p=>p.uploading))){ showToast('Wait for photos to finish / انتظر اكتمال الصور','error'); return; }
   if(Object.values(photos).some(a=>a.some(p=>p.failed))){ showToast('Some photos failed / فشل بعض الصور','error'); return; }
   const btn=document.getElementById('submit-btn'); btn.disabled=true; btn.textContent='Submitting… / جارٍ الإرسال';
   try{
-    const reportRef=await addDoc(collection(db,'jobReports'),{date,customer,ticketNum,rig,location,operators,feedbackPhotos:photos.feedback.map(p=>p.url),faultReportPhotos:photos.faultreport.map(p=>p.url),deliveryTicketPhotos:photos.delivery.map(p=>p.url),beforePhotos:photos.before.map(p=>p.url),afterPhotos:photos.after.map(p=>p.url),createdAt:serverTimestamp()});
+    const reportRef=await addDoc(collection(db,'jobReports'),{date,customer,ticketNum,rig,location,operators,orderId:linkedOrder?linkedOrder.id:'',feedbackPhotos:photos.feedback.map(p=>p.url),faultReportPhotos:photos.faultreport.map(p=>p.url),deliveryTicketPhotos:photos.delivery.map(p=>p.url),beforePhotos:photos.before.map(p=>p.url),afterPhotos:photos.after.map(p=>p.url),createdAt:serverTimestamp()});
     await upsertTicketFromReport({ticketNum,location,operators,customer,rig,reportId:reportRef.id});
     document.getElementById('form-view').style.display='none';
     document.getElementById('success-screen').classList.add('show');
   }catch(e){ showToast('Error submitting / خطأ في الإرسال','error'); console.error(e); }
-  finally{ btn.disabled=false; btn.innerHTML='Submit job report<span class="ar">إرسال تقرير العمل</span>'; }
+  finally{ btn.disabled=false; btn.innerHTML='Submit service ticket<span class="ar">إرسال تذكرة الخدمة</span>'; }
 }
 
 window.resetForm = function(){
-  ['f-customer','f-ticketnum','f-rig','f-location'].forEach(id=>document.getElementById(id).value='');
+  ['f-customer','f-ticketnum','f-rig','f-location','f-order-search'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-orderid').value='';
   document.getElementById('f-date').value=todayStr();
   document.getElementById('operators-list').innerHTML=''; operatorCount=0; addOperatorField();
   Object.keys(photos).forEach(k=>{photos[k]=[]; renderPreview(k);});

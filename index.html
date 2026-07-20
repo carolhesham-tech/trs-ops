@@ -283,6 +283,11 @@ tr:hover td{background:#fafaf8}
       <thead><tr><th>Equipment<span class="ar">المعدة</span></th><th>ID<span class="ar">المعرف</span></th><th>Status<span class="ar">الحالة</span></th></tr></thead>
       <tbody id="dash-equip"></tbody>
     </table></div>
+
+    <div class="section-header"><span class="section-title">Update equipment status<span class="ar">تحديث حالة المعدات</span></span></div>
+    <p class="intro">Search a piece of equipment by name or ID and mark it Available, On site or Maintenance.<br>ابحث عن معدة بالاسم أو الرقم وحدّد حالتها: متاحة، في الموقع، أو صيانة.</p>
+    <div class="search-row"><input type="text" id="equip-manage-search" placeholder="Search equipment name or ID / ابحث بالاسم أو الرقم" oninput="renderEquipManage()"></div>
+    <div id="equip-manage-list"></div>
   </div>
 
   <!-- TICKETS -->
@@ -525,6 +530,7 @@ tr:hover td{background:#fafaf8}
       </div>
       <div class="field" style="grid-column:1/-1">
         <label>Equipment used <span style="font-weight:400;color:#999;font-size:11px">(red = conflict)</span><span class="ar">المعدات المستخدمة</span></label>
+        <input type="text" id="t-equip-search" placeholder="Search equipment / بحث عن معدة" oninput="filterEquipGrid()" style="margin-bottom:8px">
         <div class="equip-grid" id="t-equip-grid"></div>
       </div>
       <div class="field" style="grid-column:1/-1">
@@ -691,6 +697,7 @@ tr:hover td{background:#fafaf8}
         <label>Linked Internal Order <span class="req">*</span><span class="ar">الطلب الداخلي المرتبط</span></label>
         <input type="text" id="d-order-search" list="order-no-list" placeholder="Search order no., customer or rig / ابحث" oninput="onDeliveryOrderSearch()">
         <input type="hidden" id="d-orderid">
+        <button type="button" class="btn-secondary" style="margin-top:6px;font-size:11px;padding:6px 10px" onclick="prefillDeliveryLinesFromOrder()">⤵ Fill line items from order<span class="ar">تعبئة البنود من الطلب</span></button>
       </div>
       <div class="field">
         <label>Ship From<span class="ar">الشحن من</span></label>
@@ -769,7 +776,7 @@ tr:hover td{background:#fafaf8}
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, onSnapshot, addDoc, setDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, onSnapshot, addDoc, setDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy, writeBatch } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 
 const firebaseConfig = {
@@ -1431,11 +1438,33 @@ onSnapshot(query(collection(db,'deliveryTickets'), orderBy('createdAt','desc')),
   renderDeliveries();
 }, ()=>setSync(false));
 
+let equipmentSeeded = false;
 onSnapshot(query(collection(db,'equipment'), orderBy('createdAt','desc')), snap => {
   equipment = snap.docs.map(d => ({id:d.id,...d.data()}));
   setSync(true);
+  if(snap.empty && !equipmentSeeded){
+    equipmentSeeded = true;
+    seedEquipmentCatalog();
+  }
   renderDashboard();
 }, ()=>setSync(false));
+
+// One-time: populate the equipment inventory from the mechanic & handling worksheets
+// so the ticket equipment picker and dashboard have real items to track.
+async function seedEquipmentCatalog(){
+  try{
+    for(let i=0;i<EQUIPMENT_CATALOG.length;i+=450){
+      const chunk=EQUIPMENT_CATALOG.slice(i,i+450);
+      const batch=writeBatch(db);
+      chunk.forEach(item=>{
+        const ref=doc(collection(db,'equipment'));
+        batch.set(ref,{name:item.d, equipId:item.s, status:'available', createdAt:serverTimestamp()});
+      });
+      await batch.commit();
+    }
+    showToast(`Loaded ${EQUIPMENT_CATALOG.length} equipment items from your worksheets / تم تحميل ${EQUIPMENT_CATALOG.length} صنف معدات`,'success');
+  }catch(e){ console.error('Equipment seed failed', e); }
+}
 
 onSnapshot(query(collection(db,'jobReports'), orderBy('createdAt','desc')), snap => {
   reports = snap.docs.map(d => ({id:d.id,...d.data()}));
@@ -1567,6 +1596,28 @@ function renderDashboard(){
     <td>${e.name}</td><td><span class="equip-id">${e.equipId||''}</span></td>
     <td>${badgeHTML(e.status)}</td></tr>`).join('') ||
     `<tr><td colspan="3"><div class="empty-state">No equipment on site / لا توجد معدات في الموقع</div></td></tr>`;
+
+  renderEquipManage();
+}
+
+function renderEquipManage(){
+  const box=document.getElementById('equip-manage-search'); if(!box) return;
+  const q=box.value.trim().toLowerCase();
+  const wrap=document.getElementById('equip-manage-list');
+  if(!q){ wrap.innerHTML=`<div class="empty-state">Type to search your equipment and update its status / اكتب للبحث وتحديث حالة المعدة</div>`; return; }
+  const matches=equipment.filter(e=>((e.name||'')+' '+(e.equipId||'')).toLowerCase().includes(q)).slice(0,30);
+  wrap.innerHTML = matches.map(e=>`<div class="order-card" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+    <div><div class="order-card-title">${e.name}</div><div class="order-card-meta">${e.equipId||''}</div></div>
+    <select onchange="setEquipStatus('${e.id}',this.value)">
+      <option value="available"${e.status==='available'?' selected':''}>Available / متاحة</option>
+      <option value="on-site"${e.status==='on-site'?' selected':''}>On site / في الموقع</option>
+      <option value="maintenance"${e.status==='maintenance'?' selected':''}>Maintenance / صيانة</option>
+    </select>
+  </div>`).join('') || `<div class="empty-state">No matches / لا توجد نتائج</div>`;
+}
+window.setEquipStatus = async function(id,status){
+  try{ await updateDoc(doc(db,'equipment',id),{status}); showToast('Equipment status updated / تم تحديث الحالة','success'); }
+  catch(e){ showToast('Error updating status / خطأ في التحديث','error'); console.error(e); }
 }
 
 // ── Tickets ────────────────────────────────────────────────
@@ -1671,9 +1722,18 @@ function buildEquipGrid(selectedIds=[], currentTicketId=null){
     const ct=tickets.find(t=>t.id!==currentTicketId&&(t.status==='open'||t.status==='in-progress')&&(t.equipment||[]).includes(eq.id));
     const isConflict=ct&&isSel;
     let cls='equip-chip'+(isSel&&!isConflict?' selected':'')+(isConflict?' conflict':'');
-    return `<div class="${cls}" title="${ct?`⚠ Used in ${ct.ticketId||''} at ${ct.site||'another site'}`:''}" onclick="toggleEquip('${eq.id}','${currentTicketId||''}')" data-id="${eq.id}">${ct?'⚠ ':''}${eq.name}${eq.status==='maintenance'?' (maint.)':''}</div>`;
+    const searchKey=((eq.name||'')+' '+(eq.equipId||'')).toLowerCase().replace(/"/g,'&quot;');
+    return `<div class="${cls}" data-search="${searchKey}" title="${ct?`⚠ Used in ${ct.ticketId||''} at ${ct.site||'another site'}`:''}" onclick="toggleEquip('${eq.id}','${currentTicketId||''}')" data-id="${eq.id}">${ct?'⚠ ':''}${eq.name}${eq.status==='maintenance'?' (maint.)':''}</div>`;
   }).join('');
   checkConflictBanner(selectedIds, currentTicketId);
+  const s=document.getElementById('t-equip-search'); if(s) s.value='';
+}
+
+window.filterEquipGrid = function(){
+  const q=(document.getElementById('t-equip-search').value||'').toLowerCase().trim();
+  document.querySelectorAll('#t-equip-grid .equip-chip').forEach(chip=>{
+    chip.style.display = (!q || (chip.dataset.search||'').includes(q)) ? '' : 'none';
+  });
 }
 
 function checkConflictBanner(selectedIds, currentTicketId){
@@ -2058,13 +2118,39 @@ function resolveOrderBySearch(val){
   if(!val) return null;
   return serviceOrders.find(x=>(x.orderNo||'').trim()===val) || null;
 }
+
+function deliveryLinesAreEmpty(){
+  const rows=[...document.querySelectorAll('#delivery-lines-body tr')];
+  return rows.every(row=>
+    !row.querySelector('.dl-line').value.trim() &&
+    !row.querySelector('.dl-qty').value.trim() &&
+    !row.querySelector('.dl-desc').value.trim() &&
+    !row.querySelector('.dl-serial').value.trim()
+  );
+}
+function fillDeliveryLinesFromOrderItems(o){
+  if(!o || !(o.items&&o.items.length)) return;
+  document.getElementById('delivery-lines-body').innerHTML='';
+  o.items.forEach(it=>addDeliveryLineRow({lineNo:it.item||'', qty:it.qty||'', description:it.description||'', serial:it.assetNo||''}));
+}
+window.prefillDeliveryLinesFromOrder = function(){
+  const o=resolveOrderBySearch(document.getElementById('d-order-search').value) || serviceOrders.find(x=>x.id===document.getElementById('d-orderid').value);
+  if(!o){ showToast('Search and pick a valid linked order first / ابحث واختر طلباً صحيحاً أولاً','error'); return; }
+  if(!(o.items&&o.items.length)){ showToast('That order has no item rows to copy / لا توجد بنود في هذا الطلب','error'); return; }
+  fillDeliveryLinesFromOrderItems(o);
+  showToast('Line items filled from the order / تم تعبئة البنود من الطلب','success');
+}
+
 window.onDeliveryOrderSearch = function(){
   const val=document.getElementById('d-order-search').value;
   const o=resolveOrderBySearch(val);
   const disp=document.getElementById('d-rig-display');
   document.getElementById('d-orderid').value = o? o.id : '';
   document.getElementById('d-rig').value = o? (o.rig||'') : '';
-  if(o) disp.innerHTML = `${o.rig||'—'}<span class="ar">من الطلب ${o.orderNo||''}</span>`;
+  if(o){
+    disp.innerHTML = `${o.rig||'—'}<span class="ar">من الطلب ${o.orderNo||''}</span>`;
+    if(deliveryLinesAreEmpty() && o.items && o.items.length) fillDeliveryLinesFromOrderItems(o);
+  }
   else if(val.trim()) disp.innerHTML = `<span style="color:#A32D2D">No matching order — pick one from the suggestions<span class="ar">لا يوجد طلب مطابق — اختر من الاقتراحات</span></span>`;
   else disp.innerHTML = '— search for the linked order —<span class="ar">ابحث عن الطلب المرتبط أولاً</span>';
 }

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TRS Operations</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#1a1a1a;background:#f5f5f3}
@@ -65,6 +66,8 @@ th .ar{display:block;font-size:9px;color:#bbb;font-weight:500;text-transform:non
 td{padding:11px 12px;font-size:13px;border-bottom:1px solid #f0f0ee;color:#1a1a1a;vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafaf8}
+tr.row-link{cursor:pointer}
+tr.row-link:hover td{background:#f2f6fb}
 
 /* ── Badges ── */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
@@ -139,6 +142,9 @@ tr:hover td{background:#fafaf8}
 .cost-op-row{display:grid;grid-template-columns:1.6fr 1fr 1fr auto;gap:8px;align-items:center;background:#fafaf8;border:1px solid #e5e5e3;border-radius:9px;padding:8px}
 .cost-op-row select,.cost-op-row input{border:1px solid #d5d5d3;border-radius:8px;padding:8px 9px;font-size:13px;background:#fff;font-family:inherit;width:100%}
 .cost-op-row .op-cost-display{font-size:11px;color:#888;text-align:center;white-space:nowrap}
+.other-expenses-list{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+.oe-row{display:grid;grid-template-columns:1fr 2fr auto;gap:8px;align-items:center;background:#fafaf8;border:1px solid #e5e5e3;border-radius:9px;padding:8px}
+.oe-row input{border:1px solid #d5d5d3;border-radius:8px;padding:8px 9px;font-size:13px;background:#fff;font-family:inherit;width:100%}
 .cost-subtotal{display:flex;justify-content:flex-end;font-size:13px;font-weight:600;color:#444;margin-top:8px}
 .cost-subtotal .ar{display:block;font-size:11px;font-weight:400;color:#999;text-align:right}
 .cost-total-box{background:#E1F5EE;border:1px solid #9FE1CB;border-radius:10px;padding:12px 14px;font-size:16px;font-weight:700;color:#0F6E56;text-align:right}
@@ -264,37 +270,17 @@ tr:hover td{background:#fafaf8}
       <thead><tr><th>Ticket #<span class="ar">رقم التذكرة</span></th><th>Rig<span class="ar">الحفارة</span></th><th>Site<span class="ar">الموقع</span></th><th>Operator(s)<span class="ar">المشغلون</span></th><th>Equipment<span class="ar">المعدات</span></th><th>Status<span class="ar">الحالة</span></th></tr></thead>
       <tbody id="dash-tickets"></tbody>
     </table></div>
-
-    <div class="section-header"><span class="section-title">Operators currently working<span class="ar">المشغلون العاملون حالياً</span></span></div>
-    <p class="intro">Anyone listed here is already assigned to an open or in-progress ticket — picking them again elsewhere will be flagged.<br>أي شخص مذكور هنا مُعيَّن بالفعل لتذكرة مفتوحة أو قيد التنفيذ — سيتم تنبيهك إذا تم اختياره مرة أخرى.</p>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Operator<span class="ar">المشغل</span></th><th>Ticket #<span class="ar">رقم التذكرة</span></th><th>Rig<span class="ar">الحفارة</span></th><th>Status<span class="ar">الحالة</span></th></tr></thead>
-      <tbody id="dash-operators"></tbody>
-    </table></div>
-
-    <div class="section-header"><span class="section-title">Equipment in use<span class="ar">المعدات قيد الاستخدام</span></span></div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Equipment<span class="ar">المعدة</span></th><th>ID<span class="ar">المعرف</span></th><th>Ticket #<span class="ar">رقم التذكرة</span></th><th>Rig<span class="ar">الحفارة</span></th></tr></thead>
-      <tbody id="dash-equip-inuse"></tbody>
-    </table></div>
-
-    <div class="section-header"><span class="section-title">Equipment on site<span class="ar">المعدات في الموقع</span></span></div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Equipment<span class="ar">المعدة</span></th><th>ID<span class="ar">المعرف</span></th><th>Status<span class="ar">الحالة</span></th></tr></thead>
-      <tbody id="dash-equip"></tbody>
-    </table></div>
-
-    <div class="section-header"><span class="section-title">Update equipment status<span class="ar">تحديث حالة المعدات</span></span></div>
-    <p class="intro">Search a piece of equipment by name or ID and mark it Available, On site or Maintenance.<br>ابحث عن معدة بالاسم أو الرقم وحدّد حالتها: متاحة، في الموقع، أو صيانة.</p>
-    <div class="search-row"><input type="text" id="equip-manage-search" placeholder="Search equipment name or ID / ابحث بالاسم أو الرقم" oninput="renderEquipManage()"></div>
-    <div id="equip-manage-list"></div>
   </div>
 
   <!-- TICKETS -->
   <div class="page" id="page-tickets">
     <div class="section-header">
       <span class="section-title">Job tickets<span class="ar">تذاكر العمل</span></span>
-      <button class="btn-primary" onclick="openNewTicket()">+ New<span class="ar">جديد</span></button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-secondary" onclick="exportTicketsExcel()">⬇ Excel<span class="ar">تصدير إكسل</span></button>
+        <button class="btn-secondary" onclick="printTicketsList()">🖶 Print / PDF<span class="ar">طباعة</span></button>
+        <button class="btn-primary" onclick="openNewTicket()">+ New<span class="ar">جديد</span></button>
+      </div>
     </div>
     <div class="search-row">
       <input type="text" placeholder="Search site or operator / بحث" id="ticket-search" oninput="renderTickets()">
@@ -326,7 +312,11 @@ tr:hover td{background:#fafaf8}
   <div class="page" id="page-costs">
     <div class="section-header">
       <span class="section-title">Cost of each job<span class="ar">تكلفة كل عمل</span></span>
-      <button class="btn-primary" onclick="openNewCost()">+ New<span class="ar">جديد</span></button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-secondary" onclick="exportCostsExcel()">⬇ Excel<span class="ar">تصدير إكسل</span></button>
+        <button class="btn-secondary" onclick="printCostsList()">🖶 Print / PDF<span class="ar">طباعة</span></button>
+        <button class="btn-primary" onclick="openNewCost()">+ New<span class="ar">جديد</span></button>
+      </div>
     </div>
     <p class="intro">Each cost sheet is linked to a service ticket. Personnel cost = bonus per day × days worked.<br>كل ورقة تكلفة مرتبطة بتذكرة خدمة. تكلفة الفرد = البدل اليومي × عدد الأيام.</p>
     <div class="search-row">
@@ -583,13 +573,10 @@ tr:hover td{background:#fafaf8}
         <label>Military<span class="ar">جيش</span></label>
         <input type="number" min="0" step="0.01" id="c-military" placeholder="0" oninput="recalcCostTotals()">
       </div>
-      <div class="field">
-        <label>Other expenses<span class="ar">مصاريف أخرى</span></label>
-        <input type="number" min="0" step="0.01" id="c-other" placeholder="0" oninput="recalcCostTotals()">
-      </div>
       <div class="field" style="grid-column:1/-1">
-        <label>Description<span class="ar">الوصف</span></label>
-        <textarea id="c-description" placeholder="Notes about transportation costs…"></textarea>
+        <label>Other expenses<span class="ar">مصاريف أخرى</span></label>
+        <div class="other-expenses-list" id="other-expenses-list"></div>
+        <button type="button" class="btn-add-op" onclick="addOtherExpenseRow()">+ Add expense<span class="ar">إضافة مصروف</span></button>
       </div>
     </div>
     <div class="cost-subtotal" id="transport-subtotal">Transportation subtotal: 0<span class="ar">إجمالي النقل: 0</span></div>
@@ -1563,7 +1550,7 @@ function renderDashboard(){
   const q=(document.getElementById('dash-ticket-search').value||'').toLowerCase();
   const tb = document.getElementById('dash-tickets');
   const list = tickets.filter(t=>!q||((t.site||'')+(t.rig||'')+(t.customer||'')+operatorsForTicket(t).join(' ')).toLowerCase().includes(q));
-  tb.innerHTML = list.map(t=>`<tr>
+  tb.innerHTML = list.map(t=>`<tr class="row-link" onclick="editTicket('${t.id}')">
     <td><span class="ticket-id">${t.ticketId||t.id.slice(0,6)}</span></td>
     <td>${t.rig||'—'}</td>
     <td>${t.site||'—'}</td>
@@ -1571,33 +1558,6 @@ function renderDashboard(){
     <td>${(t.equipment||[]).length||'—'}</td>
     <td>${badgeHTML(t.status)}</td></tr>`).join('') ||
     `<tr><td colspan="6"><div class="empty-state">No tickets yet / لا توجد تذاكر</div></td></tr>`;
-
-  const ob = document.getElementById('dash-operators');
-  ob.innerHTML = opsWorking.map(o=>`<tr>
-    <td>${o.name}</td>
-    <td><span class="ticket-id">${o.ticket.ticketId||o.ticket.id.slice(0,6)}</span></td>
-    <td>${o.ticket.rig||'—'}</td>
-    <td>${badgeHTML(o.ticket.status)}</td></tr>`).join('') ||
-    `<tr><td colspan="4"><div class="empty-state">No operators currently working / لا يوجد مشغلون عاملون حالياً</div></td></tr>`;
-
-  const eib = document.getElementById('dash-equip-inuse');
-  eib.innerHTML = equipInUse.map(({eid,ticket})=>{
-    const eq=equipById(eid);
-    return `<tr>
-    <td>${eq?eq.name:eid}</td>
-    <td><span class="equip-id">${eq?.equipId||''}</span></td>
-    <td><span class="ticket-id">${ticket.ticketId||ticket.id.slice(0,6)}</span></td>
-    <td>${ticket.rig||'—'}</td></tr>`;
-  }).join('') ||
-    `<tr><td colspan="4"><div class="empty-state">No equipment currently in use / لا توجد معدات قيد الاستخدام</div></td></tr>`;
-
-  const eb = document.getElementById('dash-equip');
-  eb.innerHTML = equipment.filter(e=>e.status==='on-site').slice(0,5).map(e=>`<tr>
-    <td>${e.name}</td><td><span class="equip-id">${e.equipId||''}</span></td>
-    <td>${badgeHTML(e.status)}</td></tr>`).join('') ||
-    `<tr><td colspan="3"><div class="empty-state">No equipment on site / لا توجد معدات في الموقع</div></td></tr>`;
-
-  renderEquipManage();
 }
 
 function renderEquipManage(){
@@ -1648,6 +1608,79 @@ function renderTickets(){
     `<tr><td colspan="10"><div class="empty-state">No tickets / لا توجد تذاكر</div></td></tr>`;
 }
 
+function getFilteredTickets(){
+  const q=(document.getElementById('ticket-search').value||'').toLowerCase();
+  const f=document.getElementById('ticket-filter').value;
+  return tickets.filter(t=>{
+    const o=serviceOrders.find(x=>x.id===t.orderId);
+    return (!q||((t.site||'')+(t.operator||'')+(o?.orderNo||'')).toLowerCase().includes(q))&&(!f||t.status===f);
+  });
+}
+
+window.exportTicketsExcel = function(){
+  const list = getFilteredTickets();
+  const rows = list.map(t=>{
+    const o=serviceOrders.find(x=>x.id===t.orderId);
+    const c=findCostForTicket(t.id);
+    return {
+      'Ticket #': t.ticketId||t.id.slice(0,6),
+      'Order': o?o.orderNo:'',
+      'Customer': t.customer||'',
+      'Rig': t.rig||'',
+      'Site': t.site||'',
+      'Operator(s)': operatorsForTicket(t).join(', ')||t.operator||'',
+      'Date': fmtDate(t.datetime),
+      'Status': t.status||'',
+      'Cost': c?c.total:''
+    };
+  });
+  exportRowsToExcel(rows, 'Tickets', 'trs-tickets');
+}
+
+window.printTicketsList = function(){
+  const list = getFilteredTickets();
+  const rowsHtml = list.map(t=>{
+    const o=serviceOrders.find(x=>x.id===t.orderId);
+    const c=findCostForTicket(t.id);
+    return `<tr><td>${t.ticketId||t.id.slice(0,6)}</td><td>${o?o.orderNo:'—'}</td><td>${t.customer||'—'}</td><td>${t.rig||'—'}</td><td>${t.site||'—'}</td><td>${operatorsForTicket(t).join(', ')||t.operator||'—'}</td><td>${fmtDate(t.datetime)}</td><td>${t.status||'—'}</td><td>${c?fmtMoney(c.total):'—'}</td></tr>`;
+  }).join('') || `<tr><td colspan="9">No tickets / لا توجد تذاكر</td></tr>`;
+  const html = printableListHTML('Job Tickets · تذاكر العمل', ['Ticket #','Order','Customer','Rig','Site','Operator(s)','Date','Status','Cost'], rowsHtml);
+  openPrintWindow(html);
+}
+
+// ── Export / print helpers ──────────────────────────────────
+function exportRowsToExcel(rows, sheetName, filename){
+  if(!rows.length){ showToast('No data to export / لا توجد بيانات للتصدير','error'); return; }
+  if(typeof XLSX==='undefined'){ showToast('Excel library failed to load / فشل تحميل مكتبة إكسل','error'); return; }
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  XLSX.writeFile(wb, filename+'-'+new Date().toISOString().slice(0,10)+'.xlsx');
+}
+
+function printableListHTML(title, headers, rowsHtml){
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title>
+  <style>
+    body{font-family:-apple-system,Arial,sans-serif;color:#1a1a1a;padding:24px}
+    h1{font-size:18px;margin-bottom:2px} .sub{color:#888;font-size:12px;margin-bottom:16px}
+    table{width:100%;border-collapse:collapse;font-size:12px}
+    th,td{border:1px solid #ddd;padding:6px 8px;text-align:left}
+    th{background:#f5f5f3}
+    @media print{ body{padding:10px} }
+  </style></head><body>
+    <h1>${title}</h1>
+    <div class="sub">TRS Operations · نظام العمليات الميدانية · ${new Date().toLocaleDateString()}</div>
+    <table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rowsHtml}</tbody></table>
+    <script>window.onload=()=>setTimeout(()=>window.print(),400);<\/script>
+  </body></html>`;
+}
+
+function openPrintWindow(html){
+  const w=window.open('','_blank');
+  if(!w){ showToast('Please allow pop-ups to print / يرجى السماح بالنوافذ المنبثقة','error'); return; }
+  w.document.open(); w.document.write(html); w.document.close();
+}
+
 // ── Cost of each job ───────────────────────────────────────
 const findCostForTicket = ticketId => jobCosts.find(c=>c.ticketId===ticketId);
 
@@ -1674,6 +1707,54 @@ function renderCosts(){
     `<tr><td colspan="6"><div class="empty-state">No cost sheets yet / لا توجد أوراق تكلفة</div></td></tr>`;
 }
 const fmtMoney = n => (Number(n)||0).toLocaleString('en-US',{maximumFractionDigits:2});
+
+function getFilteredCosts(){
+  const q=(document.getElementById('cost-search').value||'').toLowerCase();
+  return jobCosts.filter(c=>{
+    const t=tickets.find(x=>x.id===c.ticketId);
+    const hay=((t?.ticketId||'')+(t?.site||'')+(t?.customer||'')).toLowerCase();
+    return !q||hay.includes(q);
+  });
+}
+
+function otherExpensesFor(c){
+  return (c.transport?.otherExpenses && c.transport.otherExpenses.length) ? c.transport.otherExpenses :
+    (c.transport?.other ? [{amount:c.transport.other, description:c.transport.description||''}] : []);
+}
+
+window.exportCostsExcel = function(){
+  const list = getFilteredCosts();
+  const rows = list.map(c=>{
+    const t=tickets.find(x=>x.id===c.ticketId);
+    const otherExp = otherExpensesFor(c);
+    return {
+      'Ticket #': t?.ticketId||'',
+      'Site': t?.site||'',
+      'Customer': t?.customer||'',
+      'Personnel Total': c.personnelTotal||0,
+      'Diesel/Gas': c.transport?.diesel||0,
+      'Route Fee': c.transport?.routeFee||0,
+      'Military': c.transport?.military||0,
+      'Other Expenses Total': otherExp.reduce((s,e)=>s+(e.amount||0),0),
+      'Other Expenses Detail': otherExp.map(e=>`${e.description||'Expense'}: ${fmtMoney(e.amount)}`).join('; '),
+      'Transportation Total': c.transportTotal||0,
+      'Grand Total': c.total||0
+    };
+  });
+  exportRowsToExcel(rows, 'Cost Sheets', 'trs-costs');
+}
+
+window.printCostsList = function(){
+  const list = getFilteredCosts();
+  const rowsHtml = list.map(c=>{
+    const t=tickets.find(x=>x.id===c.ticketId);
+    const otherExp = otherExpensesFor(c);
+    const otherDetail = otherExp.map(e=>`${e.description||'Expense'}: ${fmtMoney(e.amount)}`).join(', ')||'—';
+    return `<tr><td>${t?.ticketId||'—'}</td><td>${t?.site||'—'}</td><td>${t?.customer||'—'}</td><td>${fmtMoney(c.personnelTotal)}</td><td>${fmtMoney(c.transport?.diesel)}</td><td>${fmtMoney(c.transport?.routeFee)}</td><td>${fmtMoney(c.transport?.military)}</td><td>${otherDetail}</td><td>${fmtMoney(c.total)}</td></tr>`;
+  }).join('') || `<tr><td colspan="9">No cost sheets / لا توجد أوراق تكلفة</td></tr>`;
+  const html = printableListHTML('Cost of Each Job · تكلفة كل عمل', ['Ticket #','Site','Customer','Personnel','Diesel/Gas','Route Fee','Military','Other Expenses','Grand Total'], rowsHtml);
+  openPrintWindow(html);
+}
 
 // ── Reports list ───────────────────────────────────────────
 function renderReports(){
@@ -1870,6 +1951,29 @@ window.addCostOpRow = function(op={}){
 }
 window.removeCostOp = id => { const r=document.getElementById('cop-row-'+id); if(r) r.remove(); recalcCostTotals(); };
 
+let otherExpenseCount = 0;
+window.addOtherExpenseRow = function(exp={}){
+  otherExpenseCount++;
+  const list=document.getElementById('other-expenses-list');
+  const row=document.createElement('div'); row.className='oe-row'; row.id='oe-row-'+otherExpenseCount;
+  const descVal = (exp.description||'').replace(/"/g,'&quot;');
+  row.innerHTML = `
+    <input type="number" class="oe-amount" min="0" step="0.01" placeholder="Amount / المبلغ" value="${exp.amount??''}" oninput="recalcCostTotals()">
+    <input type="text" class="oe-desc" placeholder="Description / الوصف" value="${descVal}" oninput="recalcCostTotals()">
+    <button type="button" class="btn-remove-op" onclick="removeOtherExpenseRow(${otherExpenseCount})">✕</button>`;
+  list.appendChild(row);
+  recalcCostTotals();
+}
+window.removeOtherExpenseRow = id => { const r=document.getElementById('oe-row-'+id); if(r) r.remove(); recalcCostTotals(); };
+
+function getOtherExpenses(){
+  return [...document.querySelectorAll('.oe-row')].map(row=>{
+    const amount=parseFloat(row.querySelector('.oe-amount').value)||0;
+    const description=row.querySelector('.oe-desc').value.trim();
+    return {amount, description};
+  }).filter(e=>e.amount || e.description);
+}
+
 window.onCostOpSelect = function(rowNum){
   const row=document.getElementById('cop-row-'+rowNum);
   const sel=row.querySelector('.cop-name');
@@ -1902,7 +2006,8 @@ window.recalcCostTotals = function(){
   const diesel=parseFloat(document.getElementById('c-diesel').value)||0;
   const route=parseFloat(document.getElementById('c-route').value)||0;
   const military=parseFloat(document.getElementById('c-military').value)||0;
-  const other=parseFloat(document.getElementById('c-other').value)||0;
+  const otherExpenses=getOtherExpenses();
+  const other=otherExpenses.reduce((s,e)=>s+e.amount,0);
   const transportTotal = diesel+route+military+other;
   document.getElementById('personnel-subtotal').innerHTML = `Personnel subtotal: ${fmtMoney(personnelTotal)}<span class="ar">إجمالي الأفراد: ${fmtMoney(personnelTotal)}</span>`;
   document.getElementById('transport-subtotal').innerHTML = `Transportation subtotal: ${fmtMoney(transportTotal)}<span class="ar">إجمالي النقل: ${fmtMoney(transportTotal)}</span>`;
@@ -1942,7 +2047,9 @@ window.openNewCost = function(presetTicketId=null){
   const opNames = operatorsForTicket(t);
   if(opNames.length) opNames.forEach(name=>addCostOpRow({name}));
   else addCostOpRow();
-  ['c-diesel','c-route','c-military','c-other','c-description'].forEach(id=>document.getElementById(id).value='');
+  ['c-diesel','c-route','c-military'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('other-expenses-list').innerHTML=''; otherExpenseCount=0;
+  addOtherExpenseRow();
   document.getElementById('delete-cost-btn').style.display='none';
   recalcCostTotals();
   openModal('cost-modal');
@@ -1969,8 +2076,11 @@ window.editCost = function(id){
   document.getElementById('c-diesel').value=c.transport?.diesel??'';
   document.getElementById('c-route').value=c.transport?.routeFee??'';
   document.getElementById('c-military').value=c.transport?.military??'';
-  document.getElementById('c-other').value=c.transport?.other??'';
-  document.getElementById('c-description').value=c.transport?.description??'';
+  document.getElementById('other-expenses-list').innerHTML=''; otherExpenseCount=0;
+  const savedExpenses = c.transport?.otherExpenses;
+  if(savedExpenses && savedExpenses.length) savedExpenses.forEach(e=>addOtherExpenseRow(e));
+  else if(c.transport?.other || c.transport?.description) addOtherExpenseRow({amount:c.transport.other, description:c.transport.description});
+  else addOtherExpenseRow();
   document.getElementById('delete-cost-btn').style.display='inline-flex';
   recalcCostTotals();
   openModal('cost-modal');
@@ -1989,8 +2099,8 @@ window.saveCost = async function(){
       diesel:parseFloat(document.getElementById('c-diesel').value)||0,
       routeFee:parseFloat(document.getElementById('c-route').value)||0,
       military:parseFloat(document.getElementById('c-military').value)||0,
-      other:parseFloat(document.getElementById('c-other').value)||0,
-      description:document.getElementById('c-description').value.trim()
+      otherExpenses:getOtherExpenses(),
+      other:getOtherExpenses().reduce((s,e)=>s+e.amount,0)
     },
     transportTotal:totals.transportTotal,
     total:totals.total,
@@ -2427,7 +2537,7 @@ window.printReport = function(id){
         <tr><td>Diesel / Gas</td><td>${fmtMoney(cost.transport?.diesel)}</td></tr>
         <tr><td>Route fee</td><td>${fmtMoney(cost.transport?.routeFee)}</td></tr>
         <tr><td>Military</td><td>${fmtMoney(cost.transport?.military)}</td></tr>
-        <tr><td>Other expenses</td><td>${fmtMoney(cost.transport?.other)}</td></tr>
+        ${(cost.transport?.otherExpenses&&cost.transport.otherExpenses.length ? cost.transport.otherExpenses : (cost.transport?.other?[{amount:cost.transport.other,description:cost.transport.description}]:[])).map(e=>`<tr><td>${e.description?('Other — '+e.description):'Other expense'}</td><td>${fmtMoney(e.amount)}</td></tr>`).join('')}
         <tr class="p-total"><td>Total job cost</td><td>${fmtMoney(cost.total)}</td></tr>
       </table>
     </div>` : '';

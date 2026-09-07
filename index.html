@@ -233,6 +233,72 @@ tr.row-link:hover td{background:#f2f6fb}
 .order-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:8px}
 .order-card-title{font-size:13px;font-weight:600}
 .order-card-meta{font-size:11px;color:#888;line-height:1.6}
+
+/* ── IPG Hub additions ── */
+.bottom-nav{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.bottom-nav::-webkit-scrollbar{display:none}
+.bnav-btn{flex:0 0 auto;min-width:64px;padding:10px 10px 8px}
+.topbar-actions{display:flex;align-items:center;gap:6px;margin-left:auto}
+.icon-btn{background:none;border:1px solid #e5e5e3;border-radius:8px;width:34px;height:34px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#444;flex-shrink:0}
+.icon-btn:hover{background:#f5f5f3}
+.role-chip{font-size:11px;color:#444;background:#f0f0ee;border:1px solid #e5e5e3;border-radius:20px;padding:5px 10px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+@media(min-width:640px){.kpi-grid{grid-template-columns:repeat(4,1fr)}}
+.kpi-card{background:#fff;border:1px solid #e5e5e3;border-radius:12px;padding:12px;cursor:pointer;transition:border .15s}
+.kpi-card:hover{border-color:#1D9E75}
+.kpi-num{font-size:22px;font-weight:700}
+.kpi-lbl{font-size:11px;color:#888;margin-top:2px;line-height:1.3}
+.alerts-box{margin-bottom:18px}
+.alert-row{display:flex;align-items:flex-start;gap:10px;background:#FFF8ED;border:1px solid #F4DFB0;border-radius:10px;padding:10px 12px;margin-bottom:7px;cursor:pointer}
+.alert-row:hover{border-color:#BA7517}
+.alert-row.danger{background:#FCEBEB;border-color:#F0B9B9}
+.alert-row .a-ico{font-size:14px;flex-shrink:0}
+.alert-row .a-txt{font-size:12.5px;color:#5a4008;line-height:1.4}
+.alert-row.danger .a-txt{color:#791F1F}
+.job-card{background:#fff;border:1px solid #e5e5e3;border-radius:12px;padding:13px 14px;margin-bottom:10px;cursor:pointer}
+.job-card:hover{border-color:#1D9E75}
+.job-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px}
+.job-card-no{font-family:monospace;font-size:11px;color:#888}
+.job-card-title{font-size:14px;font-weight:600}
+.job-card-meta{font-size:11px;color:#888;line-height:1.6}
+.badge.grey{background:#f0f0ee;color:#5F5E5A}
+.badge.blue{background:#E6F1FB;color:#185FA5}
+.badge.amber{background:#FAEEDA;color:#854F0B}
+.badge.green{background:#E1F5EE;color:#0F6E56}
+.badge.red{background:#FCEBEB;color:#A32D2D}
+.job-hero{background:#fff;border:1px solid #e5e5e3;border-radius:14px;padding:16px;margin-bottom:14px}
+.job-hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.job-hero-no{font-family:monospace;font-size:11px;color:#888;margin-bottom:2px}
+.job-hero-title{font-size:17px;font-weight:700}
+.job-hero-sub{font-size:12px;color:#888;margin-top:2px}
+.job-tabs{display:flex;gap:2px;overflow-x:auto;border-bottom:1px solid #e5e5e3;margin-bottom:14px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.job-tabs::-webkit-scrollbar{display:none}
+.job-tab{flex:0 0 auto;background:none;border:none;padding:9px 11px;font-size:12px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.job-tab.active{color:#1D9E75;border-bottom-color:#1D9E75}
+.job-tabpane{display:none}
+.job-tabpane.active{display:block}
+.timeline{position:relative;padding-left:20px}
+.timeline-item{position:relative;padding-bottom:16px}
+.timeline-item:before{content:'';position:absolute;left:-16px;top:3px;width:8px;height:8px;border-radius:50%;background:#1D9E75}
+.timeline-item:after{content:'';position:absolute;left:-13px;top:11px;bottom:-6px;width:1px;background:#e5e5e3}
+.timeline-item:last-child:after{display:none}
+.timeline-date{font-size:10.5px;color:#888}
+.timeline-txt{font-size:13px;color:#1a1a1a;font-weight:500}
+.check-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #f0f0ee;font-size:13px}
+.check-row:last-child{border-bottom:none}
+.check-row input{width:17px;height:17px;flex-shrink:0}
+.mini-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.mini-card{background:#fafaf8;border:1px solid #e5e5e3;border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.mini-card-main{font-size:12.5px;line-height:1.5}
+.mini-card-main b{font-weight:600}
+.mini-card-sub{font-size:11px;color:#888}
+.equip-hist-row{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid #f0f0ee;font-size:12px}
+.equip-hist-row:last-child{border-bottom:none}
+.search-results-group{margin-bottom:18px}
+.search-group-title{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
+.chip-status{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip-status span{font-size:11px;padding:4px 9px;border-radius:20px;background:#f0f0ee;color:#666;cursor:pointer;border:1px solid transparent}
+.chip-status span.on{background:#1D9E75;color:#fff}
 </style>
 </head>
 <body>
@@ -245,6 +311,10 @@ tr.row-link:hover td{background:#f2f6fb}
     <div class="topbar-title">TRS Operations</div>
     <div class="topbar-subtitle">نظام العمليات الميدانية · Field management</div>
   </div>
+  <div class="topbar-actions">
+    <button class="icon-btn" onclick="showPage('search')" title="Search">🔎</button>
+    <button class="role-chip" id="role-chip" onclick="openRoleModal()">👤 —</button>
+  </div>
   <div class="sync-status"><span class="sync-dot" id="sync-dot"></span><span id="sync-label">Connecting…</span></div>
 </div>
 
@@ -253,14 +323,21 @@ tr.row-link:hover td{background:#f2f6fb}
 
   <!-- DASHBOARD -->
   <div class="page active" id="page-dashboard">
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-label">Open tickets<span class="ar">التذاكر المفتوحة</span></div><div class="stat-value blue" id="stat-open">—</div></div>
-      <div class="stat-card"><div class="stat-label">In progress<span class="ar">قيد التنفيذ</span></div><div class="stat-value amber" id="stat-progress">—</div></div>
-      <div class="stat-card"><div class="stat-label">Closed today<span class="ar">أُغلقت اليوم</span></div><div class="stat-value green" id="stat-closed">—</div></div>
-      <div class="stat-card"><div class="stat-label">On site<span class="ar">معدات في الموقع</span></div><div class="stat-value amber" id="stat-onsite">—</div></div>
-      <div class="stat-card"><div class="stat-label">Equipment in use<span class="ar">المعدات قيد الاستخدام</span></div><div class="stat-value amber" id="stat-equip-inuse">—</div></div>
-      <div class="stat-card"><div class="stat-label">Operators working now<span class="ar">المشغلون العاملون الآن</span></div><div class="stat-value blue" id="stat-ops-working">—</div></div>
+    <div class="stats-row" style="display:none">
+      <div class="stat-value blue" id="stat-open">—</div>
+      <div class="stat-value amber" id="stat-progress">—</div>
+      <div class="stat-value green" id="stat-closed">—</div>
+      <div class="stat-value amber" id="stat-onsite">—</div>
+      <div class="stat-value amber" id="stat-equip-inuse">—</div>
+      <div class="stat-value blue" id="stat-ops-working">—</div>
     </div>
+
+    <div class="section-header"><span class="section-title">Operations overview<span class="ar">نظرة عامة على العمليات</span></span></div>
+    <div class="kpi-grid" id="kpi-grid"></div>
+
+    <div class="section-header"><span class="section-title">Alerts<span class="ar">تنبيهات</span></span></div>
+    <div class="alerts-box" id="alerts-box"></div>
+
     <div class="section-header">
       <span class="section-title">All tickets<span class="ar">جميع التذاكر</span></span>
       <button class="btn-secondary" onclick="showPage('tickets')">View all<span class="ar">عرض الكل</span></button>
@@ -384,6 +461,10 @@ tr.row-link:hover td{background:#f2f6fb}
         <div class="form-view" id="form-view">
           <p class="intro">Fill in the job details and upload photos.<br>يرجى ملء تفاصيل العمل ورفع الصور.</p>
           <div class="form-grid" style="margin-bottom:0">
+            <div class="field" style="grid-column:1/-1">
+              <label>Linked Job<span class="ar">العمل المرتبط</span></label>
+              <select id="f-jobid"><option value="">— none yet —</option></select>
+            </div>
             <div class="field">
               <label>Service ticket number <span class="req">*</span><span class="ar">رقم تذكرة الخدمة</span></label>
               <input type="text" id="f-ticketnum" list="ticketnum-list" placeholder="Pick existing or type new / اختر أو أدخل رقماً جديداً">
@@ -458,12 +539,96 @@ tr.row-link:hover td{background:#f2f6fb}
     </div>
   </div>
 
+  <!-- JOB REQUESTS / TENDERS -->
+  <div class="page" id="page-requests">
+    <div class="section-header">
+      <span class="section-title">Job Requests / Tenders<span class="ar">طلبات العمل / المناقصات</span></span>
+      <button class="btn-primary" onclick="openNewRequest()">+ New<span class="ar">جديد</span></button>
+    </div>
+    <p class="intro">Register every incoming tender, RFQ or job request here — even before it becomes a job.<br>سجّل كل مناقصة أو طلب وارد هنا — حتى قبل أن يتحول إلى عمل رسمي.</p>
+    <div class="search-row">
+      <input type="text" placeholder="Search customer, well or rig / بحث" id="request-search" oninput="renderRequests()">
+      <select id="request-filter" onchange="renderRequests()">
+        <option value="">All statuses / كل الحالات</option>
+        <option value="New">New</option>
+        <option value="Under Review">Under Review</option>
+        <option value="Quotation in Progress">Quotation in Progress</option>
+        <option value="Won">Won</option>
+        <option value="Lost">Lost</option>
+        <option value="Cancelled">Cancelled</option>
+        <option value="Converted to Job">Converted to Job</option>
+      </select>
+    </div>
+    <div id="requests-list"></div>
+  </div>
+
+  <!-- JOBS LIST -->
+  <div class="page" id="page-jobs">
+    <div class="section-header">
+      <span class="section-title">Jobs<span class="ar">الأعمال</span></span>
+      <button class="btn-primary" onclick="openNewJob()">+ New Job<span class="ar">عمل جديد</span></button>
+    </div>
+    <p class="intro">Every job is the single source of truth — equipment, personnel, tickets, reports and invoicing all connect here.<br>كل عمل هو المرجع الرسمي الوحيد — تتصل به المعدات والأفراد والتذاكر والتقارير والفواتير.</p>
+    <div class="search-row">
+      <input type="text" placeholder="Search job no., customer, well or rig / بحث" id="job-search" oninput="renderJobsList()">
+      <select id="job-filter" onchange="renderJobsList()">
+        <option value="">All statuses / كل الحالات</option>
+        <option>New</option><option>Planning</option><option>Equipment Preparation</option>
+        <option>Ready for Dispatch</option><option>Dispatched</option><option>In Progress</option>
+        <option>Completed</option><option>Waiting for Documents</option><option>Under Verification</option>
+        <option>Ready for Invoicing</option><option>Invoiced</option><option>Closed</option><option>Cancelled</option>
+      </select>
+    </div>
+    <div id="jobs-list"></div>
+  </div>
+
+  <!-- JOB DETAIL (single source of truth for one job) -->
+  <div class="page" id="page-jobdetail">
+    <button class="btn-secondary" style="margin-bottom:12px" onclick="showPage('jobs')">← Back to jobs<span class="ar">رجوع للأعمال</span></button>
+    <div class="job-hero" id="job-hero"></div>
+    <div class="job-tabs" id="job-tabs"></div>
+    <div id="job-tabpanes"></div>
+  </div>
+
+  <!-- EQUIPMENT REGISTRY -->
+  <div class="page" id="page-equipment">
+    <div class="section-header">
+      <span class="section-title">Equipment Registry<span class="ar">سجل المعدات</span></span>
+    </div>
+    <p class="intro">Every asset's current status, location, job and full history in one place.<br>حالة كل أصل وموقعه وعمله الحالي وتاريخه الكامل في مكان واحد.</p>
+    <div class="search-row">
+      <input type="text" placeholder="Search description or asset no. / بحث" id="equip-search" oninput="renderEquipmentPage()">
+      <select id="equip-status-filter" onchange="renderEquipmentPage()">
+        <option value="">All statuses</option>
+        <option value="available">Available</option>
+        <option value="reserved">Reserved</option>
+        <option value="under-prep">Under Preparation</option>
+        <option value="dispatched">Dispatched</option>
+        <option value="on-job">On Job</option>
+        <option value="returned">Returned</option>
+        <option value="maintenance">Under Maintenance</option>
+        <option value="out-of-service">Out of Service</option>
+      </select>
+    </div>
+    <div id="equipment-registry-list"></div>
+  </div>
+
+  <!-- GLOBAL SEARCH -->
+  <div class="page" id="page-search">
+    <div class="section-header"><span class="section-title">Search everything<span class="ar">بحث شامل</span></span></div>
+    <div class="search-row"><input type="text" placeholder="Job no., customer, well, rig, asset, employee, invoice… / ابحث" id="global-search" oninput="renderGlobalSearch()" autofocus></div>
+    <div id="global-search-results"></div>
+  </div>
+
 </div><!-- /main -->
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <button class="bnav-btn active" onclick="showPage('dashboard')" id="nav-dashboard"><span class="icon">⊞</span>Dashboard<span class="ar">لوحة التحكم</span></button>
-  <button class="bnav-btn" onclick="showPage('orders')" id="nav-orders">Orders<span class="ar">الطلبات</span></button>
+  <button class="bnav-btn" onclick="showPage('requests')" id="nav-requests"><span class="icon">📥</span>Requests<span class="ar">الطلبات الواردة</span></button>
+  <button class="bnav-btn" onclick="showPage('jobs')" id="nav-jobs"><span class="icon">🗂</span>Jobs<span class="ar">الأعمال</span></button>
+  <button class="bnav-btn" onclick="showPage('equipment')" id="nav-equipment"><span class="icon">🛠</span>Equipment<span class="ar">المعدات</span></button>
+  <button class="bnav-btn" onclick="showPage('orders')" id="nav-orders">Orders<span class="ar">الطلبات الداخلية</span></button>
   <button class="bnav-btn" onclick="showPage('tickets')" id="nav-tickets"><span class="icon">🎫</span>Tickets<span class="ar">التذاكر</span></button>
   <button class="bnav-btn" onclick="showPage('costs')" id="nav-costs"><span class="icon">💰</span>Cost<span class="ar">التكلفة</span></button>
 </nav>
@@ -484,6 +649,10 @@ tr.row-link:hover td{background:#f2f6fb}
       </div>
     </div>
     <div class="form-grid">
+      <div class="field" style="grid-column:1/-1">
+        <label>Linked Job<span class="ar">العمل المرتبط</span></label>
+        <select id="t-jobid"><option value="">— none yet —</option></select>
+      </div>
       <div class="field">
         <label>Job site<span class="ar">موقع العمل</span></label>
         <input type="text" id="t-site" placeholder="e.g. Site A – North">
@@ -547,6 +716,10 @@ tr.row-link:hover td{background:#f2f6fb}
     </div>
     <div class="form-grid">
       <div class="field" style="grid-column:1/-1">
+        <label>Linked Job<span class="ar">العمل المرتبط</span></label>
+        <select id="c-jobid"><option value="">— none yet —</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1">
         <label>Linked service ticket <span class="req">*</span><span class="ar">تذكرة الخدمة المرتبطة</span></label>
         <select id="c-ticket" onchange="onCostTicketChange()"></select>
       </div>
@@ -602,6 +775,10 @@ tr.row-link:hover td{background:#f2f6fb}
       <button class="modal-close" onclick="closeModal('order-modal')">✕</button>
     </div>
     <div class="form-grid">
+      <div class="field" style="grid-column:1/-1">
+        <label>Linked Job<span class="ar">العمل المرتبط</span></label>
+        <select id="o-jobid"><option value="">— none yet —</option></select>
+      </div>
       <div class="field">
         <label>Order No. <span class="req">*</span><span class="ar">رقم الطلب</span></label>
         <input type="text" id="o-orderno" placeholder="e.g. 47/2026">
@@ -676,6 +853,10 @@ tr.row-link:hover td{background:#f2f6fb}
       <button class="modal-close" onclick="closeModal('delivery-modal')">✕</button>
     </div>
     <div class="form-grid">
+      <div class="field" style="grid-column:1/-1">
+        <label>Linked Job<span class="ar">العمل المرتبط</span></label>
+        <select id="d-jobid"><option value="">— none yet —</option></select>
+      </div>
       <div class="field">
         <label>Delivery Ticket No. <span class="req">*</span><span class="ar">رقم تذكرة التسليم</span></label>
         <input type="text" id="d-ticketno" placeholder="e.g. 47/2026">
@@ -738,6 +919,264 @@ tr.row-link:hover td{background:#f2f6fb}
   </div>
 </div>
 
+<!-- ROLE MODAL -->
+<div class="modal-bg" id="role-modal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">Who's using this device?<span class="ar">من يستخدم هذا الجهاز؟</span></div>
+      <button class="modal-close" onclick="closeModal('role-modal')">✕</button>
+    </div>
+    <p class="intro">This sets your name (for the audit trail) and view. It does not replace real login security — ask your admin about Firebase Authentication for that.<br>هذا يحدد اسمك (لسجل المراجعة) وطريقة العرض فقط، وليس بديلاً عن نظام دخول آمن حقيقي.</p>
+    <div class="field" style="margin-bottom:12px"><label>Your name<span class="ar">اسمك</span></label><input type="text" id="role-name" placeholder="e.g. Ahmed Hesham"></div>
+    <div class="field">
+      <label>Your role<span class="ar">دورك</span></label>
+      <select id="role-select">
+        <option value="shareholder">Shareholder / Executive</option>
+        <option value="management">Management</option>
+        <option value="opsmanager" selected>Operations Manager</option>
+        <option value="yard">Yard / Quality</option>
+        <option value="field">Field Supervisor / Engineer</option>
+        <option value="accounting">Accounting</option>
+      </select>
+    </div>
+    <div class="modal-footer"><div style="flex:1"></div><button class="btn-primary" onclick="saveRole()">Save<span class="ar">حفظ</span></button></div>
+  </div>
+</div>
+
+<!-- JOB REQUEST MODAL -->
+<div class="modal-bg" id="request-modal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="request-modal-title">New Job Request<span class="ar">طلب عمل جديد</span></div>
+      <button class="modal-close" onclick="closeModal('request-modal')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>Date received<span class="ar">تاريخ الاستلام</span></label><input type="date" id="rq-date"></div>
+      <div class="field"><label>Customer <span class="req">*</span><span class="ar">العميل</span></label><input type="text" id="rq-customer"></div>
+      <div class="field"><label>Contact person<span class="ar">جهة الاتصال</span></label><input type="text" id="rq-contact"></div>
+      <div class="field"><label>Received by<span class="ar">استلمه</span></label><input type="text" id="rq-receivedby"></div>
+      <div class="field"><label>Responsible person<span class="ar">الشخص المسؤول</span></label><input type="text" id="rq-responsible"></div>
+      <div class="field"><label>Request type<span class="ar">نوع الطلب</span></label>
+        <select id="rq-type"><option>Tender</option><option>RFQ</option><option>Direct Job</option><option>Service Request</option><option>Other</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>Requested service<span class="ar">الخدمة المطلوبة</span></label><input type="text" id="rq-service" placeholder="e.g. TRS – Running Casing"></div>
+      <div class="field"><label>Field<span class="ar">الحقل</span></label><input type="text" id="rq-field"></div>
+      <div class="field"><label>Well<span class="ar">البئر</span></label><input type="text" id="rq-well"></div>
+      <div class="field"><label>Rig<span class="ar">الحفارة</span></label><input type="text" id="rq-rig"></div>
+      <div class="field"><label>Expected start<span class="ar">البدء المتوقع</span></label><input type="date" id="rq-start"></div>
+      <div class="field"><label>Expected end<span class="ar">الانتهاء المتوقع</span></label><input type="date" id="rq-end"></div>
+      <div class="field"><label>Status<span class="ar">الحالة</span></label>
+        <select id="rq-status"><option>New</option><option>Under Review</option><option>Quotation in Progress</option><option>Won</option><option>Lost</option><option>Cancelled</option><option>Converted to Job</option></select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>Notes / original email summary<span class="ar">ملاحظات / ملخص البريد الأصلي</span></label><textarea id="rq-notes"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="delete-request-btn" style="display:none;color:#A32D2D;border-color:#F0D5D5" onclick="confirmDeleteGeneric('jobRequests', currentRequestId, 'request-modal')">Delete<span class="ar">حذف</span></button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" onclick="closeModal('request-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-primary" onclick="saveRequest()">Save<span class="ar">حفظ</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- JOB MODAL (create / edit overview) -->
+<div class="modal-bg" id="job-modal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="job-modal-title">New Job<span class="ar">عمل جديد</span></div>
+      <button class="modal-close" onclick="closeModal('job-modal')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>Customer <span class="req">*</span><span class="ar">العميل</span></label><input type="text" id="j-customer"></div>
+      <div class="field"><label>Field<span class="ar">الحقل</span></label><input type="text" id="j-field"></div>
+      <div class="field"><label>Well<span class="ar">البئر</span></label><input type="text" id="j-well"></div>
+      <div class="field"><label>Rig<span class="ar">الحفارة</span></label><input type="text" id="j-rig"></div>
+      <div class="field" style="grid-column:1/-1"><label>Service type<span class="ar">نوع الخدمة</span></label><input type="text" id="j-servicetype" placeholder="e.g. TRS – Running Casing"></div>
+      <div class="field"><label>Responsible Operations person<span class="ar">مسؤول العمليات</span></label><input type="text" id="j-responsible"></div>
+      <div class="field"><label>Operations Manager<span class="ar">مدير العمليات</span></label><input type="text" id="j-opsmanager"></div>
+      <div class="field"><label>Head of Yard<span class="ar">رئيس الساحة</span></label><input type="text" id="j-headofyard"></div>
+      <div class="field"><label>Status<span class="ar">الحالة</span></label>
+        <select id="j-status">
+          <option>New</option><option>Planning</option><option>Equipment Preparation</option><option>Ready for Dispatch</option>
+          <option>Dispatched</option><option>In Progress</option><option>Completed</option><option>Waiting for Documents</option>
+          <option>Under Verification</option><option>Ready for Invoicing</option><option>Invoiced</option><option>Closed</option><option>Cancelled</option>
+        </select>
+      </div>
+      <div class="field"><label>Planned start<span class="ar">البدء المخطط</span></label><input type="date" id="j-plannedstart"></div>
+      <div class="field"><label>Planned end<span class="ar">الانتهاء المخطط</span></label><input type="date" id="j-plannedend"></div>
+      <div class="field"><label>Actual start<span class="ar">البدء الفعلي</span></label><input type="date" id="j-actualstart"></div>
+      <div class="field"><label>Actual end<span class="ar">الانتهاء الفعلي</span></label><input type="date" id="j-actualend"></div>
+      <div class="field" style="grid-column:1/-1"><label>Notes<span class="ar">ملاحظات</span></label><textarea id="j-notes"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <div style="flex:1"></div>
+      <button class="btn-secondary" onclick="closeModal('job-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-primary" onclick="saveJob()">Save<span class="ar">حفظ</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONNEL ASSIGNMENT MODAL -->
+<div class="modal-bg" id="personnel-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header"><div class="modal-title">Personnel Assignment<span class="ar">تعيين الأفراد</span></div><button class="modal-close" onclick="closeModal('personnel-modal')">✕</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Employee name <span class="req">*</span><span class="ar">اسم الموظف</span></label><input type="text" id="pa-name" list="operator-name-list"></div>
+      <div class="field"><label>Employee ID<span class="ar">الرقم الوظيفي</span></label><input type="text" id="pa-empid"></div>
+      <div class="field"><label>Title<span class="ar">المسمى الوظيفي</span></label><input type="text" id="pa-title" placeholder="e.g. Operator"></div>
+      <div class="field"><label>Role on job<span class="ar">الدور في العمل</span></label><input type="text" id="pa-role" placeholder="e.g. Lead operator"></div>
+      <div class="field"><label>Arrival date<span class="ar">تاريخ الوصول</span></label><input type="date" id="pa-arrival" onchange="calcPADays()"></div>
+      <div class="field"><label>Departure date<span class="ar">تاريخ المغادرة</span></label><input type="date" id="pa-departure" onchange="calcPADays()"></div>
+    </div>
+    <div class="linked-rig-display" style="margin-top:10px" id="pa-days-display">Total days: —<span class="ar">إجمالي الأيام: —</span></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="delete-pa-btn" style="display:none;color:#A32D2D;border-color:#F0D5D5" onclick="confirmDeleteGeneric('personnel', currentPAId, 'personnel-modal')">Delete<span class="ar">حذف</span></button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" onclick="closeModal('personnel-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-primary" onclick="savePersonnel()">Save<span class="ar">حفظ</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- DISPATCH MODAL -->
+<div class="modal-bg" id="dispatch-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header"><div class="modal-title">Dispatch / Transport<span class="ar">إرسال / نقل</span></div><button class="modal-close" onclick="closeModal('dispatch-modal')">✕</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Vehicle / Car<span class="ar">المركبة</span></label><input type="text" id="ds-vehicle"></div>
+      <div class="field"><label>Driver<span class="ar">السائق</span></label><input type="text" id="ds-driver"></div>
+      <div class="field"><label>Date<span class="ar">التاريخ</span></label><input type="date" id="ds-date"></div>
+      <div class="field"><label>Time<span class="ar">الوقت</span></label><input type="time" id="ds-time"></div>
+      <div class="field"><label>From<span class="ar">من</span></label><input type="text" id="ds-from" placeholder="e.g. IPG Yard"></div>
+      <div class="field"><label>To<span class="ar">إلى</span></label><input type="text" id="ds-to"></div>
+      <div class="field" style="grid-column:1/-1"><label>Personnel transported<span class="ar">الأفراد المنقولون</span></label><input type="text" id="ds-personnel" placeholder="Names, comma separated"></div>
+      <div class="field" style="grid-column:1/-1"><label>Equipment transported<span class="ar">المعدات المنقولة</span></label><input type="text" id="ds-equipment" placeholder="Asset numbers, comma separated"></div>
+      <div class="field" style="grid-column:1/-1"><label>Notes<span class="ar">ملاحظات</span></label><textarea id="ds-notes"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="delete-ds-btn" style="display:none;color:#A32D2D;border-color:#F0D5D5" onclick="confirmDeleteGeneric('dispatches', currentDSId, 'dispatch-modal')">Delete<span class="ar">حذف</span></button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" onclick="closeModal('dispatch-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-primary" onclick="saveDispatch()">Save<span class="ar">حفظ</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- DAILY UPDATE MODAL -->
+<div class="modal-bg" id="daily-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header"><div class="modal-title">Daily Update<span class="ar">تحديث يومي</span></div><button class="modal-close" onclick="closeModal('daily-modal')">✕</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Date<span class="ar">التاريخ</span></label><input type="date" id="du-date"></div>
+      <div class="field"><label>Submitted by<span class="ar">مقدم التحديث</span></label><input type="text" id="du-by"></div>
+      <div class="field" style="grid-column:1/-1"><label>Operation performed<span class="ar">العملية المنفذة</span></label><textarea id="du-operation"></textarea></div>
+      <div class="field"><label>Equipment status<span class="ar">حالة المعدات</span></label><input type="text" id="du-equipstatus"></div>
+      <div class="field"><label>Personnel status<span class="ar">حالة الأفراد</span></label><input type="text" id="du-personnelstatus"></div>
+      <div class="field" style="grid-column:1/-1"><label>Progress<span class="ar">التقدم</span></label><input type="text" id="du-progress" placeholder="e.g. 60% complete"></div>
+      <div class="field" style="grid-column:1/-1"><label>Problems<span class="ar">المشاكل</span></label><textarea id="du-problems"></textarea></div>
+      <div class="field"><label>Downtime today?<span class="ar">توقف اليوم؟</span></label><select id="du-downtime"><option value="no">No</option><option value="yes">Yes — record it in the Downtime tab</option></select></div>
+      <div class="field"><label>Customer comments<span class="ar">ملاحظات العميل</span></label><input type="text" id="du-customer"></div>
+      <div class="field" style="grid-column:1/-1">
+        <label>Photos<span class="ar">صور</span></label>
+        <div class="photo-upload"><input type="file" accept="image/*" capture="environment" multiple onchange="handleFiles(this,'daily')"><div class="photo-upload-icon">⬆</div><div class="photo-upload-text">Tap to take or upload<span class="ar">اضغط للالتقاط أو الرفع</span></div></div>
+        <div class="photo-preview" id="preview-daily"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div style="flex:1"></div>
+      <button class="btn-secondary" onclick="closeModal('daily-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-primary" onclick="saveDailyUpdate()">Save<span class="ar">حفظ</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- DOWNTIME MODAL -->
+<div class="modal-bg" id="downtime-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header"><div class="modal-title">Downtime / Interruption<span class="ar">توقف / انقطاع</span></div><button class="modal-close" onclick="closeModal('downtime-modal')">✕</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Start date & time <span class="req">*</span><span class="ar">بداية التوقف</span></label><input type="datetime-local" id="dt-start" onchange="calcDowntimeDuration()"></div>
+      <div class="field"><label>End date & time<span class="ar">نهاية التوقف</span></label><input type="datetime-local" id="dt-end" onchange="calcDowntimeDuration()"></div>
+      <div class="field"><label>Category<span class="ar">الفئة</span></label>
+        <select id="dt-category"><option>Customer / Rig</option><option>Equipment</option><option>IPG Personnel</option><option>Weather</option><option>Waiting</option><option>Transportation</option><option>Other</option></select>
+      </div>
+      <div class="field"><label>Reported by<span class="ar">أبلغ عنه</span></label><input type="text" id="dt-reportedby"></div>
+      <div class="field" style="grid-column:1/-1"><label>Reason<span class="ar">السبب</span></label><input type="text" id="dt-reason"></div>
+      <div class="field" style="grid-column:1/-1"><label>Description<span class="ar">الوصف</span></label><textarea id="dt-description"></textarea></div>
+      <div class="field"><label>Customer confirmation<span class="ar">تأكيد العميل</span></label><select id="dt-customerconf"><option value="no">Not yet</option><option value="yes">Confirmed</option></select></div>
+      <div class="field"><label>Notes<span class="ar">ملاحظات</span></label><input type="text" id="dt-notes"></div>
+    </div>
+    <div class="linked-rig-display" style="margin-top:10px" id="dt-duration-display">Duration: —<span class="ar">المدة: —</span></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="delete-dt-btn" style="display:none;color:#A32D2D;border-color:#F0D5D5" onclick="confirmDeleteGeneric('downtimeEvents', currentDTId, 'downtime-modal')">Delete<span class="ar">حذف</span></button>
+      <div style="flex:1"></div>
+      <button class="btn-secondary" onclick="closeModal('downtime-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-primary" onclick="saveDowntime()">Save<span class="ar">حفظ</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- INVOICE MODAL -->
+<div class="modal-bg" id="invoice-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header"><div class="modal-title">Invoice<span class="ar">فاتورة</span></div><button class="modal-close" onclick="closeModal('invoice-modal')">✕</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Invoice number<span class="ar">رقم الفاتورة</span></label><input type="text" id="inv-number"></div>
+      <div class="field"><label>Invoice date<span class="ar">تاريخ الفاتورة</span></label><input type="date" id="inv-date"></div>
+      <div class="field"><label>Amount<span class="ar">المبلغ</span></label><input type="number" step="0.01" id="inv-amount"></div>
+      <div class="field"><label>Currency<span class="ar">العملة</span></label><input type="text" id="inv-currency" placeholder="e.g. EGP / USD"></div>
+      <div class="field"><label>Payment status<span class="ar">حالة السداد</span></label><select id="inv-paystatus"><option>Unpaid</option><option>Partially Paid</option><option>Paid</option></select></div>
+      <div class="field"><label>Payment date<span class="ar">تاريخ السداد</span></label><input type="date" id="inv-paydate"></div>
+      <div class="field" style="grid-column:1/-1"><label>Sage reference<span class="ar">مرجع Sage</span></label><input type="text" id="inv-sageref"></div>
+      <div class="field" style="grid-column:1/-1"><label>Notes<span class="ar">ملاحظات</span></label><textarea id="inv-notes"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <div style="flex:1"></div>
+      <button class="btn-secondary" onclick="closeModal('invoice-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-primary" onclick="saveInvoice()">Save<span class="ar">حفظ</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- EQUIPMENT MASTER MODAL -->
+<div class="modal-bg" id="equip-master-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header"><div class="modal-title">Equipment Item<span class="ar">صنف معدات</span></div><button class="modal-close" onclick="closeModal('equip-master-modal')">✕</button></div>
+    <div class="form-grid">
+      <div class="field" style="grid-column:1/-1"><label>Description<span class="ar">الوصف</span></label><input type="text" id="em-name"></div>
+      <div class="field"><label>Asset number<span class="ar">رقم الأصل</span></label><input type="text" id="em-equipid"></div>
+      <div class="field"><label>Type<span class="ar">النوع</span></label><input type="text" id="em-type"></div>
+      <div class="field"><label>Brand / Model<span class="ar">الماركة / الموديل</span></label><input type="text" id="em-brand"></div>
+      <div class="field"><label>Serial number<span class="ar">الرقم التسلسلي</span></label><input type="text" id="em-serial"></div>
+      <div class="field"><label>Status<span class="ar">الحالة</span></label>
+        <select id="em-status"><option value="available">Available</option><option value="reserved">Reserved</option><option value="under-prep">Under Preparation</option><option value="dispatched">Dispatched</option><option value="on-job">On Job</option><option value="returned">Returned</option><option value="maintenance">Under Maintenance</option><option value="out-of-service">Out of Service</option></select>
+      </div>
+      <div class="field"><label>Current location<span class="ar">الموقع الحالي</span></label><input type="text" id="em-location"></div>
+      <div class="field"><label>Last inspection<span class="ar">آخر فحص</span></label><input type="date" id="em-lastinsp"></div>
+      <div class="field"><label>Next inspection<span class="ar">الفحص القادم</span></label><input type="date" id="em-nextinsp"></div>
+      <div class="field"><label>Certificate expiry<span class="ar">انتهاء الشهادة</span></label><input type="date" id="em-certexp"></div>
+      <div class="field" style="grid-column:1/-1"><label>Notes<span class="ar">ملاحظات</span></label><textarea id="em-notes"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <div style="flex:1"></div>
+      <button class="btn-secondary" onclick="closeModal('equip-master-modal')">Cancel<span class="ar">إلغاء</span></button>
+      <button class="btn-primary" onclick="saveEquipMaster()">Save<span class="ar">حفظ</span></button>
+    </div>
+  </div>
+</div>
+
+<datalist id="operator-name-list"></datalist>
+<datalist id="job-no-list"></datalist>
+
 <!-- CONFIRM DELETE MODAL -->
 <div class="modal-bg" id="confirm-modal">
   <div class="modal" style="border-radius:20px 20px 0 0">
@@ -784,6 +1223,12 @@ let tickets = [], equipment = [], reports = [], jobCosts = [], serviceOrders = [
 let editTicketId = null, editCostId = null, editOrderId = null, editDeliveryId = null;
 let ticketCounter = 1;
 let orderItemCount = 0, deliveryLineCount = 0;
+
+// ── IPG Hub additions: state ──────────────────────────────
+let jobRequests = [], jobs = [], personnel = [], dispatches = [], dailyUpdates = [], downtimeEvents = [], invoices = [], auditLog = [];
+let editRequestId = null, editJobId = null, currentJobDetailId = null, currentJobTab = 'overview';
+let currentRequestId = null, currentPAId = null, currentDSId = null, currentDTId = null;
+let jobCounter = 1;
 
 // ── Operator directory (name + rig bonus per day) ───────────
 const OPERATOR_DB = [
@@ -1465,6 +1910,60 @@ onSnapshot(query(collection(db,'jobCosts'), orderBy('createdAt','desc')), snap =
   renderCosts(); renderTickets();
 }, ()=>setSync(false));
 
+// ── IPG Hub additions: listeners ──────────────────────────
+onSnapshot(query(collection(db,'jobRequests'), orderBy('createdAt','desc')), snap => {
+  jobRequests = snap.docs.map(d => ({id:d.id,...d.data()}));
+  setSync(true);
+  renderRequests(); renderDashboard();
+}, ()=>setSync(false));
+
+onSnapshot(query(collection(db,'jobs'), orderBy('createdAt','desc')), snap => {
+  jobs = snap.docs.map(d => ({id:d.id,...d.data()}));
+  setSync(true);
+  jobCounter = jobs.reduce((m,j)=>{ const n=parseInt((j.jobNo||'IPG-0000-0000').split('-')[2]||0); return n>m?n:m; },0)+1;
+  renderJobsList(); renderDashboard(); populateJobSelects();
+  if(document.getElementById('page-jobdetail').classList.contains('active') && currentJobDetailId) renderJobDetail(currentJobDetailId);
+}, ()=>setSync(false));
+
+onSnapshot(query(collection(db,'personnel'), orderBy('createdAt','desc')), snap => {
+  personnel = snap.docs.map(d => ({id:d.id,...d.data()}));
+  setSync(true);
+  if(currentJobDetailId) renderJobTabPane('personnel');
+  renderDashboard();
+}, ()=>setSync(false));
+
+onSnapshot(query(collection(db,'dispatches'), orderBy('createdAt','desc')), snap => {
+  dispatches = snap.docs.map(d => ({id:d.id,...d.data()}));
+  setSync(true);
+  if(currentJobDetailId) renderJobTabPane('dispatch');
+}, ()=>setSync(false));
+
+onSnapshot(query(collection(db,'dailyUpdates'), orderBy('createdAt','desc')), snap => {
+  dailyUpdates = snap.docs.map(d => ({id:d.id,...d.data()}));
+  setSync(true);
+  if(currentJobDetailId) renderJobTabPane('daily');
+  renderDashboard();
+}, ()=>setSync(false));
+
+onSnapshot(query(collection(db,'downtimeEvents'), orderBy('createdAt','desc')), snap => {
+  downtimeEvents = snap.docs.map(d => ({id:d.id,...d.data()}));
+  setSync(true);
+  if(currentJobDetailId) renderJobTabPane('downtime');
+  renderDashboard();
+}, ()=>setSync(false));
+
+onSnapshot(query(collection(db,'invoices'), orderBy('createdAt','desc')), snap => {
+  invoices = snap.docs.map(d => ({id:d.id,...d.data()}));
+  setSync(true);
+  if(currentJobDetailId) renderJobTabPane('invoice');
+  renderDashboard();
+}, ()=>setSync(false));
+
+onSnapshot(query(collection(db,'auditLog'), orderBy('createdAt','desc')), snap => {
+  auditLog = snap.docs.map(d => ({id:d.id,...d.data()}));
+  if(currentJobDetailId) renderJobTabPane('timeline');
+}, ()=>setSync(false));
+
 // ── Helpers ────────────────────────────────────────────────
 const pad = n => String(n).padStart(3,'0');
 const todayStr = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
@@ -1472,6 +1971,157 @@ const nowDT = () => { const d=new Date(); return `${todayStr()}T${String(d.getHo
 const fmtDate = s => { if(!s) return '—'; const d=new Date(s); return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'}); };
 const equipName = id => { const e=equipment.find(x=>x.id===id); return e?e.name:id; };
 const equipById = id => equipment.find(x=>x.id===id);
+
+// ── IPG Hub additions: helpers ────────────────────────────
+const JOB_ACTIVE_STATUSES = ['New','Planning','Equipment Preparation','Ready for Dispatch','Dispatched','In Progress','Waiting for Documents','Under Verification'];
+const jobById = id => jobs.find(j=>j.id===id);
+const jobLabel = j => j ? `${j.jobNo} — ${j.customer||'—'}` : '—';
+
+function generateJobNumber(){
+  const year = new Date().getFullYear();
+  const n = jobCounter;
+  return `IPG-${year}-${String(n).padStart(4,'0')}`;
+}
+
+function daysBetween(a,b){
+  if(!a||!b) return null;
+  const d1=new Date(a), d2=new Date(b);
+  const diff = Math.round((d2-d1)/86400000)+1;
+  return diff>0?diff:0;
+}
+
+// Current user / role (device-level convenience, NOT real authentication)
+function getCurrentUser(){
+  return { name: localStorage.getItem('ipg_user_name')||'Unknown user', role: localStorage.getItem('ipg_user_role')||'opsmanager' };
+}
+window.openRoleModal = function(){
+  document.getElementById('role-name').value = localStorage.getItem('ipg_user_name')||'';
+  document.getElementById('role-select').value = localStorage.getItem('ipg_user_role')||'opsmanager';
+  document.getElementById('role-modal').classList.add('open');
+}
+window.saveRole = function(){
+  const name = document.getElementById('role-name').value.trim() || 'Unknown user';
+  const role = document.getElementById('role-select').value;
+  localStorage.setItem('ipg_user_name', name);
+  localStorage.setItem('ipg_user_role', role);
+  updateRoleChip();
+  closeModal('role-modal');
+  applyRoleVisibility();
+}
+function updateRoleChip(){
+  const {name,role} = getCurrentUser();
+  const roleLabels = {shareholder:'Shareholder',management:'Management',opsmanager:'Ops Manager',yard:'Yard/Quality',field:'Field Supervisor',accounting:'Accounting'};
+  document.getElementById('role-chip').textContent = `👤 ${name} · ${roleLabels[role]||role}`;
+}
+function applyRoleVisibility(){
+  const {role} = getCurrentUser();
+  // Accounting/financial elements: only accounting, management, shareholder can see invoice amounts freely; others still see status.
+  const financeAllowed = ['accounting','management','shareholder'].includes(role);
+  document.querySelectorAll('.finance-only').forEach(el=>{ el.style.display = financeAllowed ? '' : 'none'; });
+  const approveAllowed = ['opsmanager','management','shareholder'].includes(role);
+  document.querySelectorAll('.approve-only').forEach(el=>{ el.style.display = approveAllowed ? '' : 'none'; });
+}
+
+async function logAudit(action, entity, entityId, details){
+  try{
+    const {name} = getCurrentUser();
+    await addDoc(collection(db,'auditLog'), { user:name, action, entity, entityId: entityId||'', details: details||'', createdAt: serverTimestamp() });
+  }catch(e){ console.error('Audit log failed', e); }
+}
+
+// Populate every "Linked Job" select in existing modals
+function populateJobSelects(){
+  const opts = '<option value="">— none yet —</option>' + jobs.slice().sort((a,b)=>(b.jobNo||'').localeCompare(a.jobNo||'')).map(j=>`<option value="${j.id}">${jobLabel(j)}</option>`).join('');
+  ['o-jobid','d-jobid','t-jobid','c-jobid','f-jobid'].forEach(id=>{
+    const el=document.getElementById(id); if(!el) return;
+    const cur = el.value; el.innerHTML = opts; if(cur) el.value = cur;
+  });
+}
+
+// Equipment conflict check across active JOBS (in addition to the existing ticket-level conflict check)
+function getJobEquipmentConflicts(assetIds, excludeJobId){
+  const acc=[];
+  jobs.forEach(j=>{
+    if(j.id===excludeJobId) return;
+    if(!JOB_ACTIVE_STATUSES.includes(j.status)) return;
+    (j.equipmentIds||[]).forEach(eid=>{ if(assetIds.includes(eid)){ const eq=equipById(eid); if(eq) acc.push({equipment:eq, job:j}); } });
+  });
+  return acc;
+}
+
+function equipmentCurrentJob(assetId){
+  return jobs.find(j=>JOB_ACTIVE_STATUSES.includes(j.status) && (j.equipmentIds||[]).includes(assetId));
+}
+
+function jobDocs(jobId){
+  return {
+    orders: serviceOrders.filter(o=>o.jobId===jobId),
+    deliveries: deliveryTickets.filter(d=>d.jobId===jobId),
+    fieldTickets: tickets.filter(t=>t.jobId===jobId),
+    serviceTickets: reports.filter(r=>r.jobId===jobId),
+    costs: jobCosts.filter(c=>c.jobId===jobId),
+    personnel: personnel.filter(p=>p.jobId===jobId),
+    dispatches: dispatches.filter(d=>d.jobId===jobId),
+    dailyUpdates: dailyUpdates.filter(d=>d.jobId===jobId),
+    downtime: downtimeEvents.filter(d=>d.jobId===jobId),
+    invoice: invoices.find(i=>i.jobId===jobId)
+  };
+}
+
+function computeJobAlerts(){
+  const alerts=[];
+  const now = Date.now();
+  jobs.forEach(j=>{
+    const d = jobDocs(j.id);
+    if((j.status==='Completed'||j.status==='Waiting for Documents') && d.serviceTickets.length===0){
+      alerts.push({type:'danger', text:`${j.jobNo} (${j.customer||'—'}) — Missing Service Delivery Ticket`, jobId:j.id});
+    }
+    if(j.plannedEnd && new Date(j.plannedEnd).getTime() < now && !['Closed','Cancelled','Invoiced','Ready for Invoicing'].includes(j.status)){
+      alerts.push({type:'warn', text:`${j.jobNo} (${j.customer||'—'}) — Job Update Required (past planned end date)`, jobId:j.id});
+    }
+    if((j.equipmentIds||[]).length && j.status==='Dispatched' && d.deliveries.length===0){
+      alerts.push({type:'warn', text:`${j.jobNo} (${j.customer||'—'}) — Equipment Return Pending / no delivery ticket recorded`, jobId:j.id});
+    }
+    if(j.status==='Completed' && !j.approved){
+      alerts.push({type:'warn', text:`${j.jobNo} (${j.customer||'—'}) — Verification Required`, jobId:j.id});
+    }
+    if(j.approved && j.status!=='Invoiced' && j.status!=='Closed' && !d.invoice){
+      alerts.push({type:'warn', text:`${j.jobNo} (${j.customer||'—'}) — Invoice Pending`, jobId:j.id});
+    }
+  });
+  equipment.forEach(e=>{
+    if(e.certExpiry){
+      const days = Math.round((new Date(e.certExpiry).getTime()-now)/86400000);
+      if(days<=30 && days>=0) alerts.push({type:'warn', text:`Certificate expiring soon for ${e.name} (${e.equipId}) — ${days} days left`, equipId:e.id});
+    }
+  });
+  return alerts;
+}
+
+window.calcPADays = function(){
+  const a=document.getElementById('pa-arrival').value, d=document.getElementById('pa-departure').value;
+  const days = daysBetween(a,d);
+  document.getElementById('pa-days-display').innerHTML = `Total days: <b>${days===null?'—':days}</b><span class="ar">إجمالي الأيام: ${days===null?'—':days}</span>`;
+}
+
+window.calcDowntimeDuration = function(){
+  const s=document.getElementById('dt-start').value, e=document.getElementById('dt-end').value;
+  if(!s||!e){ document.getElementById('dt-duration-display').innerHTML = 'Duration: —<span class="ar">المدة: —</span>'; return; }
+  const mins = Math.round((new Date(e)-new Date(s))/60000);
+  if(mins<0){ document.getElementById('dt-duration-display').innerHTML = 'End must be after start<span class="ar">يجب أن تكون النهاية بعد البداية</span>'; return; }
+  const h=Math.floor(mins/60), m=mins%60;
+  document.getElementById('dt-duration-display').innerHTML = `Duration: <b>${h}h ${m}m</b><span class="ar">المدة: ${h} ساعة ${m} دقيقة</span>`;
+}
+
+window.confirmDeleteGeneric = function(col, id, modalId){
+  if(!id) return;
+  showConfirm('Delete this?','حذف هذا؟','This cannot be undone.','لا يمكن التراجع عن هذا.', async ()=>{
+    await deleteDoc(doc(db, col, id));
+    logAudit('delete', col, id, '');
+    closeModal(modalId);
+    showToast('Deleted / تم الحذف','success');
+  });
+}
 
 // Keep the report's ticket-number field suggesting real, existing ticket numbers
 function renderTicketNumList(){
@@ -1485,9 +2135,11 @@ function renderEquipmentDatalists(){
   document.getElementById('equip-serial-list').innerHTML = EQUIPMENT_CATALOG.map(x=>`<option value="${x.s.replace(/"/g,'&quot;')}">${x.d.replace(/"/g,'&quot;')}</option>`).join('');
 }
 renderEquipmentDatalists();
+document.getElementById('operator-name-list').innerHTML = OPERATOR_DB.map(o=>`<option value="${o.name.replace(/"/g,'&quot;')}">`).join('');
 
 function badgeHTML(status){
-  const cls={open:'open','in-progress':'progress',closed:'closed',available:'available','on-site':'on-site',maintenance:'maintenance'};
+  const cls={open:'open','in-progress':'progress',closed:'closed',available:'available','on-site':'on-site',maintenance:'maintenance',
+    'New':'blue','Under Review':'amber','Quotation in Progress':'amber','Won':'green','Lost':'red','Cancelled':'red','Converted to Job':'green'};
   const lbl={open:'Open / مفتوحة','in-progress':'In progress / قيد التنفيذ',closed:'Closed / مغلقة',available:'Available / متاحة','on-site':'On site / في الموقع',maintenance:'Maintenance / صيانة'};
   return `<span class="badge ${cls[status]||''}"><span class="dot"></span>${lbl[status]||status}</span>`;
 }
@@ -1502,6 +2154,10 @@ window.showPage = function(p) {
   if(p==='tickets') renderTickets();
   if(p==='costs') renderCosts();
   if(p==='orders'){ renderOrders(); renderDeliveries(); renderReports(); }
+  if(p==='requests') renderRequests();
+  if(p==='jobs') renderJobsList();
+  if(p==='equipment') renderEquipmentPage();
+  if(p==='search') renderGlobalSearch();
 }
 
 window.showOrderStep = function(n){
@@ -1547,6 +2203,8 @@ function renderDashboard(){
   }));
   document.getElementById('stat-ops-working').textContent = opsWorking.length;
 
+  renderKPIsAndAlerts();
+
   const q=(document.getElementById('dash-ticket-search').value||'').toLowerCase();
   const tb = document.getElementById('dash-tickets');
   const list = tickets.filter(t=>!q||((t.site||'')+(t.rig||'')+(t.customer||'')+operatorsForTicket(t).join(' ')).toLowerCase().includes(q));
@@ -1559,6 +2217,596 @@ function renderDashboard(){
     <td>${badgeHTML(t.status)}</td></tr>`).join('') ||
     `<tr><td colspan="6"><div class="empty-state">No tickets yet / لا توجد تذاكر</div></td></tr>`;
 }
+
+// ══════════════════════════════════════════════════════════
+// IPG HUB — Operations module additions
+// ══════════════════════════════════════════════════════════
+
+// ── KPIs & Alerts ──────────────────────────────────────────
+function renderKPIsAndAlerts(){
+  const kpis = [
+    {label:'New Job Requests', val: jobRequests.filter(r=>r.status==='New').length, page:'requests'},
+    {label:'Open Jobs', val: jobs.filter(j=>JOB_ACTIVE_STATUSES.includes(j.status)).length, page:'jobs'},
+    {label:'Jobs In Progress', val: jobs.filter(j=>j.status==='In Progress').length, page:'jobs'},
+    {label:'Jobs Completed', val: jobs.filter(j=>j.status==='Completed').length, page:'jobs'},
+    {label:'Waiting for Service Ticket', val: jobs.filter(j=>['Completed','Waiting for Documents'].includes(j.status) && jobDocs(j.id).serviceTickets.length===0).length, page:'jobs'},
+    {label:'Waiting for Verification', val: jobs.filter(j=>j.status==='Completed' && !j.approved).length, page:'jobs'},
+    {label:'Ready for Invoicing', val: jobs.filter(j=>j.status==='Ready for Invoicing').length, page:'jobs'},
+    {label:'Jobs Missing Documents', val: jobs.filter(j=>j.status==='Waiting for Documents').length, page:'jobs'},
+    {label:'Active Equipment in Field', val: equipment.filter(e=>['dispatched','on-job'].includes(e.status)).length, page:'equipment'},
+    {label:'Available Equipment', val: equipment.filter(e=>e.status==='available'||!e.status).length, page:'equipment'},
+    {label:'Equipment Under Maintenance', val: equipment.filter(e=>e.status==='maintenance').length, page:'equipment'},
+    {label:'Jobs with Downtime', val: [...new Set(downtimeEvents.map(d=>d.jobId))].length, page:'jobs'},
+  ];
+  document.getElementById('kpi-grid').innerHTML = kpis.map(k=>`<div class="kpi-card" onclick="showPage('${k.page}')"><div class="kpi-num">${k.val}</div><div class="kpi-lbl">${k.label}</div></div>`).join('');
+
+  const alerts = computeJobAlerts();
+  const box = document.getElementById('alerts-box');
+  box.innerHTML = alerts.length ? alerts.map(a=>`<div class="alert-row ${a.type==='danger'?'danger':''}" onclick="${a.jobId?`openJobDetail('${a.jobId}')`:`showPage('equipment')`}"><div class="a-ico">${a.type==='danger'?'⛔':'⚠'}</div><div class="a-txt">${a.text}</div></div>`).join('')
+    : `<div class="empty-state">No alerts — everything looks up to date / لا توجد تنبيهات</div>`;
+}
+
+// ── Job Requests ───────────────────────────────────────────
+window.openNewRequest = function(){
+  editRequestId = null; currentRequestId = null;
+  ['rq-customer','rq-contact','rq-receivedby','rq-responsible','rq-service','rq-field','rq-well','rq-rig','rq-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('rq-date').value = todayStr();
+  document.getElementById('rq-type').value='Tender';
+  document.getElementById('rq-status').value='New';
+  document.getElementById('rq-start').value=''; document.getElementById('rq-end').value='';
+  document.getElementById('request-modal-title').innerHTML='New Job Request<span class="ar">طلب عمل جديد</span>';
+  document.getElementById('delete-request-btn').style.display='none';
+  document.getElementById('request-modal').classList.add('open');
+}
+window.editRequest = function(id){
+  const r = jobRequests.find(x=>x.id===id); if(!r) return;
+  editRequestId = id; currentRequestId = id;
+  document.getElementById('rq-date').value = r.dateReceived||'';
+  document.getElementById('rq-customer').value = r.customer||'';
+  document.getElementById('rq-contact').value = r.contactPerson||'';
+  document.getElementById('rq-receivedby').value = r.receivedBy||'';
+  document.getElementById('rq-responsible').value = r.responsiblePerson||'';
+  document.getElementById('rq-type').value = r.requestType||'Tender';
+  document.getElementById('rq-service').value = r.requestedService||'';
+  document.getElementById('rq-field').value = r.field||'';
+  document.getElementById('rq-well').value = r.well||'';
+  document.getElementById('rq-rig').value = r.rig||'';
+  document.getElementById('rq-start').value = r.expectedStart||'';
+  document.getElementById('rq-end').value = r.expectedEnd||'';
+  document.getElementById('rq-status').value = r.status||'New';
+  document.getElementById('rq-notes').value = r.notes||'';
+  document.getElementById('request-modal-title').innerHTML='Edit Job Request<span class="ar">تعديل طلب العمل</span>';
+  document.getElementById('delete-request-btn').style.display='';
+  document.getElementById('request-modal').classList.add('open');
+}
+window.saveRequest = async function(){
+  const customer = document.getElementById('rq-customer').value.trim();
+  if(!customer){ showToast('Customer is required / العميل مطلوب','error'); return; }
+  const obj = {
+    dateReceived: document.getElementById('rq-date').value,
+    customer, contactPerson: document.getElementById('rq-contact').value.trim(),
+    receivedBy: document.getElementById('rq-receivedby').value.trim(),
+    responsiblePerson: document.getElementById('rq-responsible').value.trim(),
+    requestType: document.getElementById('rq-type').value,
+    requestedService: document.getElementById('rq-service').value.trim(),
+    field: document.getElementById('rq-field').value.trim(),
+    well: document.getElementById('rq-well').value.trim(),
+    rig: document.getElementById('rq-rig').value.trim(),
+    expectedStart: document.getElementById('rq-start').value,
+    expectedEnd: document.getElementById('rq-end').value,
+    status: document.getElementById('rq-status').value,
+    notes: document.getElementById('rq-notes').value.trim(),
+  };
+  if(editRequestId){
+    await updateDoc(doc(db,'jobRequests',editRequestId), obj);
+    logAudit('update','jobRequests',editRequestId, `Updated request for ${customer}`);
+  } else {
+    const ref = await addDoc(collection(db,'jobRequests'), {...obj, createdAt: serverTimestamp()});
+    logAudit('create','jobRequests',ref.id, `Created request for ${customer}`);
+  }
+  closeModal('request-modal');
+  showToast('Job request saved / تم حفظ الطلب','success');
+}
+window.confirmDeleteRequest = function(){ if(currentRequestId) window.confirmDeleteGeneric('jobRequests', currentRequestId, 'request-modal'); }
+window.convertRequestToJob = async function(id){
+  const r = jobRequests.find(x=>x.id===id); if(!r) return;
+  const jobNo = generateJobNumber();
+  const jobObj = {
+    jobNo, customer:r.customer, field:r.field||'', well:r.well||'', rig:r.rig||'',
+    serviceType:r.requestedService||'', responsiblePerson:r.responsiblePerson||'', opsManager:'', headOfYard:'',
+    plannedStart:r.expectedStart||'', plannedEnd:r.expectedEnd||'', actualStart:'', actualEnd:'',
+    status:'New', notes:r.notes||'', equipmentIds:[], approved:false, requestId:r.id,
+    createdAt: serverTimestamp()
+  };
+  const ref = await addDoc(collection(db,'jobs'), jobObj);
+  await updateDoc(doc(db,'jobRequests',id), {status:'Converted to Job'});
+  logAudit('convert','jobRequests',id, `Converted to job ${jobNo}`);
+  logAudit('create','jobs',ref.id, `Job ${jobNo} created from request`);
+  showToast(`Converted to job ${jobNo} / تم التحويل`,'success');
+  showPage('jobs');
+  setTimeout(()=>openJobDetail(ref.id), 300);
+}
+function renderRequests(){
+  const q=(document.getElementById('request-search').value||'').toLowerCase();
+  const statusF = document.getElementById('request-filter').value;
+  let list = jobRequests.filter(r=>(!q||((r.customer||'')+(r.well||'')+(r.rig||'')+(r.field||'')).toLowerCase().includes(q)) && (!statusF||r.status===statusF));
+  const wrap = document.getElementById('requests-list');
+  wrap.innerHTML = list.length ? list.map(r=>`
+    <div class="job-card" onclick="editRequest('${r.id}')">
+      <div class="job-card-top">
+        <div><div class="job-card-title">${r.customer||'—'}</div><div class="job-card-meta">${r.requestedService||''}</div></div>
+        ${badgeHTML(r.status)}
+      </div>
+      <div class="job-card-meta">${r.field?('Field: '+r.field+' · '):''}${r.well?('Well: '+r.well+' · '):''}${r.rig?('Rig: '+r.rig):''}</div>
+      <div class="job-card-meta">Received ${fmtDate(r.dateReceived)} · Type: ${r.requestType||'—'}</div>
+      ${r.status!=='Converted to Job' ? `<div style="margin-top:8px"><button class="btn-secondary" onclick="event.stopPropagation();convertRequestToJob('${r.id}')">Convert to Job<span class="ar">تحويل إلى عمل</span></button></div>` : ''}
+    </div>`).join('') : `<div class="empty-state">No job requests yet / لا توجد طلبات بعد</div>`;
+}
+
+// ── Jobs list ──────────────────────────────────────────────
+function jobStatusColor(s){
+  const m={'New':'grey','Planning':'blue','Equipment Preparation':'amber','Ready for Dispatch':'amber','Dispatched':'amber','In Progress':'amber','Completed':'blue','Waiting for Documents':'red','Under Verification':'blue','Ready for Invoicing':'green','Invoiced':'green','Closed':'grey','Cancelled':'red'};
+  return m[s]||'grey';
+}
+function renderJobsList(){
+  const q=(document.getElementById('job-search').value||'').toLowerCase();
+  const statusF = document.getElementById('job-filter').value;
+  let list = jobs.filter(j=>(!q||((j.jobNo||'')+(j.customer||'')+(j.well||'')+(j.rig||'')+(j.field||'')).toLowerCase().includes(q)) && (!statusF||j.status===statusF));
+  const wrap = document.getElementById('jobs-list');
+  wrap.innerHTML = list.length ? list.map(j=>`
+    <div class="job-card" onclick="openJobDetail('${j.id}')">
+      <div class="job-card-top">
+        <div><div class="job-card-no">${j.jobNo}</div><div class="job-card-title">${j.customer||'—'} · ${j.serviceType||''}</div></div>
+        <span class="badge ${jobStatusColor(j.status)}"><span class="dot"></span>${j.status}</span>
+      </div>
+      <div class="job-card-meta">${j.field?('Field: '+j.field+' · '):''}${j.well?('Well: '+j.well+' · '):''}${j.rig?('Rig: '+j.rig):''}</div>
+      <div class="job-card-meta">Planned ${fmtDate(j.plannedStart)} → ${fmtDate(j.plannedEnd)}</div>
+    </div>`).join('') : `<div class="empty-state">No jobs yet — create one, or convert a Job Request / لا توجد أعمال بعد</div>`;
+}
+window.openNewJob = function(){
+  editJobId = null;
+  ['j-customer','j-field','j-well','j-rig','j-servicetype','j-responsible','j-opsmanager','j-headofyard','j-notes','j-plannedstart','j-plannedend','j-actualstart','j-actualend'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('j-status').value='New';
+  document.getElementById('job-modal-title').innerHTML='New Job<span class="ar">عمل جديد</span>';
+  document.getElementById('job-modal').classList.add('open');
+}
+window.editJobOverview = function(id){
+  const j = jobById(id); if(!j) return;
+  editJobId = id;
+  document.getElementById('j-customer').value=j.customer||'';
+  document.getElementById('j-field').value=j.field||'';
+  document.getElementById('j-well').value=j.well||'';
+  document.getElementById('j-rig').value=j.rig||'';
+  document.getElementById('j-servicetype').value=j.serviceType||'';
+  document.getElementById('j-responsible').value=j.responsiblePerson||'';
+  document.getElementById('j-opsmanager').value=j.opsManager||'';
+  document.getElementById('j-headofyard').value=j.headOfYard||'';
+  document.getElementById('j-status').value=j.status||'New';
+  document.getElementById('j-plannedstart').value=j.plannedStart||'';
+  document.getElementById('j-plannedend').value=j.plannedEnd||'';
+  document.getElementById('j-actualstart').value=j.actualStart||'';
+  document.getElementById('j-actualend').value=j.actualEnd||'';
+  document.getElementById('j-notes').value=j.notes||'';
+  document.getElementById('job-modal-title').innerHTML='Edit Job<span class="ar">تعديل العمل</span>';
+  document.getElementById('job-modal').classList.add('open');
+}
+window.saveJob = async function(){
+  const customer = document.getElementById('j-customer').value.trim();
+  if(!customer){ showToast('Customer is required / العميل مطلوب','error'); return; }
+  const obj = {
+    customer, field:document.getElementById('j-field').value.trim(), well:document.getElementById('j-well').value.trim(),
+    rig:document.getElementById('j-rig').value.trim(), serviceType:document.getElementById('j-servicetype').value.trim(),
+    responsiblePerson:document.getElementById('j-responsible').value.trim(), opsManager:document.getElementById('j-opsmanager').value.trim(),
+    headOfYard:document.getElementById('j-headofyard').value.trim(), status:document.getElementById('j-status').value,
+    plannedStart:document.getElementById('j-plannedstart').value, plannedEnd:document.getElementById('j-plannedend').value,
+    actualStart:document.getElementById('j-actualstart').value, actualEnd:document.getElementById('j-actualend').value,
+    notes:document.getElementById('j-notes').value.trim()
+  };
+  if(editJobId){
+    const prev = jobById(editJobId);
+    await updateDoc(doc(db,'jobs',editJobId), obj);
+    if(prev && prev.status!==obj.status) logAudit('status-change','jobs',editJobId, `${prev.jobNo}: ${prev.status} → ${obj.status}`);
+    else logAudit('update','jobs',editJobId, `Updated ${prev?prev.jobNo:''}`);
+    closeModal('job-modal');
+    if(currentJobDetailId===editJobId) renderJobDetail(editJobId);
+  } else {
+    const jobNo = generateJobNumber();
+    const ref = await addDoc(collection(db,'jobs'), {...obj, jobNo, equipmentIds:[], approved:false, createdAt: serverTimestamp()});
+    logAudit('create','jobs',ref.id, `Job ${jobNo} created`);
+    closeModal('job-modal');
+    setTimeout(()=>openJobDetail(ref.id), 300);
+  }
+  showToast('Job saved / تم حفظ العمل','success');
+}
+
+// ── Job Detail hub ───────────────────────────────────────────
+const JOB_TABS = [
+  {id:'overview', label:'Overview'}, {id:'timeline', label:'Timeline'}, {id:'orders', label:'Internal Order'},
+  {id:'equipment', label:'Equipment'}, {id:'personnel', label:'Personnel'}, {id:'dispatch', label:'Dispatch'},
+  {id:'daily', label:'Daily Updates'}, {id:'downtime', label:'Downtime'}, {id:'serviceticket', label:'Service Ticket'},
+  {id:'techreport', label:'Technical Report'}, {id:'verification', label:'Verification'}, {id:'invoice', label:'Invoice'}
+];
+window.openJobDetail = function(id){
+  currentJobDetailId = id; currentJobTab='overview';
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-jobdetail').classList.add('active');
+  renderJobDetail(id);
+}
+function renderJobDetail(id){
+  const j = jobById(id); if(!j){ showPage('jobs'); return; }
+  document.getElementById('job-hero').innerHTML = `
+    <div class="job-hero-top">
+      <div>
+        <div class="job-hero-no">${j.jobNo}</div>
+        <div class="job-hero-title">${j.customer||'—'} · ${j.serviceType||''}</div>
+        <div class="job-hero-sub">${j.field?('Field: '+j.field+' · '):''}${j.well?('Well: '+j.well+' · '):''}${j.rig?('Rig: '+j.rig):''}</div>
+      </div>
+      <div style="text-align:right">
+        <span class="badge ${jobStatusColor(j.status)}"><span class="dot"></span>${j.status}</span>
+        <div style="margin-top:8px"><button class="btn-secondary" onclick="editJobOverview('${j.id}')">Edit<span class="ar">تعديل</span></button></div>
+      </div>
+    </div>`;
+  document.getElementById('job-tabs').innerHTML = JOB_TABS.map(t=>`<button class="job-tab ${t.id===currentJobTab?'active':''}" onclick="switchJobTab('${t.id}')">${t.label}</button>`).join('');
+  document.getElementById('job-tabpanes').innerHTML = JOB_TABS.map(t=>`<div class="job-tabpane ${t.id===currentJobTab?'active':''}" id="jobpane-${t.id}"></div>`).join('');
+  renderJobTabPane(currentJobTab);
+}
+window.switchJobTab = function(tab){
+  currentJobTab = tab;
+  document.querySelectorAll('.job-tab').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.job-tabpane').forEach(el=>el.classList.remove('active'));
+  [...document.querySelectorAll('.job-tab')].find(el=>el.textContent===JOB_TABS.find(t=>t.id===tab).label)?.classList.add('active');
+  document.getElementById('jobpane-'+tab)?.classList.add('active');
+  renderJobTabPane(tab);
+}
+function renderJobTabPane(tab){
+  if(!currentJobDetailId) return;
+  const pane = document.getElementById('jobpane-'+tab); if(!pane) return;
+  const j = jobById(currentJobDetailId); if(!j) return;
+  const d = jobDocs(j.id);
+
+  if(tab==='overview'){
+    pane.innerHTML = `
+      <div class="form-grid" style="margin-bottom:0">
+        <div class="field"><label>Responsible Operations person</label><div>${j.responsiblePerson||'—'}</div></div>
+        <div class="field"><label>Operations Manager</label><div>${j.opsManager||'—'}</div></div>
+        <div class="field"><label>Head of Yard</label><div>${j.headOfYard||'—'}</div></div>
+        <div class="field"><label>Planned dates</label><div>${fmtDate(j.plannedStart)} → ${fmtDate(j.plannedEnd)}</div></div>
+        <div class="field"><label>Actual dates</label><div>${fmtDate(j.actualStart)} → ${fmtDate(j.actualEnd)}</div></div>
+        <div class="field" style="grid-column:1/-1"><label>Notes</label><div>${(j.notes||'—').replace(/\\n/g,'<br>')}</div></div>
+      </div>`;
+  }
+  if(tab==='timeline'){
+    const events = auditLog.filter(a=>a.entityId===j.id || (a.details||'').includes(j.jobNo)).slice().reverse();
+    pane.innerHTML = events.length ? `<div class="timeline">${events.map(e=>`<div class="timeline-item"><div class="timeline-date">${e.createdAt&&e.createdAt.toDate?e.createdAt.toDate().toLocaleString():''}</div><div class="timeline-txt">${e.details||e.action} — <span style="color:#888;font-weight:400">${e.user||''}</span></div></div>`).join('')}</div>`
+      : `<div class="empty-state">No activity recorded yet / لا يوجد نشاط بعد</div>`;
+  }
+  if(tab==='orders'){
+    pane.innerHTML = `<button class="btn-secondary" style="margin-bottom:10px" onclick="showPage('orders')">Open Orders page<span class="ar">فتح صفحة الطلبات</span></button>` +
+      (d.orders.length ? `<div class="mini-list">${d.orders.map(o=>`<div class="mini-card"><div class="mini-card-main"><b>${o.orderNo}</b><div class="mini-card-sub">${o.customer||''} · ${o.rig||''}</div></div><button class="action-btn" onclick="editOrder('${o.id}');showPage('orders')">Open</button></div>`).join('')}</div>`
+      : `<div class="empty-state">No internal order linked yet. Add "Linked Job" = this job when creating one.<span class="ar">لا يوجد طلب داخلي مرتبط بعد.</span></div>`);
+  }
+  if(tab==='equipment'){
+    const assigned = (j.equipmentIds||[]).map(eid=>equipById(eid)).filter(Boolean);
+    pane.innerHTML = `
+      <p class="intro">Assign equipment from the registry. The system blocks assets already on another active job.<br>عيّن المعدات من السجل. يمنع النظام الأصول المستخدمة في عمل نشط آخر.</p>
+      <div class="search-row"><input type="text" placeholder="Search equipment to assign / بحث" id="jeq-search" oninput="filterJobEquipGrid()"></div>
+      <div class="equip-grid" id="jeq-grid"></div>
+      <div class="section-header" style="margin-top:16px"><span class="section-title">Assigned to this job<span class="ar">مخصص لهذا العمل</span></span></div>
+      ${assigned.length ? `<div class="mini-list">${assigned.map(e=>`<div class="mini-card"><div class="mini-card-main"><b>${e.name}</b><div class="mini-card-sub">${e.equipId}</div></div></div>`).join('')}</div>` : `<div class="empty-state">No equipment assigned yet</div>`}
+    `;
+    buildJobEquipGrid();
+  }
+  if(tab==='personnel'){
+    pane.innerHTML = `<button class="btn-primary" onclick="openNewPersonnel()">+ Add personnel<span class="ar">إضافة فرد</span></button>` +
+      (d.personnel.length ? `<div class="mini-list" style="margin-top:12px">${d.personnel.map(p=>{const days=daysBetween(p.arrivalDate,p.departureDate);return `<div class="mini-card"><div class="mini-card-main"><b>${p.employeeName}</b> — ${p.title||''}<div class="mini-card-sub">${p.role||''} · ${fmtDate(p.arrivalDate)} → ${fmtDate(p.departureDate)} · ${days===null?'—':days} day(s)</div></div><button class="action-btn" onclick="editPersonnel('${p.id}')">Edit</button></div>`;}).join('')}</div>`
+      : `<div class="empty-state" style="margin-top:12px">No personnel assigned yet / لا يوجد أفراد بعد</div>`);
+  }
+  if(tab==='dispatch'){
+    pane.innerHTML = `<button class="btn-primary" onclick="openNewDispatch()">+ Record dispatch<span class="ar">تسجيل إرسال</span></button>` +
+      (d.dispatches.length ? `<div class="mini-list" style="margin-top:12px">${d.dispatches.map(x=>`<div class="mini-card"><div class="mini-card-main"><b>${x.vehicle||'—'}</b> · ${x.driver||''}<div class="mini-card-sub">${fmtDate(x.date)} ${x.time||''} · ${x.from||''} → ${x.to||''}</div></div><button class="action-btn" onclick="editDispatch('${x.id}')">Edit</button></div>`).join('')}</div>`
+      : `<div class="empty-state" style="margin-top:12px">No dispatch recorded yet / لا يوجد إرسال بعد</div>`);
+  }
+  if(tab==='daily'){
+    pane.innerHTML = `<button class="btn-primary" onclick="openNewDailyUpdate()">+ Daily update<span class="ar">تحديث يومي</span></button>` +
+      (d.dailyUpdates.length ? `<div class="mini-list" style="margin-top:12px">${d.dailyUpdates.map(x=>`<div class="mini-card"><div class="mini-card-main"><b>${fmtDate(x.date)}</b> — ${x.progress||''}<div class="mini-card-sub">${x.operation||''}</div>${x.problems?`<div class="mini-card-sub" style="color:#A32D2D">Problems: ${x.problems}</div>`:''}</div></div>`).join('')}</div>`
+      : `<div class="empty-state" style="margin-top:12px">No daily updates yet / لا يوجد تحديثات بعد</div>`);
+  }
+  if(tab==='downtime'){
+    const totalMins = d.downtime.reduce((s,x)=>{ if(x.start&&x.end){ const m=Math.round((new Date(x.end)-new Date(x.start))/60000); return s+(m>0?m:0);} return s; },0);
+    pane.innerHTML = `<button class="btn-primary" onclick="openNewDowntime()">+ Record downtime<span class="ar">تسجيل توقف</span></button>
+      <div class="linked-rig-display" style="margin:10px 0">Total downtime for this job: <b>${Math.floor(totalMins/60)}h ${totalMins%60}m</b><span class="ar">إجمالي التوقف لهذا العمل</span></div>` +
+      (d.downtime.length ? `<div class="mini-list">${d.downtime.map(x=>{const m=(x.start&&x.end)?Math.round((new Date(x.end)-new Date(x.start))/60000):null;return `<div class="mini-card"><div class="mini-card-main"><b>${x.category}</b> — ${x.reason||''}<div class="mini-card-sub">${x.start?new Date(x.start).toLocaleString():''} → ${x.end?new Date(x.end).toLocaleString():''} · ${m===null?'—':Math.floor(m/60)+'h '+(m%60)+'m'}</div></div><button class="action-btn" onclick="editDowntime('${x.id}')">Edit</button></div>`;}).join('')}</div>`
+      : `<div class="empty-state">No downtime recorded / لا يوجد توقف</div>`);
+  }
+  if(tab==='serviceticket'){
+    pane.innerHTML = `<button class="btn-secondary" style="margin-bottom:10px" onclick="showPage('orders');showOrderStep(3)">Open Service Tickets page<span class="ar">فتح صفحة تذاكر الخدمة</span></button>` +
+      (d.serviceTickets.length ? `<div class="mini-list">${d.serviceTickets.map(r=>`<div class="mini-card"><div class="mini-card-main"><b>${r.ticketNum||'—'}</b><div class="mini-card-sub">${r.customer||''} · ${fmtDate(r.date)}</div></div><button class="action-btn" onclick="printReport('${r.id}')">🖶 Print</button></div>`).join('')}</div>`
+      : `<div class="empty-state">Missing Service Delivery Ticket. Add "Linked Job" = this job when submitting one (Orders → Step 3).<span class="ar">لا توجد تذكرة خدمة مرتبطة بعد.</span></div>`);
+  }
+  if(tab==='techreport'){
+    pane.innerHTML = `<div class="empty-state">Technical & Performance Report (Form 57) uploads live alongside the Service Ticket record for this job — attach the PDF/photo there for now. A dedicated Form 57 tab is the next build phase.<span class="ar">التقرير الفني (نموذج 57) يُرفع حالياً مع تذكرة الخدمة لهذا العمل.</span></div>`;
+  }
+  if(tab==='verification'){
+    const v = j.verification || {};
+    const items = [
+      ['equipComplete','Equipment information complete'],['personnelComplete','Personnel information complete'],
+      ['deliveryUploaded','Delivery Ticket uploaded'],['serviceUploaded','Service Delivery Ticket uploaded'],
+      ['techUploaded','Technical & Performance Report uploaded'],['datesComplete','Operation dates complete'],
+      ['downtimeReviewed','Downtime reviewed'],['customerSig','Customer signature available'],
+      ['qtyVerified','Quantities verified'],['assetVerified','Asset numbers verified'],['docsAvailable','All required documents available']
+    ];
+    pane.innerHTML = `
+      <div class="approve-only">
+        ${items.map(([k,label])=>`<div class="check-row"><input type="checkbox" id="vf-${k}" ${v[k]?'checked':''} onchange="saveVerificationCheck('${k}')"><label for="vf-${k}">${label}</label></div>`).join('')}
+        <button class="btn-primary" style="margin-top:14px" ${j.approved?'disabled':''} onclick="approveForInvoicing()">${j.approved?'✓ Approved for Invoicing':'Approve for Invoicing'}<span class="ar">اعتماد للفوترة</span></button>
+        ${j.approved?`<div class="mini-card-sub" style="margin-top:8px">Approved by ${j.approvedBy||''} on ${j.approvedAt?new Date(j.approvedAt).toLocaleString():''}</div>`:''}
+      </div>
+      <div class="empty-state" style="display:none" class="approve-only-hidden">Only Operations Manager, Management or Shareholder roles can approve.</div>
+    `;
+    if(!['opsmanager','management','shareholder'].includes(getCurrentUser().role)){
+      pane.innerHTML = `<div class="empty-state">Verification checklist and approval are restricted to Operations Manager, Management or Shareholder roles. Switch your role (top-right) if you have that responsibility.<span class="ar">قائمة التحقق مقصورة على مدير العمليات أو الإدارة.</span></div>`;
+    }
+  }
+  if(tab==='invoice'){
+    const finRole = ['accounting','management','shareholder'].includes(getCurrentUser().role);
+    if(!j.approved){
+      pane.innerHTML = `<div class="empty-state">This job is not yet approved for invoicing. Complete the Verification tab first.<span class="ar">هذا العمل غير معتمد للفوترة بعد.</span></div>`;
+    } else if(!finRole){
+      pane.innerHTML = `<div class="empty-state">Job is <b>${j.status==='Ready for Invoicing'?'Ready for Invoicing':j.status}</b>. Invoice entry is restricted to Accounting/Management/Shareholder roles.<span class="ar">إدخال الفاتورة مقصور على المحاسبة/الإدارة.</span></div>`;
+    } else {
+      const inv = d.invoice;
+      pane.innerHTML = `<button class="btn-primary" onclick="openInvoiceModal()">${inv?'Edit invoice':'+ Record invoice'}<span class="ar">فاتورة</span></button>` +
+        (inv ? `<div class="mini-list" style="margin-top:12px"><div class="mini-card"><div class="mini-card-main"><b>${inv.invoiceNo||'—'}</b> — ${inv.amount||0} ${inv.currency||''}<div class="mini-card-sub">Date: ${fmtDate(inv.invoiceDate)} · Status: ${inv.paymentStatus||'Unpaid'} · Sage ref: ${inv.sageRef||'—'}</div></div></div></div>`
+        : `<div class="empty-state" style="margin-top:12px">No invoice recorded yet / لا توجد فاتورة بعد</div>`);
+    }
+  }
+  applyRoleVisibility();
+}
+
+// Equipment assignment inside Job → Equipment tab
+window.filterJobEquipGrid = function(){ buildJobEquipGrid(); }
+function buildJobEquipGrid(){
+  const j = jobById(currentJobDetailId); if(!j) return;
+  const q=(document.getElementById('jeq-search')?.value||'').toLowerCase();
+  const grid = document.getElementById('jeq-grid'); if(!grid) return;
+  const list = equipment.filter(e=>!q || ((e.name||'')+(e.equipId||'')).toLowerCase().includes(q)).slice(0,60);
+  const selected = j.equipmentIds||[];
+  grid.innerHTML = list.map(e=>{
+    const conflict = selected.includes(e.id) ? null : equipmentCurrentJob(e.id);
+    const cls = selected.includes(e.id) ? 'selected' : (conflict ? 'conflict' : '');
+    return `<div class="equip-chip ${cls}" title="${conflict?('On job '+conflict.jobNo):''}" onclick="toggleJobEquip('${e.id}')">${e.name} · ${e.equipId}${conflict?' ⚠':''}</div>`;
+  }).join('') || `<div class="empty-state">Type to search equipment</div>`;
+}
+window.toggleJobEquip = async function(eid){
+  const j = jobById(currentJobDetailId); if(!j) return;
+  const selected = new Set(j.equipmentIds||[]);
+  if(selected.has(eid)){ selected.delete(eid); }
+  else{
+    const conflict = equipmentCurrentJob(eid);
+    if(conflict){ showToast(`Already assigned to ${conflict.jobNo} — remove it there first or use an override / مستخدم في عمل آخر`,'error'); return; }
+    selected.add(eid);
+  }
+  const arr=[...selected];
+  await updateDoc(doc(db,'jobs',j.id), {equipmentIds:arr});
+  logAudit('equipment-assign','jobs',j.id, `${j.jobNo}: equipment list updated (${arr.length} items)`);
+  renderJobTabPane('equipment');
+}
+
+// Personnel CRUD
+window.openNewPersonnel = function(){
+  currentPAId=null;
+  ['pa-name','pa-empid','pa-title','pa-role','pa-arrival','pa-departure'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pa-days-display').innerHTML='Total days: —<span class="ar">إجمالي الأيام: —</span>';
+  document.getElementById('delete-pa-btn').style.display='none';
+  document.getElementById('personnel-modal').classList.add('open');
+}
+window.editPersonnel = function(id){
+  const p = personnel.find(x=>x.id===id); if(!p) return;
+  currentPAId=id;
+  document.getElementById('pa-name').value=p.employeeName||''; document.getElementById('pa-empid').value=p.employeeId||'';
+  document.getElementById('pa-title').value=p.title||''; document.getElementById('pa-role').value=p.role||'';
+  document.getElementById('pa-arrival').value=p.arrivalDate||''; document.getElementById('pa-departure').value=p.departureDate||'';
+  calcPADays();
+  document.getElementById('delete-pa-btn').style.display='';
+  document.getElementById('personnel-modal').classList.add('open');
+}
+window.savePersonnel = async function(){
+  const name = document.getElementById('pa-name').value.trim();
+  if(!name){ showToast('Employee name is required','error'); return; }
+  const obj = { jobId: currentJobDetailId, employeeName:name, employeeId:document.getElementById('pa-empid').value.trim(),
+    title:document.getElementById('pa-title').value.trim(), role:document.getElementById('pa-role').value.trim(),
+    arrivalDate:document.getElementById('pa-arrival').value, departureDate:document.getElementById('pa-departure').value };
+  if(currentPAId) await updateDoc(doc(db,'personnel',currentPAId), obj);
+  else { const ref=await addDoc(collection(db,'personnel'), {...obj, createdAt:serverTimestamp()}); logAudit('create','personnel',ref.id, `${name} assigned to job`); }
+  closeModal('personnel-modal'); showToast('Personnel saved / تم الحفظ','success');
+}
+
+// Dispatch CRUD
+window.openNewDispatch = function(){
+  currentDSId=null;
+  ['ds-vehicle','ds-driver','ds-date','ds-time','ds-from','ds-to','ds-personnel','ds-equipment','ds-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ds-date').value=todayStr();
+  document.getElementById('delete-ds-btn').style.display='none';
+  document.getElementById('dispatch-modal').classList.add('open');
+}
+window.editDispatch = function(id){
+  const x = dispatches.find(v=>v.id===id); if(!x) return;
+  currentDSId=id;
+  document.getElementById('ds-vehicle').value=x.vehicle||''; document.getElementById('ds-driver').value=x.driver||'';
+  document.getElementById('ds-date').value=x.date||''; document.getElementById('ds-time').value=x.time||'';
+  document.getElementById('ds-from').value=x.from||''; document.getElementById('ds-to').value=x.to||'';
+  document.getElementById('ds-personnel').value=x.personnelText||''; document.getElementById('ds-equipment').value=x.equipmentText||'';
+  document.getElementById('ds-notes').value=x.notes||'';
+  document.getElementById('delete-ds-btn').style.display='';
+  document.getElementById('dispatch-modal').classList.add('open');
+}
+window.saveDispatch = async function(){
+  const obj = { jobId: currentJobDetailId, vehicle:document.getElementById('ds-vehicle').value.trim(), driver:document.getElementById('ds-driver').value.trim(),
+    date:document.getElementById('ds-date').value, time:document.getElementById('ds-time').value, from:document.getElementById('ds-from').value.trim(),
+    to:document.getElementById('ds-to').value.trim(), personnelText:document.getElementById('ds-personnel').value.trim(),
+    equipmentText:document.getElementById('ds-equipment').value.trim(), notes:document.getElementById('ds-notes').value.trim() };
+  if(currentDSId) await updateDoc(doc(db,'dispatches',currentDSId), obj);
+  else { const ref=await addDoc(collection(db,'dispatches'), {...obj, createdAt:serverTimestamp()}); logAudit('create','dispatches',ref.id, `Dispatch recorded (${obj.vehicle||'vehicle'})`); }
+  closeModal('dispatch-modal'); showToast('Dispatch saved / تم الحفظ','success');
+}
+
+// Daily update CRUD (photos reuse existing handleFiles/photos state under key 'daily')
+window.openNewDailyUpdate = function(){
+  ['du-date','du-by','du-operation','du-equipstatus','du-personnelstatus','du-progress','du-problems','du-customer'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('du-date').value=todayStr();
+  document.getElementById('du-downtime').value='no';
+  if(typeof photos!=='undefined') photos.daily=[];
+  const pv=document.getElementById('preview-daily'); if(pv) pv.innerHTML='';
+  document.getElementById('daily-modal').classList.add('open');
+}
+window.saveDailyUpdate = async function(){
+  const obj = { jobId: currentJobDetailId, date:document.getElementById('du-date').value, submittedBy:document.getElementById('du-by').value.trim(),
+    operation:document.getElementById('du-operation').value.trim(), equipStatus:document.getElementById('du-equipstatus').value.trim(),
+    personnelStatus:document.getElementById('du-personnelstatus').value.trim(), progress:document.getElementById('du-progress').value.trim(),
+    problems:document.getElementById('du-problems').value.trim(), downtimeFlag:document.getElementById('du-downtime').value,
+    customerComments:document.getElementById('du-customer').value.trim(), photos:(typeof photos!=='undefined'&&photos.daily)?photos.daily.map(p=>p.url):[] };
+  const ref=await addDoc(collection(db,'dailyUpdates'), {...obj, createdAt:serverTimestamp()});
+  logAudit('create','dailyUpdates',ref.id, `Daily update ${obj.date}: ${obj.progress||''}`);
+  closeModal('daily-modal'); showToast('Daily update saved / تم الحفظ','success');
+  if(obj.downtimeFlag==='yes') showToast('Remember to log the details in the Downtime tab / سجّل التفاصيل في تبويب التوقف','success');
+}
+
+// Downtime CRUD
+window.openNewDowntime = function(){
+  currentDTId=null;
+  ['dt-start','dt-end','dt-reportedby','dt-reason','dt-description','dt-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('dt-category').value='Customer / Rig'; document.getElementById('dt-customerconf').value='no';
+  document.getElementById('dt-duration-display').innerHTML='Duration: —<span class="ar">المدة: —</span>';
+  document.getElementById('delete-dt-btn').style.display='none';
+  document.getElementById('downtime-modal').classList.add('open');
+}
+window.editDowntime = function(id){
+  const x = downtimeEvents.find(v=>v.id===id); if(!x) return;
+  currentDTId=id;
+  document.getElementById('dt-start').value=x.start||''; document.getElementById('dt-end').value=x.end||'';
+  document.getElementById('dt-category').value=x.category||'Customer / Rig'; document.getElementById('dt-reportedby').value=x.reportedBy||'';
+  document.getElementById('dt-reason').value=x.reason||''; document.getElementById('dt-description').value=x.description||'';
+  document.getElementById('dt-customerconf').value=x.customerConfirmation||'no'; document.getElementById('dt-notes').value=x.notes||'';
+  calcDowntimeDuration();
+  document.getElementById('delete-dt-btn').style.display='';
+  document.getElementById('downtime-modal').classList.add('open');
+}
+window.saveDowntime = async function(){
+  const obj = { jobId: currentJobDetailId, start:document.getElementById('dt-start').value, end:document.getElementById('dt-end').value,
+    category:document.getElementById('dt-category').value, reason:document.getElementById('dt-reason').value.trim(),
+    description:document.getElementById('dt-description').value.trim(), reportedBy:document.getElementById('dt-reportedby').value.trim(),
+    customerConfirmation:document.getElementById('dt-customerconf').value, notes:document.getElementById('dt-notes').value.trim() };
+  if(currentDTId) await updateDoc(doc(db,'downtimeEvents',currentDTId), obj);
+  else { const ref=await addDoc(collection(db,'downtimeEvents'), {...obj, createdAt:serverTimestamp()}); logAudit('create','downtimeEvents',ref.id, `Downtime logged: ${obj.category}`); }
+  closeModal('downtime-modal'); showToast('Downtime saved / تم الحفظ','success');
+}
+
+// Verification & invoicing
+window.saveVerificationCheck = async function(key){
+  const j = jobById(currentJobDetailId); if(!j) return;
+  const v = {...(j.verification||{})}; v[key] = document.getElementById('vf-'+key).checked;
+  await updateDoc(doc(db,'jobs',j.id), {verification:v});
+}
+window.approveForInvoicing = async function(){
+  const j = jobById(currentJobDetailId); if(!j) return;
+  const {name} = getCurrentUser();
+  await updateDoc(doc(db,'jobs',j.id), {approved:true, approvedBy:name, approvedAt:new Date().toISOString(), status:'Ready for Invoicing'});
+  logAudit('approve','jobs',j.id, `${j.jobNo} approved for invoicing by ${name}`);
+  showToast('Approved for invoicing / تم الاعتماد للفوترة','success');
+}
+window.openInvoiceModal = function(){
+  const j = jobById(currentJobDetailId); const inv = invoices.find(i=>i.jobId===j.id);
+  document.getElementById('inv-number').value=inv?.invoiceNo||''; document.getElementById('inv-date').value=inv?.invoiceDate||'';
+  document.getElementById('inv-amount').value=inv?.amount||''; document.getElementById('inv-currency').value=inv?.currency||'';
+  document.getElementById('inv-paystatus').value=inv?.paymentStatus||'Unpaid'; document.getElementById('inv-paydate').value=inv?.paymentDate||'';
+  document.getElementById('inv-sageref').value=inv?.sageRef||''; document.getElementById('inv-notes').value=inv?.notes||'';
+  document.getElementById('invoice-modal').classList.add('open');
+}
+window.saveInvoice = async function(){
+  const j = jobById(currentJobDetailId); if(!j) return;
+  const existing = invoices.find(i=>i.jobId===j.id);
+  const obj = { jobId:j.id, invoiceNo:document.getElementById('inv-number').value.trim(), invoiceDate:document.getElementById('inv-date').value,
+    amount:parseFloat(document.getElementById('inv-amount').value)||0, currency:document.getElementById('inv-currency').value.trim(),
+    paymentStatus:document.getElementById('inv-paystatus').value, paymentDate:document.getElementById('inv-paydate').value,
+    sageRef:document.getElementById('inv-sageref').value.trim(), notes:document.getElementById('inv-notes').value.trim() };
+  if(existing) await updateDoc(doc(db,'invoices',existing.id), obj);
+  else { const ref=await addDoc(collection(db,'invoices'), {...obj, createdAt:serverTimestamp()}); logAudit('create','invoices',ref.id, `Invoice ${obj.invoiceNo} for ${j.jobNo}`); }
+  await updateDoc(doc(db,'jobs',j.id), {status:'Invoiced'});
+  closeModal('invoice-modal'); showToast('Invoice saved / تم حفظ الفاتورة','success');
+}
+
+// ── Equipment Registry page ──────────────────────────────────
+let editEquipId=null;
+window.openNewEquipMaster = function(){
+  editEquipId=null;
+  ['em-name','em-equipid','em-type','em-brand','em-serial','em-location','em-lastinsp','em-nextinsp','em-certexp','em-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('em-status').value='available';
+  document.getElementById('equip-master-modal').classList.add('open');
+}
+window.editEquipMaster = function(id){
+  const e = equipById(id); if(!e) return;
+  editEquipId=id;
+  document.getElementById('em-name').value=e.name||''; document.getElementById('em-equipid').value=e.equipId||'';
+  document.getElementById('em-type').value=e.type||''; document.getElementById('em-brand').value=e.brand||'';
+  document.getElementById('em-serial').value=e.serial||''; document.getElementById('em-status').value=e.status||'available';
+  document.getElementById('em-location').value=e.location||''; document.getElementById('em-lastinsp').value=e.lastInspection||'';
+  document.getElementById('em-nextinsp').value=e.nextInspection||''; document.getElementById('em-certexp').value=e.certExpiry||'';
+  document.getElementById('em-notes').value=e.notes||'';
+  document.getElementById('equip-master-modal').classList.add('open');
+}
+window.saveEquipMaster = async function(){
+  const obj = { name:document.getElementById('em-name').value.trim(), equipId:document.getElementById('em-equipid').value.trim(),
+    type:document.getElementById('em-type').value.trim(), brand:document.getElementById('em-brand').value.trim(),
+    serial:document.getElementById('em-serial').value.trim(), status:document.getElementById('em-status').value,
+    location:document.getElementById('em-location').value.trim(), lastInspection:document.getElementById('em-lastinsp').value,
+    nextInspection:document.getElementById('em-nextinsp').value, certExpiry:document.getElementById('em-certexp').value,
+    notes:document.getElementById('em-notes').value.trim() };
+  if(editEquipId){ await updateDoc(doc(db,'equipment',editEquipId), obj); logAudit('update','equipment',editEquipId, `Updated ${obj.name}`); }
+  else { const ref=await addDoc(collection(db,'equipment'), {...obj, createdAt:serverTimestamp()}); logAudit('create','equipment',ref.id, `Added ${obj.name}`); }
+  closeModal('equip-master-modal'); showToast('Equipment saved / تم الحفظ','success');
+}
+function renderEquipmentPage(){
+  const q=(document.getElementById('equip-search').value||'').toLowerCase();
+  const sf = document.getElementById('equip-status-filter').value;
+  const list = equipment.filter(e=>(!q||((e.name||'')+(e.equipId||'')).toLowerCase().includes(q)) && (!sf||e.status===sf)).slice(0,200);
+  const wrap = document.getElementById('equipment-registry-list');
+  wrap.innerHTML = `<div style="margin-bottom:10px"><button class="btn-primary" onclick="openNewEquipMaster()">+ New equipment item<span class="ar">صنف جديد</span></button></div>` +
+    (list.length ? list.map(e=>{
+      const job = equipmentCurrentJob(e.id);
+      // history: every job this asset has ever been assigned to
+      const hist = jobs.filter(j=>(j.equipmentIds||[]).includes(e.id));
+      return `<div class="job-card" onclick="editEquipMaster('${e.id}')">
+        <div class="job-card-top">
+          <div><div class="job-card-title">${e.name}</div><div class="job-card-no">${e.equipId||''}</div></div>
+          <span class="badge ${e.status==='available'?'green':e.status==='maintenance'||e.status==='out-of-service'?'red':'amber'}">${e.status||'available'}</span>
+        </div>
+        <div class="job-card-meta">${job?`Current job: ${job.jobNo} (${job.customer||''})`:'Not on an active job'}</div>
+        ${hist.length?`<div style="margin-top:8px"><div class="search-group-title">History</div>${hist.map(h=>`<div class="equip-hist-row"><span>${h.jobNo} — ${h.customer||''}</span><span>${fmtDate(h.plannedStart)}–${fmtDate(h.plannedEnd)}</span></div>`).join('')}</div>`:''}
+      </div>`;
+    }).join('') : `<div class="empty-state">No equipment matches / لا توجد نتائج</div>`);
+}
+
+// ── Global search ──────────────────────────────────────────
+function renderGlobalSearch(){
+  const q=(document.getElementById('global-search').value||'').trim().toLowerCase();
+  const wrap = document.getElementById('global-search-results');
+  if(!q){ wrap.innerHTML = `<div class="empty-state">Search jobs, customers, wells, rigs, asset numbers, employees or invoice numbers.<span class="ar">ابحث عن أي شيء متعلق بالعمليات</span></div>`; return; }
+  const matchJobs = jobs.filter(j=>((j.jobNo||'')+(j.customer||'')+(j.field||'')+(j.well||'')+(j.rig||'')).toLowerCase().includes(q));
+  const matchEquip = equipment.filter(e=>((e.name||'')+(e.equipId||'')+(e.serial||'')).toLowerCase().includes(q));
+  const matchPersonnel = personnel.filter(p=>((p.employeeName||'')+(p.employeeId||'')).toLowerCase().includes(q));
+  const matchInvoices = invoices.filter(i=>(i.invoiceNo||'').toLowerCase().includes(q));
+  const matchOrders = serviceOrders.filter(o=>((o.orderNo||'')+(o.customer||'')).toLowerCase().includes(q));
+  let html='';
+  if(matchJobs.length) html += `<div class="search-results-group"><div class="search-group-title">Jobs</div>${matchJobs.map(j=>`<div class="job-card" onclick="openJobDetail('${j.id}')"><div class="job-card-top"><div><div class="job-card-no">${j.jobNo}</div><div class="job-card-title">${j.customer}</div></div><span class="badge ${jobStatusColor(j.status)}">${j.status}</span></div></div>`).join('')}</div>`;
+  if(matchEquip.length) html += `<div class="search-results-group"><div class="search-group-title">Equipment</div>${matchEquip.map(e=>`<div class="job-card" onclick="showPage('equipment')"><div class="job-card-title">${e.name}</div><div class="job-card-meta">${e.equipId} — ${equipmentCurrentJob(e.id)?('on '+equipmentCurrentJob(e.id).jobNo):'available/not on a job'}</div></div>`).join('')}</div>`;
+  if(matchPersonnel.length) html += `<div class="search-results-group"><div class="search-group-title">Personnel</div>${matchPersonnel.map(p=>`<div class="job-card" onclick="openJobDetail('${p.jobId}')"><div class="job-card-title">${p.employeeName}</div><div class="job-card-meta">${p.title||''} on job ${jobById(p.jobId)?jobById(p.jobId).jobNo:'—'}</div></div>`).join('')}</div>`;
+  if(matchInvoices.length) html += `<div class="search-results-group"><div class="search-group-title">Invoices</div>${matchInvoices.map(i=>`<div class="job-card" onclick="openJobDetail('${i.jobId}')"><div class="job-card-title">${i.invoiceNo}</div><div class="job-card-meta">${i.amount} ${i.currency||''} — job ${jobById(i.jobId)?jobById(i.jobId).jobNo:'—'}</div></div>`).join('')}</div>`;
+  if(matchOrders.length) html += `<div class="search-results-group"><div class="search-group-title">Internal Orders</div>${matchOrders.map(o=>`<div class="job-card" onclick="showPage('orders')"><div class="job-card-title">${o.orderNo}</div><div class="job-card-meta">${o.customer||''} · ${o.rig||''}</div></div>`).join('')}</div>`;
+  wrap.innerHTML = html || `<div class="empty-state">No matches / لا توجد نتائج</div>`;
+}
+
+// Init role chip + visibility on load
+setTimeout(()=>{ updateRoleChip(); applyRoleVisibility(); if(!localStorage.getItem('ipg_user_name')) openRoleModal(); }, 300);
 
 function renderEquipManage(){
   const box=document.getElementById('equip-manage-search'); if(!box) return;
@@ -1592,7 +2840,7 @@ function renderTickets(){
     const o=serviceOrders.find(x=>x.id===t.orderId);
     return `<tr>
     <td><span class="ticket-id">${t.ticketId||t.id.slice(0,6)}</span></td>
-    <td>${o?`<span class="ticket-id">${o.orderNo}</span>`:'<span style="color:#bbb">—</span>'}</td>
+    <td>${o?`<span class="ticket-id">${o.orderNo}</span>`:'<span style="color:#bbb">—</span>'}${t.jobId&&jobById(t.jobId)?`<br><span class="action-btn" style="margin-top:3px;font-size:10px" onclick="event.stopPropagation();openJobDetail('${t.jobId}')">${jobById(t.jobId).jobNo} ↗</span>`:''}</td>
     <td>${t.customer||'—'}</td>
     <td>${t.rig||'—'}</td>
     <td>${t.site||'—'}</td><td>${t.operator||'—'}</td>
@@ -1695,7 +2943,7 @@ function renderCosts(){
     const t=tickets.find(x=>x.id===c.ticketId);
     return `<tr>
     <td><span class="ticket-id">${t?.ticketId||'—'}</span></td>
-    <td style="font-size:12px;color:#888">${t?(t.site||'—')+(t.customer?' · '+t.customer:''):'—'}</td>
+    <td style="font-size:12px;color:#888">${t?(t.site||'—')+(t.customer?' · '+t.customer:''):'—'}${c.jobId&&jobById(c.jobId)?`<br><span class="action-btn" style="margin-top:3px;font-size:10px" onclick="event.stopPropagation();openJobDetail('${c.jobId}')">${jobById(c.jobId).jobNo} ↗</span>`:''}</td>
     <td class="cost-figure">${fmtMoney(c.personnelTotal)}</td>
     <td class="cost-figure">${fmtMoney(c.transportTotal)}</td>
     <td class="cost-figure" style="color:#0F6E56">${fmtMoney(c.total)}</td>
@@ -1771,7 +3019,7 @@ function renderReports(){
           <button class="btn-icon-del" onclick="deleteReport('${r.id}','${(r.customer||'').replace(/'/g,"\\'")}')">✕</button>
         </div>
       </div>
-      <div class="report-card-meta">${r.date||'—'} · ${(r.operators||[]).join(', ')||'No operators / لا يوجد مشغلون'} · ${pc} photo${pc===1?'':'s'}</div>
+      <div class="report-card-meta">${r.date||'—'} · ${(r.operators||[]).join(', ')||'No operators / لا يوجد مشغلون'} · ${pc} photo${pc===1?'':'s'}${r.jobId&&jobById(r.jobId)?` · <span class="action-btn" style="font-size:10px" onclick="openJobDetail('${r.jobId}')">${jobById(r.jobId).jobNo} ↗</span>`:''}</div>
     </div>`;
   }).join('');
 }
@@ -1850,6 +3098,7 @@ window.openNewTicket = function(){
   document.getElementById('ticket-modal-title').textContent='New job ticket / تذكرة جديدة';
   ['t-site','t-customer','t-rig','t-notes','t-order-search'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('t-orderid').value='';
+  populateJobSelects(); document.getElementById('t-jobid').value='';
   setTicketOperatorField('');
   document.getElementById('t-datetime').value=nowDT();
   document.getElementById('t-status').value='open';
@@ -1880,6 +3129,7 @@ window.editTicket = function(id){
   const linkedOrder=serviceOrders.find(x=>x.id===t.orderId);
   document.getElementById('t-order-search').value=linkedOrder?(linkedOrder.orderNo||''):'';
   document.getElementById('t-orderid').value=t.orderId||'';
+  populateJobSelects(); document.getElementById('t-jobid').value=t.jobId||'';
   document.getElementById('t-datetime').value=t.datetime||nowDT();
   document.getElementById('t-status').value=t.status||'open';
   document.getElementById('t-notes').value=t.notes||'';
@@ -1897,7 +3147,7 @@ window.saveTicket = async function(){
   const opConflicts=getOperatorConflicts([operator],editTicketId);
   if(opConflicts.length){ showToast(`${opConflicts[0].name} is already working on ${opConflicts[0].ticket.ticketId||'another ticket'} / ${opConflicts[0].name} يعمل بالفعل على تذكرة أخرى`,'error'); return; }
   const linkedOrder=resolveOrderBySearch(document.getElementById('t-order-search').value) || serviceOrders.find(x=>x.id===document.getElementById('t-orderid').value) || null;
-  const obj={site,operator,operators:[operator],customer:document.getElementById('t-customer').value.trim(),rig:document.getElementById('t-rig').value.trim(),datetime:document.getElementById('t-datetime').value,status:document.getElementById('t-status').value,equipment:selEquip,notes:document.getElementById('t-notes').value.trim(),orderId:linkedOrder?linkedOrder.id:'',updatedAt:serverTimestamp()};
+  const obj={site,operator,operators:[operator],customer:document.getElementById('t-customer').value.trim(),rig:document.getElementById('t-rig').value.trim(),datetime:document.getElementById('t-datetime').value,status:document.getElementById('t-status').value,equipment:selEquip,notes:document.getElementById('t-notes').value.trim(),orderId:linkedOrder?linkedOrder.id:'',jobId:document.getElementById('t-jobid').value||'',updatedAt:serverTimestamp()};
   try{
     if(editTicketId){ await updateDoc(doc(db,'tickets',editTicketId),obj); showToast('Ticket updated / تم التحديث','success'); }
     else{ await addDoc(collection(db,'tickets'),{...obj,ticketId:'TKT-'+pad(ticketCounter),createdAt:serverTimestamp()}); showToast('Ticket created / تم الإنشاء','success'); }
@@ -2041,6 +3291,7 @@ window.onCostTicketChange = function(){
 window.openNewCost = function(presetTicketId=null){
   editCostId=null;
   document.getElementById('cost-modal-title').textContent='New job cost sheet / ورقة تكلفة جديدة';
+  populateJobSelects(); document.getElementById('c-jobid').value='';
   populateCostTicketSelect(presetTicketId);
   document.getElementById('cost-op-list').innerHTML=''; costOpCount=0;
   const t = presetTicketId ? tickets.find(x=>x.id===presetTicketId) : null;
@@ -2070,6 +3321,7 @@ window.editCost = function(id){
   const c=jobCosts.find(x=>x.id===id); if(!c) return;
   editCostId=id;
   document.getElementById('cost-modal-title').textContent='Edit cost sheet / تعديل ورقة التكلفة';
+  populateJobSelects(); document.getElementById('c-jobid').value=c.jobId||'';
   populateCostTicketSelect(c.ticketId);
   document.getElementById('cost-op-list').innerHTML=''; costOpCount=0;
   (c.operators&&c.operators.length?c.operators:[{}]).forEach(op=>addCostOpRow(op));
@@ -2093,6 +3345,7 @@ window.saveCost = async function(){
   const totals=recalcCostTotals();
   const obj={
     ticketId,
+    jobId: document.getElementById('c-jobid').value||'',
     operators,
     personnelTotal:totals.personnelTotal,
     transport:{
@@ -2122,7 +3375,7 @@ function renderOrders(){
   wrap.innerHTML = list.map(o=>`<div class="order-card">
     <div class="order-card-top">
       <div><div class="order-card-title">${o.orderNo||'—'} · ${o.customer||'—'}</div>
-      <div class="order-card-meta">Rig ${o.rig||'—'} · ${o.orderType==='sales'?'Sales':'Service'} · ${(o.items||[]).length} item(s)</div></div>
+      <div class="order-card-meta">Rig ${o.rig||'—'} · ${o.orderType==='sales'?'Sales':'Service'} · ${(o.items||[]).length} item(s)${o.jobId&&jobById(o.jobId)?` · <span class="action-btn" style="font-size:10px" onclick="event.stopPropagation();openJobDetail('${o.jobId}')">${jobById(o.jobId).jobNo} ↗</span>`:''}</div></div>
       <div style="display:flex;flex-shrink:0">
         <button class="action-btn" title="Print / Export PDF" onclick="printOrder('${o.id}')">🖶</button>
         <button class="action-btn" onclick="editOrder('${o.id}')">✎</button>
@@ -2167,6 +3420,7 @@ window.openNewOrder = function(){
   editOrderId=null;
   document.getElementById('order-modal-title').innerHTML='Internal Service/Sales Order<span class="ar">طلب خدمة/بيع داخلي</span>';
   ['o-orderno','o-orderfrom','o-orderto','o-customer','o-rig'].forEach(id=>document.getElementById(id).value='');
+  populateJobSelects(); document.getElementById('o-jobid').value='';
   document.getElementById('o-orderdate').value=todayStr();
   document.getElementById('o-reqdate').value=todayStr();
   document.querySelector('input[name="o-type"][value="service"]').checked=true;
@@ -2185,6 +3439,7 @@ window.editOrder = function(id){
   document.getElementById('o-orderto').value=o.orderTo||'';
   document.getElementById('o-customer').value=o.customer||'';
   document.getElementById('o-rig').value=o.rig||'';
+  populateJobSelects(); document.getElementById('o-jobid').value=o.jobId||'';
   document.getElementById('o-reqdate').value=o.requestedDate||'';
   document.querySelector(`input[name="o-type"][value="${o.orderType||'service'}"]`).checked=true;
   document.getElementById('order-items-body').innerHTML='';
@@ -2198,6 +3453,7 @@ window.saveOrder = async function(){
   if(!orderNo){ showToast('Enter the order number / أدخل رقم الطلب','error'); return; }
   const obj={
     orderNo,
+    jobId: document.getElementById('o-jobid').value||'',
     orderDate:document.getElementById('o-orderdate').value,
     orderFrom:document.getElementById('o-orderfrom').value.trim(),
     orderTo:document.getElementById('o-orderto').value.trim(),
@@ -2278,7 +3534,7 @@ function renderDeliveries(){
     return `<div class="order-card">
     <div class="order-card-top">
       <div><div class="order-card-title">${d.ticketNo||'—'} · Rig ${d.rig||'—'}</div>
-      <div class="order-card-meta">${d.shipFrom||'—'} → ${d.shipTo||'—'} · Order ${o?o.orderNo:'—'} · ${(d.lines||[]).length} line(s)</div></div>
+      <div class="order-card-meta">${d.shipFrom||'—'} → ${d.shipTo||'—'} · Order ${o?o.orderNo:'—'} · ${(d.lines||[]).length} line(s)${d.jobId&&jobById(d.jobId)?` · <span class="action-btn" style="font-size:10px" onclick="event.stopPropagation();openJobDetail('${d.jobId}')">${jobById(d.jobId).jobNo} ↗</span>`:''}</div></div>
       <div style="display:flex;flex-shrink:0">
         <button class="action-btn" title="Print / Export PDF" onclick="printDelivery('${d.id}')">🖶</button>
         <button class="action-btn" onclick="editDelivery('${d.id}')">✎</button>
@@ -2320,6 +3576,7 @@ window.openNewDelivery = function(){
   populateOrderSelectForDelivery();
   ['d-ticketno','d-shipfrom','d-shipto','d-field','d-well','d-order-search'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('d-orderid').value='';
+  populateJobSelects(); document.getElementById('d-jobid').value='';
   document.getElementById('d-rig').value='';
   document.getElementById('d-rig-display').innerHTML='— search for the linked order —<span class="ar">ابحث عن الطلب المرتبط أولاً</span>';
   document.getElementById('d-date').value=todayStr();
@@ -2337,6 +3594,7 @@ window.editDelivery = function(id){
   const o=serviceOrders.find(x=>x.id===d.orderId);
   document.getElementById('d-order-search').value=o?(o.orderNo||''):'';
   document.getElementById('d-orderid').value=d.orderId||'';
+  populateJobSelects(); document.getElementById('d-jobid').value=d.jobId||'';
   document.getElementById('d-shipfrom').value=d.shipFrom||'';
   document.getElementById('d-shipto').value=d.shipTo||'';
   document.getElementById('d-field').value=d.field||'';
@@ -2357,6 +3615,7 @@ window.saveDelivery = async function(){
   if(!o){ showToast('Search and pick a valid linked order / ابحث واختر طلباً صحيحاً','error'); return; }
   const obj={
     ticketNo, orderId:o.id,
+    jobId: document.getElementById('d-jobid').value||'',
     shipFrom:document.getElementById('d-shipfrom').value.trim(),
     shipTo:document.getElementById('d-shipto').value.trim(),
     field:document.getElementById('d-field').value.trim(),
@@ -2501,8 +3760,9 @@ window.submitReport = async function(){
   if(Object.values(photos).some(a=>a.some(p=>p.failed))){ showToast('Some photos failed / فشل بعض الصور','error'); return; }
   const btn=document.getElementById('submit-btn'); btn.disabled=true; btn.textContent='Submitting… / جارٍ الإرسال';
   try{
-    const reportRef=await addDoc(collection(db,'jobReports'),{date,customer,ticketNum,rig,location,operators,orderId:linkedOrder?linkedOrder.id:'',feedbackPhotos:photos.feedback.map(p=>p.url),faultReportPhotos:photos.faultreport.map(p=>p.url),deliveryTicketPhotos:photos.delivery.map(p=>p.url),beforePhotos:photos.before.map(p=>p.url),afterPhotos:photos.after.map(p=>p.url),createdAt:serverTimestamp()});
+    const reportRef=await addDoc(collection(db,'jobReports'),{date,customer,ticketNum,rig,location,operators,orderId:linkedOrder?linkedOrder.id:'',jobId:document.getElementById('f-jobid').value||'',feedbackPhotos:photos.feedback.map(p=>p.url),faultReportPhotos:photos.faultreport.map(p=>p.url),deliveryTicketPhotos:photos.delivery.map(p=>p.url),beforePhotos:photos.before.map(p=>p.url),afterPhotos:photos.after.map(p=>p.url),createdAt:serverTimestamp()});
     await upsertTicketFromReport({ticketNum,location,operators,customer,rig,reportId:reportRef.id});
+    logAudit('create','jobReports',reportRef.id, `Service ticket ${ticketNum} submitted`);
     document.getElementById('form-view').style.display='none';
     document.getElementById('success-screen').classList.add('show');
   }catch(e){ showToast('Error submitting / خطأ في الإرسال','error'); console.error(e); }
@@ -2512,6 +3772,7 @@ window.submitReport = async function(){
 window.resetForm = function(){
   ['f-customer','f-ticketnum','f-rig','f-location','f-order-search'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-orderid').value='';
+  populateJobSelects(); if(document.getElementById('f-jobid')) document.getElementById('f-jobid').value='';
   document.getElementById('f-date').value=todayStr();
   document.getElementById('operators-list').innerHTML=''; operatorCount=0; addOperatorField();
   Object.keys(photos).forEach(k=>{photos[k]=[]; renderPreview(k);});
